@@ -16,7 +16,7 @@ Building the binary can simply be done by `go build -o tilaa .`
 If you're developing and want to talk to staging instead of production, use the
 build tag `dev`. So you can format your run commands as follows:
 
-`go run -tag dev . <args>`
+`go run -tags dev . <args>`
 
 This will ensure the code will talk to staging-auth and staging-graphql. Your
 access token, refresh token, and ExpiresAt will be stored in JSON in
