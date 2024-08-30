@@ -117,19 +117,19 @@ func (c *Client) executeRequest(query string, variables map[string]any, returnDa
 	return nil
 }
 
-// buildGraphQLQuery dynamically constructs a GraphQL query or mutation string based on the provided struct.
 func buildGraphQLQuery(queryStruct interface{}) string {
-	query := buildGraphQLQueryPart(reflect.ValueOf(queryStruct).Elem(), reflect.TypeOf(queryStruct).Elem())
-	return fmt.Sprintf("query { %s }", query)
+	query := buildGraphQLQueryPart(reflect.ValueOf(queryStruct).Elem(), reflect.TypeOf(queryStruct).Elem(), 1)
+	return fmt.Sprintf("query {\n%s\n}", query)
 }
 
 // buildGraphQLQueryPart recursively builds the query string for each part of the struct.
-func buildGraphQLQueryPart(val reflect.Value, typ reflect.Type) string {
+func buildGraphQLQueryPart(val reflect.Value, typ reflect.Type, indentLevel int) string {
 	var queryParts []string
+	indent := strings.Repeat("  ", indentLevel)
 
 	for i := 0; i < val.NumField(); i++ {
 		field := typ.Field(i)
-		fieldName := field.Name
+		fieldName := strings.ToLower(field.Name)
 		tag := field.Tag.Get("graphql")
 
 		if tag != "" {
@@ -139,23 +139,23 @@ func buildGraphQLQueryPart(val reflect.Value, typ reflect.Type) string {
 
 		// Handle struct fields by recursively building their sub-query
 		if val.Field(i).Kind() == reflect.Struct {
-			subQuery := buildGraphQLQueryPart(val.Field(i), val.Field(i).Type())
-			queryParts = append(queryParts, fmt.Sprintf("%s { %s }", fieldName, subQuery))
+			subQuery := buildGraphQLQueryPart(val.Field(i), val.Field(i).Type(), indentLevel+1)
+			queryParts = append(queryParts, fmt.Sprintf("%s%s {\n%s\n%s}", indent, fieldName, subQuery, indent))
 		} else if val.Field(i).Kind() == reflect.Slice {
 			// Handle slice fields by generating the query for the first element type
 			if val.Field(i).Len() > 0 {
-				subQuery := buildGraphQLQueryPart(val.Field(i).Index(0), val.Field(i).Type().Elem())
-				queryParts = append(queryParts, fmt.Sprintf("%s { %s }", fieldName, subQuery))
+				subQuery := buildGraphQLQueryPart(val.Field(i).Index(0), val.Field(i).Type().Elem(), indentLevel+1)
+				queryParts = append(queryParts, fmt.Sprintf("%s%s {\n%s\n%s}", indent, fieldName, subQuery, indent))
 			} else {
 				// Generate the query for an empty slice based on the element type
 				elemType := reflect.New(val.Field(i).Type().Elem()).Elem()
-				subQuery := buildGraphQLQueryPart(elemType, elemType.Type())
-				queryParts = append(queryParts, fmt.Sprintf("%s { %s }", fieldName, subQuery))
+				subQuery := buildGraphQLQueryPart(elemType, elemType.Type(), indentLevel+1)
+				queryParts = append(queryParts, fmt.Sprintf("%s%s {\n%s\n%s}", indent, fieldName, subQuery, indent))
 			}
 		} else {
-			queryParts = append(queryParts, strings.ToLower(fieldName))
+			queryParts = append(queryParts, fmt.Sprintf("%s%s", indent, fieldName))
 		}
 	}
 
-	return strings.Join(queryParts, " ")
+	return strings.Join(queryParts, "\n")
 }
