@@ -6,9 +6,8 @@ import (
 	"os"
 	"text/tabwriter"
 
-	"gitlab.com/Tilaa/tilaa-cli/api"
-
 	"github.com/spf13/cobra"
+	"gitlab.com/Tilaa/tilaa-cli/api"
 )
 
 var containerCmd = &cobra.Command{
