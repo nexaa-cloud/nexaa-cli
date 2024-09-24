@@ -44,8 +44,48 @@ var listNamespacesCmd = &cobra.Command{
 	},
 }
 
+var createNamespaceCmd = &cobra.Command{
+	Use:   "create",
+	Short: "Create a new namespace",
+	Run: func(cmd *cobra.Command, args []string) {
+		name, _ := cmd.Flags().GetString("name")
+		description, _ := cmd.Flags().GetString("description")
+
+		err := api.CreateNamespace(name, description)
+		if err != nil {
+			log.Fatalf("Failed to list namespaces: %v", err)
+		}
+
+		fmt.Println("Namespace created successfully.")
+	},
+}
+
+var deleteNamespaceCmd = &cobra.Command{
+	Use:   "delete",
+	Short: "Delete a namespace",
+	Run: func(cmd *cobra.Command, args []string) {
+		id, _ := cmd.Flags().GetInt("id")
+
+		err := api.DeleteNamespace(id)
+		if err != nil {
+			log.Fatalf("Failed to list namespaces: %v", err)
+		}
+
+		fmt.Println("Namespace removed successfully.")
+	},
+}
+
 func init() {
 	namespaceCmd.AddCommand(listNamespacesCmd)
+
+	createNamespaceCmd.Flags().StringP("name", "n", "", "Name")
+	createNamespaceCmd.Flags().StringP("description", "d", "", "Description")
+	createNamespaceCmd.MarkFlagRequired("name")
+	namespaceCmd.AddCommand(createNamespaceCmd)
+
+	deleteNamespaceCmd.Flags().IntP("id", "i", 0, "Namespace id")
+	deleteNamespaceCmd.MarkFlagRequired("id")
+	namespaceCmd.AddCommand(deleteNamespaceCmd)
 
 	rootCmd.AddCommand(namespaceCmd)
 }

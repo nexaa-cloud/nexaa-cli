@@ -1,10 +1,8 @@
 package api
 
 import (
-	"context"
-
-	"github.com/shurcooL/graphql"
 	"gitlab.com/Tilaa/tilaa-cli/config"
+	"gitlab.com/Tilaa/tilaa-cli/graphql"
 )
 
 type Container struct {
@@ -16,25 +14,27 @@ type Container struct {
 
 var containerQuery struct {
 	Namespace struct {
-		Id         graphql.String
-		Name       graphql.String
+		Id         string
+		Name       string
 		Containers []struct {
-			Id    graphql.String
-			Name  graphql.String
-			Image graphql.String
-			State graphql.String
+			Id    string
+			Name  string
+			Image string
+			State string
 		}
 	} `graphql:"namespace(id: $id)"`
 }
 
 func ListContainers(namespace string) ([]Container, error) {
-	initGraphQLClientWithToken(config.AccessToken)
+	client := graphql.NewClient(config.GRAPHQL_URL, config.AccessToken)
 
-	params := map[string]any{
-		"id": graphql.ID(namespace),
+	params := map[string]graphql.Parameter{
+		"id": graphql.NewId(namespace),
 	}
 
-	err := client.Query(context.Background(), &containerQuery, params)
+	query := client.BuildQuery(&containerQuery, params)
+
+	err := client.Query(query)
 	if err != nil {
 		return nil, err
 	}
