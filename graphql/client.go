@@ -6,8 +6,6 @@ import (
 	"fmt"
 	"io"
 	"net/http"
-	"reflect"
-	"strings"
 )
 
 type Client struct {
@@ -23,16 +21,46 @@ func NewClient(endpoint, token string) *Client {
 	}
 }
 
+// Query represents a GraphQL query.
+type Query struct {
+	Query      string
+	Variables  map[string]any
+	ReturnData interface{}
+}
+
 // Mutation represents a GraphQL mutation.
 type Mutation struct {
 	Query      string
 	Variables  map[string]any
-	ReturnData any
+	ReturnData interface{}
 }
 
 // BuildMutation initializes a mutation request.
-func (c *Client) BuildMutation(queryStruct interface{}, variables map[string]any) *Mutation {
-	query := buildGraphQLQuery(queryStruct)
+func (c *Client) BuildMutation(mutationName string, params map[string]Parameter) *Mutation {
+	qb := NewQueryBuilder()
+	query := qb.BuildMutation(mutationName, params)
+
+	variables := map[string]any{}
+	for key, value := range params {
+		variables[key] = value.GraphqlValue
+	}
+
+	return &Mutation{
+		Query:      query,
+		Variables:  variables,
+		ReturnData: nil,
+	}
+}
+
+func (c *Client) BuildMutationWithQuery(mutationName string, params map[string]Parameter, queryStruct interface{}) *Mutation {
+	qb := NewQueryBuilder()
+	query := qb.BuildMutationWithQuery(mutationName, params, queryStruct)
+
+	variables := map[string]any{}
+	for key, value := range params {
+		variables[key] = value.GraphqlValue
+	}
+
 	return &Mutation{
 		Query:      query,
 		Variables:  variables,
@@ -40,17 +68,17 @@ func (c *Client) BuildMutation(queryStruct interface{}, variables map[string]any
 	}
 }
 
-// Query represents a GraphQL query.
-type Query struct {
-	Query      string
-	Variables  map[string]any
-	ReturnData any
-}
-
 // BuildQuery initializes a query request.
-func (c *Client) BuildQuery(queryStruct interface{}, variables map[string]any) *Query {
-	query := buildGraphQLQuery(queryStruct)
-	fmt.Println(query)
+func (c *Client) BuildQuery(queryStruct interface{}, params map[string]Parameter) *Query {
+	qb := NewQueryBuilder()
+	query := qb.BuildQuery(queryStruct, params)
+
+	variables := map[string]any{}
+
+	for key, value := range params {
+		variables[key] = value.GraphqlValue
+	}
+
 	return &Query{
 		Query:      query,
 		Variables:  variables,
@@ -70,18 +98,13 @@ func (c *Client) Query(query *Query) error {
 
 // executeRequest performs the HTTP request to the GraphQL server.
 func (c *Client) executeRequest(query string, variables map[string]any, returnData interface{}) error {
-	// Build the request payload
-	payload := map[string]any{
-		"query":     query,
-		"variables": variables,
-	}
-	payloadBytes, err := json.Marshal(payload)
+	payload, err := c.preparePayload(query, variables)
 	if err != nil {
-		return fmt.Errorf("failed to marshal GraphQL request: %v", err)
+		return err
 	}
 
 	// Create the HTTP request
-	req, err := http.NewRequest("POST", c.Endpoint, bytes.NewBuffer(payloadBytes))
+	req, err := http.NewRequest("POST", c.Endpoint, bytes.NewBuffer(payload))
 	if err != nil {
 		return fmt.Errorf("failed to create HTTP request: %v", err)
 	}
@@ -109,53 +132,57 @@ func (c *Client) executeRequest(query string, variables map[string]any, returnDa
 		return fmt.Errorf("failed to read HTTP response: %v", err)
 	}
 
-	// Unmarshal into the provided struct
-	if err := json.Unmarshal(body, returnData); err != nil {
+	return c.processResponse(body, returnData)
+}
+
+// preparePayload marshals the GraphQL query and variables into a JSON payload.
+func (c *Client) preparePayload(query string, variables map[string]any) ([]byte, error) {
+	payload := map[string]any{
+		"query":     query,
+		"variables": variables,
+	}
+
+	payloadBytes, err := json.Marshal(payload)
+	if err != nil {
+		return nil, fmt.Errorf("failed to marshal GraphQL request: %v", err)
+	}
+
+	return payloadBytes, nil
+}
+
+// processResponse handles both successful data responses and GraphQL errors.
+func (c *Client) processResponse(body []byte, returnData interface{}) error {
+	// Temporary struct to capture both "data" and "errors"
+	var response struct {
+		Data   json.RawMessage `json:"data"`
+		Errors []struct {
+			Message    string           `json:"message"`
+			Locations  []map[string]any `json:"locations"`
+			Extensions map[string]any   `json:"extensions,omitempty"`
+		} `json:"errors,omitempty"`
+	}
+
+	// Unmarshal the body into the response struct
+	if err := json.Unmarshal(body, &response); err != nil {
 		return fmt.Errorf("failed to unmarshal GraphQL response: %v", err)
 	}
 
-	return nil
-}
-
-func buildGraphQLQuery(queryStruct interface{}) string {
-	query := buildGraphQLQueryPart(reflect.ValueOf(queryStruct).Elem(), reflect.TypeOf(queryStruct).Elem(), 1)
-	return fmt.Sprintf("query {\n%s\n}", query)
-}
-
-// buildGraphQLQueryPart recursively builds the query string for each part of the struct.
-func buildGraphQLQueryPart(val reflect.Value, typ reflect.Type, indentLevel int) string {
-	var queryParts []string
-	indent := strings.Repeat("  ", indentLevel)
-
-	for i := 0; i < val.NumField(); i++ {
-		field := typ.Field(i)
-		fieldName := strings.ToLower(field.Name)
-		tag := field.Tag.Get("graphql")
-
-		if tag != "" {
-			// Use the tag as the field name if it's specified
-			fieldName = tag
+	// Handle GraphQL errors if they exist
+	if len(response.Errors) > 0 {
+		// Convert the error details into a readable format
+		var errMessages []string
+		for _, e := range response.Errors {
+			errMessages = append(errMessages, e.Message)
 		}
+		return fmt.Errorf("GraphQL errors: %s", errMessages)
+	}
 
-		// Handle struct fields by recursively building their sub-query
-		if val.Field(i).Kind() == reflect.Struct {
-			subQuery := buildGraphQLQueryPart(val.Field(i), val.Field(i).Type(), indentLevel+1)
-			queryParts = append(queryParts, fmt.Sprintf("%s%s {\n%s\n%s}", indent, fieldName, subQuery, indent))
-		} else if val.Field(i).Kind() == reflect.Slice {
-			// Handle slice fields by generating the query for the first element type
-			if val.Field(i).Len() > 0 {
-				subQuery := buildGraphQLQueryPart(val.Field(i).Index(0), val.Field(i).Type().Elem(), indentLevel+1)
-				queryParts = append(queryParts, fmt.Sprintf("%s%s {\n%s\n%s}", indent, fieldName, subQuery, indent))
-			} else {
-				// Generate the query for an empty slice based on the element type
-				elemType := reflect.New(val.Field(i).Type().Elem()).Elem()
-				subQuery := buildGraphQLQueryPart(elemType, elemType.Type(), indentLevel+1)
-				queryParts = append(queryParts, fmt.Sprintf("%s%s {\n%s\n%s}", indent, fieldName, subQuery, indent))
-			}
-		} else {
-			queryParts = append(queryParts, fmt.Sprintf("%s%s", indent, fieldName))
+	if returnData != nil {
+		// Unmarshal the "data" part into the provided returnData struct
+		if err := json.Unmarshal(response.Data, returnData); err != nil {
+			return fmt.Errorf("failed to unmarshal GraphQL data: %v", err)
 		}
 	}
 
-	return strings.Join(queryParts, "\n")
+	return nil
 }

@@ -32,10 +32,52 @@ func (qb *QueryBuilder) BuildQuery(queryStruct interface{}, params map[string]Pa
 			queryParts = append(queryParts, fmt.Sprintf("$%s:%s", name, param.GraphqlType))
 		}
 
-		return fmt.Sprintf("query (%s) {\n%s\n}", strings.Join(queryParts, ","), query)
+		return fmt.Sprintf("query (%s) {\n%s\n}\n", strings.Join(queryParts, ","), query)
 	}
 
-	return fmt.Sprintf("query {\n%s\n}", query)
+	return fmt.Sprintf("query {\n%s\n}\n", query)
+}
+
+func (qb *QueryBuilder) BuildMutation(mutationName string, variables map[string]Parameter) string {
+	return qb.buildMutationPart(mutationName, variables, "")
+}
+
+func (qb *QueryBuilder) BuildMutationWithQuery(mutationName string, variables map[string]Parameter, queryStruct interface{}) string {
+	val := reflect.ValueOf(queryStruct).Elem()
+	typ := reflect.TypeOf(queryStruct).Elem()
+
+	query := qb.buildQueryPart(val, typ, 2)
+
+	return qb.buildMutationPart(mutationName, variables, query)
+}
+
+func (qb *QueryBuilder) buildMutationPart(mutationName string, variables map[string]Parameter, query string) string {
+	var sb strings.Builder
+
+	var outerParams []string
+	var innerParams []string
+
+	required := ""
+	for name, param := range variables {
+		required = ""
+		if param.Required {
+			required = "!"
+		}
+		outerParams = append(outerParams, fmt.Sprintf("$%s: %s%s", name, param.GraphqlType, required))
+		innerParams = append(innerParams, fmt.Sprintf("%s: $%s", name, name))
+	}
+
+	sb.WriteString(fmt.Sprintf("mutation (%s) {\n", strings.Join(outerParams, ",")))
+	sb.WriteString(fmt.Sprintf("    %s (%s)", mutationName, strings.Join(innerParams, ",")))
+
+	if len(query) > 0 {
+		sb.WriteString(" {\n")
+		sb.WriteString(query)
+		sb.WriteString("\n    }\n")
+	}
+	sb.WriteString("}\n")
+
+	return sb.String()
 }
 
 func (qb *QueryBuilder) buildQueryPart(val reflect.Value, typ reflect.Type, indentLevel int) string {
@@ -55,8 +97,15 @@ func (qb *QueryBuilder) buildQueryPart(val reflect.Value, typ reflect.Type, inde
 
 		for _, strategy := range qb.strategies {
 			if strategy.CanHandle(fieldVal, fieldType) {
-				subQuery := strategy.BuildQueryPart(fieldVal, fieldType, indentLevel, qb)
-				queryParts = append(queryParts, fmt.Sprintf("%s%s %s", indent, fieldName, subQuery))
+				subQuery := strings.Trim(strategy.BuildQueryPart(fieldVal, fieldType, indentLevel, qb), " ")
+
+				queryPart := fmt.Sprintf("%s%s", indent, fieldName)
+
+				if len(subQuery) > 0 {
+					queryPart += " " + subQuery
+				}
+
+				queryParts = append(queryParts, queryPart)
 				break
 			}
 		}
