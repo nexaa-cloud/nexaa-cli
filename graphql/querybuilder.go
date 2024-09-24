@@ -28,8 +28,14 @@ func (qb *QueryBuilder) BuildQuery(queryStruct interface{}, params map[string]Pa
 
 	if len(params) > 0 {
 		var queryParts []string
+		required := ""
 		for name, param := range params {
-			queryParts = append(queryParts, fmt.Sprintf("$%s:%s", name, param.GraphqlType))
+			required = ""
+			if param.Required {
+				required = "!"
+			}
+
+			queryParts = append(queryParts, fmt.Sprintf("$%s:%s%s", name, param.GraphqlType, required))
 		}
 
 		return fmt.Sprintf("query (%s) {\n%s\n}\n", strings.Join(queryParts, ","), query)
@@ -73,9 +79,9 @@ func (qb *QueryBuilder) buildMutationPart(mutationName string, variables map[str
 	if len(query) > 0 {
 		sb.WriteString(" {\n")
 		sb.WriteString(query)
-		sb.WriteString("\n    }\n")
+		sb.WriteString("\n    }")
 	}
-	sb.WriteString("}\n")
+	sb.WriteString("\n}\n")
 
 	return sb.String()
 }

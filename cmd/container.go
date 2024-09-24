@@ -44,9 +44,46 @@ var listContainersCmd = &cobra.Command{
 	},
 }
 
+var createContainerCmd = &cobra.Command{
+	Use:   "create",
+	Short: "Create a new container",
+	Run: func(cmd *cobra.Command, args []string) {
+		namespace, _ := cmd.Flags().GetInt("namespace")
+		image, _ := cmd.Flags().GetString("image")
+		https, _ := cmd.Flags().GetString("https")
+		// env, _ := cmd.Flags().GetStringArray("env")
+		ports, _ := cmd.Flags().GetStringArray("ports")
+
+		input := api.ContainerInput{
+			Namespace: namespace,
+			Image:     image,
+			Https:     https,
+			Ports:     ports,
+		}
+
+		_, err := api.CreateContainer(input)
+
+		if err != nil {
+			log.Fatalf("Failed to create container: %v", err)
+		}
+	},
+}
+
 func init() {
 	listContainersCmd.Flags().StringP("namespace", "n", "", "Namespace")
 	listContainersCmd.MarkFlagRequired("namespace")
-
 	containerCmd.AddCommand(listContainersCmd)
+
+	createContainerCmd.Flags().IntP("namespace", "n", 0, "Namespace")
+	createContainerCmd.Flags().String("name", "", "Namespace")
+	createContainerCmd.Flags().String("image", "", "Container image")
+	createContainerCmd.Flags().String("https", "", "HTTPS ingress hostname")
+	createContainerCmd.Flags().String("http", "", "HTTP ingress hostname")
+	createContainerCmd.Flags().StringArrayP("env", "e", []string{}, "Environment variables")
+	createContainerCmd.Flags().StringArrayP("port", "p", []string{}, "Port mappings")
+	createContainerCmd.Flags().StringArray("secret-env", []string{}, "Secret environment variables")
+	createContainerCmd.MarkFlagRequired("namespace")
+	createContainerCmd.MarkFlagRequired("name")
+	createContainerCmd.MarkFlagRequired("image")
+	containerCmd.AddCommand(createContainerCmd)
 }

@@ -8,7 +8,7 @@ type Parameter struct {
 
 func NewId(value any) Parameter {
 	return Parameter{
-		GraphqlType:  "ID!",
+		GraphqlType:  "ID",
 		GraphqlValue: value,
 		Required:     true,
 	}
@@ -25,6 +25,14 @@ func NewInt(value any) Parameter {
 func NewString(value any) Parameter {
 	return Parameter{
 		GraphqlType:  "String",
+		GraphqlValue: value,
+		Required:     true,
+	}
+}
+
+func NewComplexParameter(graphqlType string, value any) Parameter {
+	return Parameter{
+		GraphqlType:  graphqlType,
 		GraphqlValue: value,
 		Required:     true,
 	}

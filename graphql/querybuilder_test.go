@@ -116,3 +116,27 @@ func TestBuildMutationWithOptionalParameter(t *testing.T) {
 
 	assert.Equal(t, sb.String(), actual)
 }
+
+func TestMutationWithComplexTypes(t *testing.T) {
+	qb := NewQueryBuilder()
+
+	var sb strings.Builder
+
+	sb.WriteString("mutation ($CreateContainerInput: ContainerInput!) {\n")
+	sb.WriteString("    createContainer (CreateContainerInput: $CreateContainerInput)\n")
+	sb.WriteString("}\n")
+
+	expected := sb.String()
+
+	var query struct{}
+
+	params := map[string]Parameter{
+		"CreateContainerInput": NewComplexParameter("ContainerInput", map[string]any{
+			"namespaceId": 15,
+		}),
+	}
+
+	actual := qb.BuildMutationWithQuery("createContainer", params, &query)
+
+	assert.Equal(t, expected, actual)
+}

@@ -12,6 +12,17 @@ type Container struct {
 	State     string
 }
 
+type ContainerInput struct {
+	Name      string
+	Image     string
+	Namespace int
+	Http      string
+	Https     string
+	Env       []string
+	SecretEnv []string
+	Ports     []string
+}
+
 var containerQuery struct {
 	Namespace struct {
 		Id         string
@@ -53,4 +64,23 @@ func ListContainers(namespace string) ([]Container, error) {
 	}
 
 	return containers, nil
+}
+
+func CreateContainer(input ContainerInput) (Container, error) {
+	client := graphql.NewClient(config.GRAPHQL_URL, config.AccessToken)
+
+	params := map[string]graphql.Parameter{
+		"containerInput": graphql.NewComplexParameter("CreateContainerInput", map[string]any{
+			"namespaceId":             input.Namespace,
+			"resourceSpecificationId": 91,
+			"image":                   input.Image,
+			"name":                    input.Name,
+		}),
+	}
+
+	mutation := client.BuildMutation("createContainer", params)
+
+	err := client.Mutate(mutation)
+
+	return Container{}, err
 }
