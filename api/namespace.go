@@ -46,11 +46,10 @@ func CreateNamespace(name string, description string) error {
 	client := graphql.NewClient(config.GRAPHQL_URL, config.AccessToken)
 
 	params := map[string]graphql.Parameter{
-		"customerId":              graphql.NewInt(1),
-		"pricingPlanId":           graphql.NewInt(1),
-		"resourceSpecificationId": graphql.NewInt(1),
-		"name":                    graphql.NewString(name),
-		"description":             graphql.NewString(description),
+		"customerId":    graphql.NewInt(1),
+		"pricingPlanId": graphql.NewInt(2),
+		"name":          graphql.NewString(name),
+		"description":   graphql.NewString(description),
 	}
 
 	mutation := client.BuildMutation("createNamespace", params)

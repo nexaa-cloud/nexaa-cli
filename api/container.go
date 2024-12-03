@@ -23,6 +23,12 @@ type ContainerInput struct {
 	Ports     []string
 }
 
+type Ingress struct {
+	DomainName string `json:"domainName"`
+	Port       int    `json:"port"`
+	EnableTLS  bool   `json:"enableTLS"`
+}
+
 var containerQuery struct {
 	Namespace struct {
 		Id         string
@@ -69,13 +75,21 @@ func ListContainers(namespace string) ([]Container, error) {
 func CreateContainer(input ContainerInput) (Container, error) {
 	client := graphql.NewClient(config.GRAPHQL_URL, config.AccessToken)
 
+	createContainerInput := map[string]any{
+		"namespaceId":             input.Namespace,
+		"resourceSpecificationId": 91,
+		"image":                   input.Image,
+		"name":                    input.Name,
+		"ports":                   input.Ports,
+	}
+
+	ingresses := getIngresses(input)
+	if len(ingresses) > 0 {
+		createContainerInput["ingresses"] = ingresses
+	}
+
 	params := map[string]graphql.Parameter{
-		"containerInput": graphql.NewComplexParameter("CreateContainerInput", map[string]any{
-			"namespaceId":             input.Namespace,
-			"resourceSpecificationId": 91,
-			"image":                   input.Image,
-			"name":                    input.Name,
-		}),
+		"containerInput": graphql.NewComplexParameter("CreateContainerInput", createContainerInput),
 	}
 
 	mutation := client.BuildMutation("createContainer", params)
@@ -83,4 +97,18 @@ func CreateContainer(input ContainerInput) (Container, error) {
 	err := client.Mutate(mutation)
 
 	return Container{}, err
+}
+
+func getIngresses(input ContainerInput) []Ingress {
+	var ingresses []Ingress
+
+	if input.Https != "" {
+		ingresses = append(ingresses, Ingress{
+			Port:       80,
+			DomainName: input.Https,
+			EnableTLS:  true,
+		})
+	}
+
+	return ingresses
 }
