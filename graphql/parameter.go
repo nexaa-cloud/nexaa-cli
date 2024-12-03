@@ -30,6 +30,14 @@ func NewString(value any) Parameter {
 	}
 }
 
+func NewBool(value any) Parameter {
+	return Parameter{
+		GraphqlType:  "Boolean",
+		GraphqlValue: value,
+		Required:     true,
+	}
+}
+
 func NewComplexParameter(graphqlType string, value any) Parameter {
 	return Parameter{
 		GraphqlType:  graphqlType,

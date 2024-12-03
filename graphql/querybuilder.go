@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"reflect"
 	"strings"
+	"unicode"
+	"unicode/utf8"
 )
 
 type QueryBuilder struct {
@@ -94,7 +96,7 @@ func (qb *QueryBuilder) buildQueryPart(val reflect.Value, typ reflect.Type, inde
 		field := typ.Field(i)
 		fieldVal := val.Field(i)
 		fieldType := field.Type
-		fieldName := strings.ToLower(field.Name)
+		fieldName := qb.lowerFirst(field.Name)
 		tag := field.Tag.Get("graphql")
 
 		if tag != "" {
@@ -118,4 +120,13 @@ func (qb *QueryBuilder) buildQueryPart(val reflect.Value, typ reflect.Type, inde
 	}
 
 	return strings.Join(queryParts, "\n")
+}
+
+func (qb *QueryBuilder) lowerFirst(s string) string {
+	if s == "" {
+		return ""
+	}
+
+	r, n := utf8.DecodeRuneInString(s)
+	return string(unicode.ToLower(r)) + s[n:]
 }
