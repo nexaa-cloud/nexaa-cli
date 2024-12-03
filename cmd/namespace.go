@@ -48,10 +48,11 @@ var createNamespaceCmd = &cobra.Command{
 	Use:   "create",
 	Short: "Create a new namespace",
 	Run: func(cmd *cobra.Command, args []string) {
+		customerId, _ := cmd.Flags().GetInt("customer_id")
 		name, _ := cmd.Flags().GetString("name")
 		description, _ := cmd.Flags().GetString("description")
 
-		err := api.CreateNamespace(name, description)
+		err := api.CreateNamespace(customerId, name, description)
 		if err != nil {
 			log.Fatalf("Failed to list namespaces: %v", err)
 		}
@@ -79,8 +80,10 @@ func init() {
 	namespaceCmd.AddCommand(listNamespacesCmd)
 
 	createNamespaceCmd.Flags().StringP("name", "n", "", "Name")
+	createNamespaceCmd.Flags().IntP("customer_id", "c", 0, "Your customer id")
 	createNamespaceCmd.Flags().StringP("description", "d", "", "Description")
 	createNamespaceCmd.MarkFlagRequired("name")
+	createNamespaceCmd.MarkFlagRequired("customer_id")
 	namespaceCmd.AddCommand(createNamespaceCmd)
 
 	deleteNamespaceCmd.Flags().IntP("id", "i", 0, "Namespace id")

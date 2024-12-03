@@ -42,11 +42,11 @@ func ListNamespaces() ([]Namespace, error) {
 	return namespaces, nil
 }
 
-func CreateNamespace(name string, description string) error {
+func CreateNamespace(customerId int, name string, description string) error {
 	client := graphql.NewClient(config.GRAPHQL_URL, config.AccessToken)
 
 	params := map[string]graphql.Parameter{
-		"customerId":    graphql.NewInt(1),
+		"customerId":    graphql.NewInt(customerId),
 		"pricingPlanId": graphql.NewInt(2),
 		"name":          graphql.NewString(name),
 		"description":   graphql.NewString(description),
