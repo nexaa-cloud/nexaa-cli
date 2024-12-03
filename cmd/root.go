@@ -34,5 +34,7 @@ func Execute() {
 
 func init() {
 	rootCmd.AddCommand(containerCmd)
+	rootCmd.AddCommand(registryCmd)
+	rootCmd.AddCommand(namespaceCmd)
 	rootCmd.AddCommand(loginCmd)
 }
