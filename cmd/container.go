@@ -52,19 +52,57 @@ var createContainerCmd = &cobra.Command{
 		name, _ := cmd.Flags().GetString("name")
 		image, _ := cmd.Flags().GetString("image")
 		http, _ := cmd.Flags().GetString("http")
+		httpPort, _ := cmd.Flags().GetInt("httpPort")
 		https, _ := cmd.Flags().GetString("https")
+		httpsPort, _ := cmd.Flags().GetInt("httpsPort")
 		ports, _ := cmd.Flags().GetStringArray("ports")
+		registry, _ := cmd.Flags().GetInt("registry")
 
 		input := api.ContainerInput{
 			Name:      name,
 			Namespace: namespace,
 			Image:     image,
 			Http:      http,
+			HttpPort:  httpPort,
 			Https:     https,
+			HttpsPort: httpsPort,
 			Ports:     ports,
+			Registry:  registry,
 		}
 
 		_, err := api.CreateContainer(input)
+
+		if err != nil {
+			log.Fatalf("Failed to create container: %v", err)
+		}
+	},
+}
+
+var modifyContainerCmd = &cobra.Command{
+	Use:   "modify",
+	Short: "Modify an existing container",
+	Run: func(cmd *cobra.Command, args []string) {
+		id, _ := cmd.Flags().GetInt("id")
+		image, _ := cmd.Flags().GetString("image")
+		http, _ := cmd.Flags().GetString("http")
+		httpPort, _ := cmd.Flags().GetInt("httpPort")
+		https, _ := cmd.Flags().GetString("https")
+		httpsPort, _ := cmd.Flags().GetInt("httpsPort")
+		ports, _ := cmd.Flags().GetStringArray("port")
+		registry, _ := cmd.Flags().GetInt("registry")
+
+		input := api.ContainerInput{
+			Id:        id,
+			Image:     image,
+			Http:      http,
+			HttpPort:  httpPort,
+			Https:     https,
+			HttpsPort: httpsPort,
+			Ports:     ports,
+			Registry:  registry,
+		}
+
+		_, err := api.ModifyContainer(input)
 
 		if err != nil {
 			log.Fatalf("Failed to create container: %v", err)
@@ -78,13 +116,28 @@ func init() {
 	containerCmd.AddCommand(listContainersCmd)
 
 	createContainerCmd.Flags().IntP("namespace", "n", 0, "Namespace")
-	createContainerCmd.Flags().String("name", "", "Namespace")
+	createContainerCmd.Flags().String("name", "", "Name for this container")
 	createContainerCmd.Flags().String("image", "", "Container image")
-	createContainerCmd.Flags().String("https", "", "HTTPS ingress hostname")
 	createContainerCmd.Flags().String("http", "", "HTTP ingress hostname")
+	createContainerCmd.Flags().Int("httpPort", 0, "HTTP ingress port")
+	createContainerCmd.Flags().String("https", "", "HTTPS ingress hostname")
+	createContainerCmd.Flags().Int("httpsPort", 0, "HTTPS ingress port")
+	createContainerCmd.Flags().Int("registry", 0, "What registry to use")
 	createContainerCmd.Flags().StringArrayP("port", "p", []string{}, "Port mappings")
 	createContainerCmd.MarkFlagRequired("namespace")
 	createContainerCmd.MarkFlagRequired("name")
 	createContainerCmd.MarkFlagRequired("image")
 	containerCmd.AddCommand(createContainerCmd)
+
+	modifyContainerCmd.Flags().IntP("id", "i", 0, "Container ID to modify")
+	modifyContainerCmd.Flags().String("name", "", "Name for this container")
+	modifyContainerCmd.Flags().String("image", "", "Container image")
+	modifyContainerCmd.Flags().String("http", "", "HTTP ingress hostname")
+	modifyContainerCmd.Flags().Int("httpPort", 0, "HTTP ingress port")
+	modifyContainerCmd.Flags().String("https", "", "HTTPS ingress hostname")
+	modifyContainerCmd.Flags().Int("httpsPort", 0, "HTTPS ingress port")
+	modifyContainerCmd.Flags().Int("registry", 0, "What registry to use")
+	modifyContainerCmd.Flags().StringArrayP("port", "p", []string{}, "Port mappings")
+	modifyContainerCmd.MarkFlagRequired("id")
+	containerCmd.AddCommand(modifyContainerCmd)
 }

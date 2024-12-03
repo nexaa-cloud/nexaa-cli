@@ -13,13 +13,15 @@ type Container struct {
 }
 
 type ContainerInput struct {
+	Id        int
 	Name      string
 	Image     string
 	Namespace int
 	Http      string
+	HttpPort  int
 	Https     string
-	Env       []string
-	SecretEnv []string
+	HttpsPort int
+	Registry  int
 	Ports     []string
 }
 
@@ -80,7 +82,14 @@ func CreateContainer(input ContainerInput) (Container, error) {
 		"resourceSpecificationId": 91,
 		"image":                   input.Image,
 		"name":                    input.Name,
-		"ports":                   input.Ports,
+	}
+
+	if len(input.Ports) > 0 {
+		createContainerInput["ports"] = input.Ports
+	}
+
+	if input.Registry != 0 {
+		createContainerInput["privateRegistryId"] = input.Registry
 	}
 
 	ingresses := getIngresses(input)
@@ -99,12 +108,55 @@ func CreateContainer(input ContainerInput) (Container, error) {
 	return Container{}, err
 }
 
+func ModifyContainer(input ContainerInput) (Container, error) {
+	client := graphql.NewClient(config.GRAPHQL_URL, config.AccessToken)
+
+	modifyContainerInput := map[string]any{
+		"containerId": input.Id,
+	}
+
+	if len(input.Image) > 0 {
+		modifyContainerInput["image"] = input.Image
+	}
+
+	if len(input.Ports) > 0 {
+		modifyContainerInput["ports"] = input.Ports
+	}
+
+	if input.Registry != 0 {
+		modifyContainerInput["privateRegistryId"] = input.Registry
+	}
+
+	ingresses := getIngresses(input)
+	if len(ingresses) > 0 {
+		modifyContainerInput["ingresses"] = ingresses
+	}
+
+	params := map[string]graphql.Parameter{
+		"containerInput": graphql.NewComplexParameter("ConfigureContainerInput", modifyContainerInput),
+	}
+
+	mutation := client.BuildMutation("modifyContainer", params)
+
+	err := client.Mutate(mutation)
+
+	return Container{}, err
+}
+
 func getIngresses(input ContainerInput) []Ingress {
 	var ingresses []Ingress
 
-	if input.Https != "" {
+	if input.Http != "" && input.HttpPort != 0 {
 		ingresses = append(ingresses, Ingress{
-			Port:       80,
+			Port:       input.HttpPort,
+			DomainName: input.Http,
+			EnableTLS:  false,
+		})
+	}
+
+	if input.Https != "" && input.HttpsPort != 0 {
+		ingresses = append(ingresses, Ingress{
+			Port:       input.HttpsPort,
 			DomainName: input.Https,
 			EnableTLS:  true,
 		})
