@@ -120,6 +120,9 @@ func (c *Client) executeRequest(query string, variables map[string]any, returnDa
 	}
 	defer resp.Body.Close()
 
+	if resp.StatusCode == http.StatusUnauthorized {
+		return fmt.Errorf("unauthorized request. Please log in")
+	}
 	// Check for HTTP errors
 	if resp.StatusCode != http.StatusOK {
 		body, _ := io.ReadAll(resp.Body)
