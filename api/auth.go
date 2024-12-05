@@ -11,8 +11,6 @@ import (
 	"time"
 
 	"gitlab.com/Tilaa/tilaa-cli/config"
-
-	"github.com/shurcooL/graphql"
 )
 
 type OAuthResponse struct {
@@ -68,20 +66,4 @@ func Login(username, password string) error {
 	config.SaveConfig()
 
 	return nil
-}
-
-func initGraphQLClientWithToken(token string) {
-	httpClient := &http.Client{
-		Transport: &oauthTransport{token: token},
-	}
-	client = graphql.NewClient(config.GRAPHQL_URL, httpClient)
-}
-
-type oauthTransport struct {
-	token string
-}
-
-func (t *oauthTransport) RoundTrip(req *http.Request) (*http.Response, error) {
-	req.Header.Set("Authorization", "Bearer "+t.token)
-	return http.DefaultTransport.RoundTrip(req)
 }
