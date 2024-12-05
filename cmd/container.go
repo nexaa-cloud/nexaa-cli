@@ -34,10 +34,10 @@ var listContainersCmd = &cobra.Command{
 
 		writer := tabwriter.NewWriter(os.Stdout, 0, 0, 3, ' ', tabwriter.Debug)
 
-		fmt.Fprintln(writer, "NAME\t STATE\t IMAGE\t")
+		fmt.Fprintln(writer, "ID\tNAME\t STATE\t IMAGE\t")
 
 		for _, container := range containers {
-			fmt.Fprintf(writer, "%s\t %s\t %s\t\n", container.Name, container.State, container.Image)
+			fmt.Fprintf(writer, "%s\t%s\t %s\t %s\t\n", container.Id, container.Name, container.State, container.Image)
 		}
 
 		writer.Flush()

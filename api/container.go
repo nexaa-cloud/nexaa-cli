@@ -6,6 +6,7 @@ import (
 )
 
 type Container struct {
+	Id        string
 	Name      string
 	Image     string
 	Namespace string
@@ -65,6 +66,7 @@ func ListContainers(namespace string) ([]Container, error) {
 	for _, container := range containerQuery.Namespace.Containers {
 		containers = append(containers, Container{
 			Namespace: namespace,
+			Id:        string(container.Id),
 			Name:      string(container.Name),
 			Image:     string(container.Image),
 			State:     string(container.State),
