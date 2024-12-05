@@ -21,8 +21,12 @@ func Execute() {
 		log.Fatalf("Failed to load config: %v", err)
 	}
 
-	if config.AccessToken == "" && (len(os.Args) < 2 || os.Args[1] != "login") {
-		fmt.Println("No access token found, please login first.")
+	if config.AccessToken == "" && len(os.Args) >= 2 && os.Args[1] != "login" {
+		fmt.Println("ERROR: No access token found, please login first.")
+		fmt.Println("")
+
+		rootCmd.Usage()
+
 		os.Exit(1)
 	}
 
