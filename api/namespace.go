@@ -2,6 +2,7 @@ package api
 
 import (
 	// "github.com/shurcooL/graphql"
+
 	"gitlab.com/Tilaa/tilaa-cli/config"
 	"gitlab.com/Tilaa/tilaa-cli/graphql"
 )
@@ -42,8 +43,13 @@ func ListNamespaces() ([]Namespace, error) {
 	return namespaces, nil
 }
 
-func CreateNamespace(customerId int, name string, description string) error {
+func CreateNamespace(name string, description string) error {
 	client := graphql.NewClient(config.GRAPHQL_URL, config.AccessToken)
+
+	customerId, err := GetAccountId()
+	if err != nil {
+		return err
+	}
 
 	params := map[string]graphql.Parameter{
 		"customerId":    graphql.NewInt(customerId),
@@ -54,7 +60,7 @@ func CreateNamespace(customerId int, name string, description string) error {
 
 	mutation := client.BuildMutation("createNamespace", params)
 
-	err := client.Mutate(mutation)
+	err = client.Mutate(mutation)
 	if err != nil {
 		return err
 	}
