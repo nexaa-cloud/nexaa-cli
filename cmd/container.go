@@ -58,6 +58,7 @@ var createContainerCmd = &cobra.Command{
 		ports, _ := cmd.Flags().GetStringArray("ports")
 		registry, _ := cmd.Flags().GetInt("registry")
 		env, _ := cmd.Flags().GetStringArray("env")
+		secret, _ := cmd.Flags().GetStringArray("secret")
 
 		input := api.ContainerInput{
 			Name:      name,
@@ -70,6 +71,7 @@ var createContainerCmd = &cobra.Command{
 			Ports:     ports,
 			Registry:  registry,
 			Env:       env,
+			Secret:    secret,
 		}
 
 		_, err := api.CreateContainer(input)
@@ -126,6 +128,7 @@ func init() {
 	createContainerCmd.Flags().Int("httpsPort", 0, "HTTPS ingress port")
 	createContainerCmd.Flags().Int("registry", 0, "What registry to use")
 	createContainerCmd.Flags().StringArrayP("env", "e", []string{}, "Environment variables")
+	createContainerCmd.Flags().StringArrayP("secret", "s", []string{}, "Secret environment variables")
 	createContainerCmd.Flags().StringArrayP("port", "p", []string{}, "Port mappings")
 	createContainerCmd.MarkFlagRequired("namespace")
 	createContainerCmd.MarkFlagRequired("name")

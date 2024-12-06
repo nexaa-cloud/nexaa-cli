@@ -27,6 +27,7 @@ type ContainerInput struct {
 	Registry  int
 	Ports     []string
 	Env       []string
+	Secret    []string
 }
 
 type Ingress struct {
@@ -107,9 +108,10 @@ func CreateContainer(input ContainerInput) (Container, error) {
 		createContainerInput["ingresses"] = ingresses
 	}
 
-	if env := getEnvironment(input); len(env) > 0 {
-		createContainerInput["environmentVariables"] = env
-	}
+	env := getEnvironment(input.Env, false)
+	secrets := getEnvironment(input.Secret, true)
+
+	createContainerInput["environmentVariables"] = append(env, secrets...)
 
 	params := map[string]graphql.Parameter{
 		"containerInput": graphql.NewComplexParameter("CreateContainerInput", createContainerInput),
@@ -179,14 +181,14 @@ func getIngresses(input ContainerInput) []Ingress {
 	return ingresses
 }
 
-func getEnvironment(input ContainerInput) []EnvVariable {
+func getEnvironment(input []string, secret bool) []EnvVariable {
 	var env []EnvVariable
 
 	re := regexp.MustCompile(`^([^=]+)(?:=(.*))?$`)
 
-	if len(input.Env) > 0 {
-		for _, input := range input.Env {
-			matches := re.FindStringSubmatch(input)
+	if len(input) > 0 {
+		for _, string := range input {
+			matches := re.FindStringSubmatch(string)
 			value := ""
 
 			key := matches[1]
@@ -195,7 +197,7 @@ func getEnvironment(input ContainerInput) []EnvVariable {
 				value = matches[2]
 			}
 
-			env = append(env, EnvVariable{key, value, false})
+			env = append(env, EnvVariable{key, value, secret})
 		}
 	}
 
