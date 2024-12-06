@@ -1,6 +1,8 @@
 package api
 
 import (
+	"regexp"
+
 	"gitlab.com/Tilaa/tilaa-cli/config"
 	"gitlab.com/Tilaa/tilaa-cli/graphql"
 )
@@ -24,12 +26,19 @@ type ContainerInput struct {
 	HttpsPort int
 	Registry  int
 	Ports     []string
+	Env       []string
 }
 
 type Ingress struct {
 	DomainName string `json:"domainName"`
 	Port       int    `json:"port"`
 	EnableTLS  bool   `json:"enableTLS"`
+}
+
+type EnvVariable struct {
+	Name   string `json:"name"`
+	Value  string `json:"value"`
+	Secret bool   `json:"secret"`
 }
 
 var containerQuery struct {
@@ -94,9 +103,12 @@ func CreateContainer(input ContainerInput) (Container, error) {
 		createContainerInput["privateRegistryId"] = input.Registry
 	}
 
-	ingresses := getIngresses(input)
-	if len(ingresses) > 0 {
+	if ingresses := getIngresses(input); len(ingresses) > 0 {
 		createContainerInput["ingresses"] = ingresses
+	}
+
+	if env := getEnvironment(input); len(env) > 0 {
+		createContainerInput["environmentVariables"] = env
 	}
 
 	params := map[string]graphql.Parameter{
@@ -165,4 +177,27 @@ func getIngresses(input ContainerInput) []Ingress {
 	}
 
 	return ingresses
+}
+
+func getEnvironment(input ContainerInput) []EnvVariable {
+	var env []EnvVariable
+
+	re := regexp.MustCompile(`^([^=]+)(?:=(.*))?$`)
+
+	if len(input.Env) > 0 {
+		for _, input := range input.Env {
+			matches := re.FindStringSubmatch(input)
+			value := ""
+
+			key := matches[1]
+
+			if len(matches) > 2 {
+				value = matches[2]
+			}
+
+			env = append(env, EnvVariable{key, value, false})
+		}
+	}
+
+	return env
 }
