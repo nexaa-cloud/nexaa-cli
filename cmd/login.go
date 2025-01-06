@@ -3,6 +3,7 @@ package cmd
 import (
 	"fmt"
 	"log"
+	"os"
 	"syscall"
 
 	"gitlab.com/Tilaa/tilaa-cli/api"
@@ -18,7 +19,13 @@ var loginCmd = &cobra.Command{
 	Short: "Login using username and password",
 	Run: func(cmd *cobra.Command, args []string) {
 		username, _ := cmd.Flags().GetString("username")
+
+		envPassword := os.Getenv("TILAA_PASSWORD")
 		password, _ := cmd.Flags().GetString("password")
+
+		if password == "" {
+			password = envPassword
+		}
 
 		if username == "" {
 			fmt.Println("Username is required.")
