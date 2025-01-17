@@ -1,7 +1,6 @@
 package graphql
 
 import (
-	"fmt"
 	"reflect"
 	"strings"
 )
@@ -14,5 +13,5 @@ func (s *BasicStrategy) CanHandle(field reflect.Value, fieldType reflect.Type) b
 
 func (s *BasicStrategy) BuildQueryPart(field reflect.Value, fieldType reflect.Type, indentLevel int, qb *QueryBuilder) string {
 	indent := strings.Repeat("    ", indentLevel)
-	return fmt.Sprintf("%s", indent)
+	return indent
 }

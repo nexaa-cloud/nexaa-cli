@@ -63,7 +63,10 @@ func Login(username, password string) error {
 	config.RefreshToken = oauthResp.RefreshToken
 	config.ExpiresAt = time.Now().Add(time.Duration(oauthResp.ExpiresIn) * time.Second).UnixMicro()
 
-	config.SaveConfig()
+	err = config.SaveConfig()
+	if err != nil {
+		return fmt.Errorf("failt to store config: %v", err)
+	}
 
 	return nil
 }

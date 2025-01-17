@@ -1,27 +1,11 @@
 package graphql
 
 import (
-	"regexp"
 	"strings"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
 )
-
-func removeWhitespace(query string) string {
-	// Replace newlines with spaces
-	query = strings.ReplaceAll(query, "\n", " ")
-
-	// Remove tabs
-	query = strings.ReplaceAll(query, "\t", "")
-
-	// Use regex to replace multiple spaces with a single space
-	regex := regexp.MustCompile(`\s+`)
-	cleaned := regex.ReplaceAllString(query, " ")
-
-	// Trim leading/trailing spaces
-	return strings.TrimSpace(cleaned)
-}
 
 func TestBuildQuery(t *testing.T) {
 	qb := NewQueryBuilder()
