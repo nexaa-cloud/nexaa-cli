@@ -18,6 +18,8 @@ TARGETS=(
 product_name="tilaa"
 start_dir="${PWD}"
 
+go generate
+
 for target in "${TARGETS[@]}"; do
     # Split the target operating system and architecture into separate variables
     IFS='/' read -r os arch extension <<< "${target}"

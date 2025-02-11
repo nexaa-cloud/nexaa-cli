@@ -1,0 +1,45 @@
+package api
+
+import (
+	"context"
+)
+
+func (client *Client) ContainerJobCreate(input ContainerJobCreateInput) (ContainerJobResult, error) {
+	containerJobCreateResponse, err := containerJobCreate(context.Background(), *client.client, input)
+	if err != nil {
+		return ContainerJobResult{}, err
+	}
+
+	return containerJobCreateResponse.GetContainerJobCreate().ContainerJobResult, nil
+}
+
+func (client *Client) ContainerJobModify(input ContainerJobModifyInput) (ContainerJobResult, error) {
+	containerJobCreateResponse, err := containerJobModify(context.Background(), *client.client, input)
+	if err != nil {
+		return ContainerJobResult{}, err
+	}
+
+	return containerJobCreateResponse.GetContainerJobModify().ContainerJobResult, nil
+}
+
+func (client *Client) ContainerJobList(namespace string) ([]ContainerJobResult, error) {
+
+	containerJobListResponse, err := containerJobList(context.Background(), *client.client, namespace)
+
+	if err != nil {
+		return []ContainerJobResult{}, err
+	}
+
+	namespaceResult := containerJobListResponse.GetNamespace()
+
+	result := make([]ContainerJobResult, len(namespaceResult.ContainerJobs))
+	for i, job := range namespaceResult.ContainerJobs {
+		result[i] = ContainerJobResult{
+			Name:    job.Name,
+			Image:   job.Image,
+			Enabled: job.Enabled,
+			State:   job.State,
+		}
+	}
+	return result, nil
+}

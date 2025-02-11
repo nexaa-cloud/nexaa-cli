@@ -1,0 +1,870 @@
+type Account {
+  customer: Customer!
+  email: String!
+  id: ID!
+  name: String!
+  role: String!
+}
+
+type Address {
+  city: String!
+  country: String!
+  postalCode: String!
+  streetNameAndHouseNumber: String!
+}
+
+type AuditLog {
+  account: Account
+  changeSet: [AuditLogChange!]!
+  eventType: String!
+  id: ID!
+  modelId: Int!
+  modelName: String!
+  occurredAt: String!
+  tags: [String!]!
+}
+
+type AuditLogChange {
+  name: String!
+  newValue: String
+  oldValue: String
+}
+
+input AuditLogFilterInput {
+  eventTypes: [String!]!
+  modelNames: [String!]!
+}
+
+type AutoScaling {
+  replicas: AutoScalingReplicas!
+  triggers: [AutoScalingTrigger!]!
+}
+
+input AutoScalingInput {
+  replicas: ReplicasInput!
+  triggers: [AutoScalingTriggerInput!]!
+}
+
+type AutoScalingReplicas {
+  maximum: Int!
+  minimum: Int!
+}
+
+type AutoScalingTrigger {
+  threshold: Int!
+  type: String!
+}
+
+input AutoScalingTriggerInput {
+  type: AutoScalingType!
+  threshold: Int!
+}
+
+enum AutoScalingType {
+  MEMORY
+  CPU
+}
+
+type CloudDatabase {
+  connectionString: String!
+  createdAt: DateTime!
+  deletedAt: DateTime
+  hostname: String!
+  id: ID!
+  location: Location!
+  name: String!
+  nodeType: NodeType!
+  state: String!
+  username: String!
+  version: DatabaseVersion!
+  whitelist: [String!]!
+}
+
+input ConfigureContainerInput {
+  ""
+  containerId: Int!
+
+  ""
+  resourceSpecificationId: Int = null
+
+  ""
+  image: String = null
+
+  ""
+  numberOfContainers: Int = null
+
+  ""
+  environmentVariables: EnvironmentVariableModificationInput = null
+
+  ""
+  ingresses: IngressModificationInput = null
+
+  ""
+  unmount: [UnmountInput!] = null
+
+  ""
+  ports: [String!]
+
+  ""
+  privateRegistryId: Int = null
+
+  ""
+  mounts: [MountInput!]
+
+  """
+  Health check performed to check the status of the container.
+  Health checks are directly performed on the container so your application must expose
+  the port. Port mappings specified in the ports field are not used by the health check.
+  
+  When you want to disable the health check you must send us a null value. To leave the
+  current health check unchanged you can omit this field.
+  """
+  healthCheck: HealthCheckInput = null
+
+  ""
+  autoScalingInput: AutoScalingInput = null
+
+  ""
+  scaling: ScalingInput = null
+}
+
+type Container {
+  autoScaling: AutoScaling
+  availableReplicas: Int!
+  createdAt: DateTime!
+  deletedAt: DateTime
+  environmentVariables: [EnvironmentVariable!]!
+  healthCheck: HealthCheck
+  id: ID!
+  image: String!
+  ingresses: [Ingress!]!
+  locked: Boolean!
+  modifiedAt: DateTime
+  mounts: [Mount!]!
+  name: String!
+  numberOfReplicas: Int!
+  ports: [String!]!
+  privateRegistry: PrivateRegistry
+  replicas: [Replica!]!
+  resourceSpecification: ResourceSpecification!
+  startedAt: DateTime!
+  state: String!
+}
+
+type ContainerJob {
+  command: [String!]
+  enabled: Boolean!
+  entrypoint: [String!]
+  environmentVariables: [EnvironmentVariable!]!
+  image: String!
+  mounts: [Mount!]!
+  name: String!
+  namespace: Namespace!
+  privateRegistry: PrivateRegistry
+  resources: ContainerResources!
+  runs: [ContainerJobRun!]!
+  schedule: String!
+  state: String!
+}
+
+input ContainerJobCreateInput {
+  ""
+  name: String!
+
+  ""
+  namespace: String!
+
+  ""
+  resources: ContainerResources!
+
+  ""
+  registry: String = null
+
+  ""
+  image: String!
+
+  """
+  Entrypoint of the container.
+  This field will overwrite the default entrypoint of the image. When the field is omitted, the default entrypoint of the image will be used.
+  
+  Null will reset the command to the default.
+  
+  Entry point is the first command executed when the container starts. It will receive the command as arguments.
+  For example when the entrypoint is `python`, the command `app.py` will be executed as `python app.py`.
+  
+  This field is defined in docker exec format. https://docs.docker.com/reference/dockerfile/#shell-and-exec-form
+  """
+  entrypoint: [String!]
+
+  """
+  Command to run.
+  This is the command executed at the given schedule.
+  When the field is omitted, the default command of the image will be used.
+  
+  Null will reset the command to the default.
+  The command will be passed to the entrypoint as arguments. Use quotes to pass an argument with spaces.
+  
+  Environment variables can be used in the command by using the syntax `$(ENVIRONMENT_VARIABLE)`.
+  
+  Example: `echo "Hello $(NAME)"`.
+  
+  This field is defined in docker exec format. https://docs.docker.com/reference/dockerfile/#shell-and-exec-form
+  """
+  command: [String!]
+
+  """
+  Enable or disable the job.
+  By disabling a job, it will not be executed, we do keep the configuration.
+  """
+  enabled: Boolean! = true
+
+  """
+  Cron notation to schedule jobs.
+  Format is equal to regular cron notation.
+  For example, to run a job every day at 4am, use `0 4 * * *`.
+  You can use https://crontab.guru/ to help you build your cron expressions.
+  """
+  schedule: String!
+
+  "Environment variables to be set in the job."
+  environmentVariables: [EnvironmentVariableInput!] = []
+
+  ""
+  mounts: [MountInput!]
+}
+
+input ContainerJobModifyInput {
+  ""
+  name: String!
+
+  ""
+  namespace: String!
+
+
+  ""
+  resources: ContainerResources
+
+  ""
+  registry: String
+
+  ""
+  image: String
+
+  """
+  Entrypoint of the container.
+  This field will overwrite the default entrypoint of the image. When the field is omitted, the default entrypoint of the image will be used.
+  
+  Null will reset the command to the default.
+  
+  Entry point is the first command executed when the container starts. It will receive the command as arguments.
+  For example when the entrypoint is `python`, the command `app.py` will be executed as `python app.py`.
+  
+  This field is defined in docker exec format. https://docs.docker.com/reference/dockerfile/#shell-and-exec-form
+  """
+  entrypoint: [String!]
+
+  """
+  Command to run.
+  This is the command executed at the given schedule.
+  When the field is omitted, the default command of the image will be used.
+  
+  Null will reset the command to the default.
+  The command will be passed to the entrypoint as arguments. Use quotes to pass an argument with spaces.
+  
+  Environment variables can be used in the command by using the syntax `$(ENVIRONMENT_VARIABLE)`.
+  
+  Example: `echo "Hello $(NAME)"`.
+  
+  This field is defined in docker exec format. https://docs.docker.com/reference/dockerfile/#shell-and-exec-form
+  """
+  command: [String!]
+
+  """
+  Enable or disable the job.
+  By disabling a job, it will not be executed, we do keep the configuration.
+  """
+  enabled: Boolean
+
+  """
+  Cron notation to schedule jobs.
+  Format is equal to regular cron notation.
+  For example, to run a job every day at 4am, use `0 4 * * *`.
+  You can use https://crontab.guru/ to help you build your cron expressions.
+  """
+  schedule: String
+
+  "Environment variables to be set in the job."
+  environmentVariables: [EnvironmentVariableInput!]
+
+  ""
+  mounts: [MountInput!]
+}
+
+type ContainerJobRun {
+  duration: Int
+  endTime: DateTime
+  message: String
+  name: String!
+  startTime: DateTime
+  status: String!
+}
+
+enum ContainerResources {
+  CPU_250_RAM_500
+  CPU_250_RAM_1000
+  CPU_250_RAM_2000
+  CPU_250_RAM_3000
+  CPU_250_RAM_4000
+  CPU_250_RAM_5000
+  CPU_250_RAM_6000
+  CPU_250_RAM_7000
+  CPU_250_RAM_8000
+  CPU_250_RAM_9000
+  CPU_250_RAM_10000
+  CPU_250_RAM_11000
+  CPU_250_RAM_12000
+  CPU_250_RAM_13000
+  CPU_250_RAM_14000
+  CPU_250_RAM_15000
+  CPU_250_RAM_16000
+  CPU_500_RAM_500
+  CPU_500_RAM_1000
+  CPU_500_RAM_2000
+  CPU_500_RAM_3000
+  CPU_500_RAM_4000
+  CPU_500_RAM_5000
+  CPU_500_RAM_6000
+  CPU_500_RAM_7000
+  CPU_500_RAM_8000
+  CPU_500_RAM_9000
+  CPU_500_RAM_10000
+  CPU_500_RAM_11000
+  CPU_500_RAM_12000
+  CPU_500_RAM_13000
+  CPU_500_RAM_14000
+  CPU_500_RAM_15000
+  CPU_500_RAM_16000
+  CPU_750_RAM_500
+  CPU_750_RAM_1000
+  CPU_750_RAM_2000
+  CPU_750_RAM_3000
+  CPU_750_RAM_4000
+  CPU_750_RAM_5000
+  CPU_750_RAM_6000
+  CPU_750_RAM_7000
+  CPU_750_RAM_8000
+  CPU_750_RAM_9000
+  CPU_750_RAM_10000
+  CPU_750_RAM_11000
+  CPU_750_RAM_12000
+  CPU_750_RAM_13000
+  CPU_750_RAM_14000
+  CPU_750_RAM_15000
+  CPU_750_RAM_16000
+  CPU_1000_RAM_500
+  CPU_1000_RAM_1000
+  CPU_1000_RAM_2000
+  CPU_1000_RAM_3000
+  CPU_1000_RAM_4000
+  CPU_1000_RAM_5000
+  CPU_1000_RAM_6000
+  CPU_1000_RAM_7000
+  CPU_1000_RAM_8000
+  CPU_1000_RAM_9000
+  CPU_1000_RAM_10000
+  CPU_1000_RAM_11000
+  CPU_1000_RAM_12000
+  CPU_1000_RAM_13000
+  CPU_1000_RAM_14000
+  CPU_1000_RAM_15000
+  CPU_1000_RAM_16000
+  CPU_2000_RAM_500
+  CPU_2000_RAM_1000
+  CPU_2000_RAM_2000
+  CPU_2000_RAM_3000
+  CPU_2000_RAM_4000
+  CPU_2000_RAM_5000
+  CPU_2000_RAM_6000
+  CPU_2000_RAM_7000
+  CPU_2000_RAM_8000
+  CPU_2000_RAM_9000
+  CPU_2000_RAM_10000
+  CPU_2000_RAM_11000
+  CPU_2000_RAM_12000
+  CPU_2000_RAM_13000
+  CPU_2000_RAM_14000
+  CPU_2000_RAM_15000
+  CPU_2000_RAM_16000
+  CPU_3000_RAM_500
+  CPU_3000_RAM_1000
+  CPU_3000_RAM_2000
+  CPU_3000_RAM_3000
+  CPU_3000_RAM_4000
+  CPU_3000_RAM_5000
+  CPU_3000_RAM_6000
+  CPU_3000_RAM_7000
+  CPU_3000_RAM_8000
+  CPU_3000_RAM_9000
+  CPU_3000_RAM_10000
+  CPU_3000_RAM_11000
+  CPU_3000_RAM_12000
+  CPU_3000_RAM_13000
+  CPU_3000_RAM_14000
+  CPU_3000_RAM_15000
+  CPU_3000_RAM_16000
+  CPU_4000_RAM_500
+  CPU_4000_RAM_1000
+  CPU_4000_RAM_2000
+  CPU_4000_RAM_3000
+  CPU_4000_RAM_4000
+  CPU_4000_RAM_5000
+  CPU_4000_RAM_6000
+  CPU_4000_RAM_7000
+  CPU_4000_RAM_8000
+  CPU_4000_RAM_9000
+  CPU_4000_RAM_10000
+  CPU_4000_RAM_11000
+  CPU_4000_RAM_12000
+  CPU_4000_RAM_13000
+  CPU_4000_RAM_14000
+  CPU_4000_RAM_15000
+  CPU_4000_RAM_16000
+}
+
+input CreateContainerInput {
+  ""
+  namespaceId: Int!
+
+  ""
+  resourceSpecificationId: Int!
+
+  ""
+  name: String!
+
+  ""
+  image: String!
+
+  ""
+  replicas: Int = 1
+
+  ""
+  environmentVariables: [EnvironmentVariableInput!] = []
+
+  ""
+  ingresses: [IngressInput!] = []
+
+  ""
+  ports: [String!]
+
+  ""
+  privateRegistryId: Int = null
+
+  ""
+  mounts: [MountInput!]
+
+  """
+  Health check performed to check the status of the container.
+  Health checks are directly performed on the container so your application must expose
+  the port. Port mappings specified in the ports field are not used by the health check.
+  
+  When you want to disable the health check you must send us a null value. To leave the
+  current health check unchanged you can omit this field.
+  """
+  healthCheck: HealthCheckInput = null
+
+  ""
+  autoScalingInput: AutoScalingInput = null
+
+  ""
+  scaling: ScalingInput = null
+}
+
+type Customer {
+  address: Address @deprecated(reason: "this field will be removed in the future")
+  billingPeriod: Int! @deprecated(reason: "this field will be removed in the future")
+  id: ID!
+  name: String! @deprecated(reason: "this field will be removed in the future")
+  recurringPayment: Boolean!
+  suspendedReason: SuspendedReason
+  termOfPayment: Int! @deprecated(reason: "this field will be removed in the future")
+}
+
+type DatabaseVersion {
+  id: Int!
+  key: String!
+  name: String!
+  type: String!
+}
+
+"The `DateTime` scalar type represents time data, represented as an ISO-8601 encoded UTC date string."
+scalar DateTime
+
+type EnvironmentVariable {
+  id: ID!
+  name: String!
+  secret: Boolean!
+  value: String
+}
+
+input EnvironmentVariableInput {
+  ""
+  name: String!
+
+  ""
+  value: String!
+
+  ""
+  secret: Boolean! = false
+
+  ""
+  state: State! = PRESENT
+}
+
+input EnvironmentVariableModificationInput {
+  ""
+  remove: [RemoveEnvironmentVariableInput!] = null
+
+  ""
+  update: [UpdateEnvironmentVariableInput!] = null
+
+  ""
+  add: [EnvironmentVariableInput!] = null
+}
+
+type HealthCheck {
+  path: String!
+  port: Int!
+}
+
+input HealthCheckInput {
+  port: Int!
+  path: String!
+}
+
+type Ingress {
+  allowlist: [String!]!
+  domainName: String!
+  enableTLS: Boolean!
+  id: ID!
+  namespace: Namespace!
+  port: Int!
+  state: String!
+  url: String!
+  whitelist: [String!]! @deprecated(reason: "use field `allowlist` instead")
+}
+
+input IngressInput {
+  ""
+  port: Int!
+
+  ""
+  enableTLS: Boolean! = false
+
+  ""
+  whitelist: [String!] = []
+
+  ""
+  domainName: String = null
+}
+
+input IngressModificationInput {
+  ""
+  remove: [Int!] = null
+
+  ""
+  update: [UpdateIngressInput!] = null
+
+  ""
+  add: [IngressInput!] = null
+}
+
+type Location {
+  id: Int!
+  name: String!
+}
+
+input ManualScalingInput {
+  ""
+  replicas: Int!
+}
+
+type Mount {
+  path: String!
+  volume: Volume!
+}
+
+input MountInput {
+  "Path to mount the volume in the container."
+  path: String!
+
+  ""
+  volume: MountVolumeInput!
+
+  """
+  Set the expected state of this mount.
+  When the state is set to `ABSENT`, the mount will be removed, the volume will be kept.
+  """
+  state: State! = PRESENT
+}
+
+input MountVolumeInput {
+  "Create the volume if it does not exist."
+  autoCreate: Boolean! = true
+
+  "Increase the size of the volume if it already exists."
+  increase: Boolean! = false
+
+  "Name of the volume"
+  name: String!
+
+  "Size of the volume in GB"
+  size: Int = null
+}
+
+type Mutation {
+  addPrivateRegistry(namespaceId: Int!, name: String!, source: String!, username: String!, password: String!, verify: Boolean = true): Boolean! @deprecated(reason: "use `registryCreate` mutation")
+  containerJobCreate(scheduledJob: ContainerJobCreateInput!): ContainerJob!
+  containerJobDelete(scheduledJob: ResourceNameInput!): Boolean!
+  containerJobModify(scheduledJob: ContainerJobModifyInput): ContainerJob!
+  createCloudDatabase(customerId: Int!, name: String!, username: String!, version: String!, nodeType: String!, password: String!, location: String!, whitelist: [String!]! = []): Boolean!
+  createContainer(containerInput: CreateContainerInput!): Boolean!
+  createNamespace(name: String!, customerId: Int = null, description: String = null, pricingPlanId: Int = 2, resourceSpecificationId: Int = null): Boolean! @deprecated(reason: "use `namespaceCreate` mutation")
+  createVolume(namespaceId: Int!, name: String!, size: Int!): Volume
+  deleteContainer(containerId: Int!): Boolean!
+  deleteNamespace(id: Int!): Boolean!
+  deletePrivateRegistry(privateRegistryId: Int!): Boolean!
+
+  """
+  Deletes a volume.
+  Volumes can be deleted if they are not mounted to any container.
+  """
+  deleteVolume(namespaceId: NamespaceId!, volumeId: Int = null, volumeName: String = null): Boolean!
+
+  """
+  Increases the size of a volume.
+  Volumes sizes can only be increased. Increase of volume will not be possible if the volume state is locked.
+  We do increase volumes on the fly, so the volume will be increased without any downtime.
+  """
+  increaseVolume(namespaceId: NamespaceId!, name: String!, size: Int!): Volume!
+
+  modifyContainer(containerInput: ConfigureContainerInput!): Boolean!
+  namespaceCreate(namespaceInput: NamespaceCreateInput!): Namespace!
+  registryCreate(registryInput: RegistryCreateInput!): PrivateRegistry!
+}
+
+type Namespace {
+  containerJobs: [ContainerJob!]!
+  containers: [Container!] @deprecated(reason: "use {@see \\ServerlessContainers\\Domain\\Entity\\ClusterNamespace\\self::getReference()} as this will return a more reliable interface")
+  createdAt: DateTime! @deprecated(reason: "use {@see \\ServerlessContainers\\Domain\\Entity\\ClusterNamespace\\self::getReference()} as this will return a more reliable interface")
+  deletedAt: DateTime @deprecated(reason: "use {@see \\ServerlessContainers\\Domain\\Entity\\ClusterNamespace\\self::getReference()} as this will return a more reliable interface")
+  description: String! @deprecated(reason: "use {@see \\ServerlessContainers\\Domain\\Entity\\ClusterNamespace\\self::getReference()} as this will return a more reliable interface")
+  id: ID!
+  internalName: String! @deprecated(reason: "use {@see \\ServerlessContainers\\Domain\\Entity\\ClusterNamespace\\self::getReference()} as this will return a more reliable interface")
+  modifiedAt: DateTime @deprecated(reason: "use {@see \\ServerlessContainers\\Domain\\Entity\\ClusterNamespace\\self::getReference()} as this will return a more reliable interface")
+  name: String!
+  pricingPlan: PricingPlan!
+  privateRegistries: [PrivateRegistry!]!
+  resourceSpecification: ResourceSpecification @deprecated(reason: "use {@see \\ServerlessContainers\\Domain\\Entity\\ClusterNamespace\\self::getReference()} as this will return a more reliable interface")
+  state: String! @deprecated(reason: "use {@see \\ServerlessContainers\\Domain\\Entity\\ClusterNamespace\\self::getReference()} as this will return a more reliable interface")
+  volumes: [Volume!] @deprecated(reason: "use {@see \\ServerlessContainers\\Domain\\Entity\\ClusterNamespace\\self::getReference()} as this will return a more reliable interface")
+}
+
+input NamespaceCreateInput {
+  ""
+  name: String!
+
+  ""
+  description: String
+}
+
+"The unique identifier of a cluster namespace, represented as an integer."
+scalar NamespaceId
+
+type NodeType {
+  description: String
+  id: Int
+  key: String!
+  name: String!
+  numberOfNodes: Int!
+  price: Price!
+  specifications: NodeTypeSpecification!
+}
+
+type NodeTypeSpecification {
+  cpu: Int!
+  ram: Int!
+  storage: Int!
+}
+
+type Price {
+  amount: Int!
+  currency: String!
+}
+
+type PricingPlan {
+  id: ID!
+  name: String!
+}
+
+type PrivateRegistry {
+  createdAt: String!
+  id: ID!
+  locked: Boolean!
+  name: String!
+  namespace: Namespace!
+  source: String!
+  state: String!
+  username: String!
+}
+
+type Query {
+  """
+  Returns the current user account.
+  This query will return the account of the currents api user.
+  """
+  account: Account
+
+  auditLogs(customerId: ID!, filter: AuditLogFilterInput = null): [AuditLog]!
+  cloudDatabase(id: ID!): CloudDatabase
+  cloudDatabases: [CloudDatabase!]!
+  container(id: ID!): Container!
+  containerJob(namespace: String!, name: String!): ContainerJob!
+  databaseVersions: [DatabaseVersion!]!
+  locations: [Location!]!
+  namespace(id: ID = null, name: String = null): Namespace!
+  namespaces: [Namespace!]!
+  nodeType(id: String!): NodeType!
+  nodeTypes(numberOfNodes: Int = null): [NodeType!]!
+  pricingPlans: [PricingPlan!]!
+  privateRegistries(namespaceId: ID!): [PrivateRegistry!]!
+  resourceSpecifications(kind: String!): [ResourceSpecification!]!
+  volume(id: ID!): Volume!
+  volumes(namespaceId: Int!): [Volume!]!
+}
+
+input RegistryCreateInput {
+  ""
+  namespace: String!
+
+  ""
+  name: String!
+
+  ""
+  source: String!
+
+  ""
+  username: String!
+
+  ""
+  password: String!
+
+  ""
+  verify: Boolean! = true
+}
+
+input RemoveEnvironmentVariableInput {
+  ""
+  name: String!
+}
+
+type Replica {
+  name: String!
+  status: String!
+  statusMessage: String
+}
+
+input ReplicasInput {
+  minimum: Int!
+  maximum: Int!
+}
+
+input ResourceNameInput {
+  ""
+  name: String!
+
+  ""
+  namespace: String!
+}
+
+type ResourceSpecification {
+  cpu: Float!
+  id: ID!
+  kind: String!
+  price: Price!
+  ram: Float!
+}
+
+input ScalingInput {
+  auto: AutoScalingInput = null
+  manual: ManualScalingInput = null
+}
+
+enum State {
+  PRESENT
+  ABSENT
+}
+
+type Subscription {
+  "A placeholder query used by thecodingmachine\/graphqlite when there are no declared subscriptions."
+  dummySubscription: String
+}
+
+enum SuspendedReason {
+  MALICIOUS_ACTIVITY
+  PAYMENT_ISSUES
+  ABUSIVE_BEHAVIOUR
+  SUPPORTING_PROHIBITED_CONTENT
+  DEFAULT
+}
+
+enum Unit {
+  MB
+  GB
+  TB
+}
+
+input UnmountInput {
+  "Name of the volume to unmount"
+  volume: String!
+
+  "Path to unmount the volume in the container."
+  path: String!
+}
+
+input UpdateEnvironmentVariableInput {
+  ""
+  name: String!
+
+  ""
+  value: String!
+}
+
+input UpdateIngressInput {
+  ""
+  id: ID!
+
+  ""
+  domainName: String!
+
+  ""
+  port: Int!
+
+  ""
+  enableTLS: Boolean!
+
+  ""
+  whitelist: [String!] = null
+}
+
+type Volume {
+  containerJobs: [ContainerJob!]!
+  containers: [Container!]!
+  id: ID!
+  locked: Boolean!
+  name: String!
+  namespace: Namespace!
+  size(unit: Unit = GB): Float!
+  state: String!
+  usage(unit: Unit = GB): Float!
+}
+

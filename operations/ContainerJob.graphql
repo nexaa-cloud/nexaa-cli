@@ -1,0 +1,26 @@
+fragment ContainerJobResult on ContainerJob {
+    name
+    image
+    enabled
+    state
+}
+
+mutation containerJobCreate($scheduledJob: ContainerJobCreateInput!) {
+    containerJobCreate(scheduledJob: $scheduledJob) {
+      ... ContainerJobResult
+    }
+}
+
+mutation containerJobModify($scheduledJob: ContainerJobModifyInput!) {
+    containerJobModify(scheduledJob: $scheduledJob) {
+        ... ContainerJobResult
+    }
+}
+
+query containerJobList($namespaceName: String!) {
+    namespace (name: $namespaceName){
+        containerJobs {
+             ... ContainerJobResult
+        }
+    }
+}
