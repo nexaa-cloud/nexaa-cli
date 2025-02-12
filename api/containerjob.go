@@ -10,7 +10,7 @@ func (client *Client) ContainerJobCreate(input ContainerJobCreateInput) (Contain
 		return ContainerJobResult{}, err
 	}
 
-	return containerJobCreateResponse.GetContainerJobCreate().ContainerJobResult, nil
+	return containerJobCreateResponse.GetContainerJobCreate(), nil
 }
 
 func (client *Client) ContainerJobModify(input ContainerJobModifyInput) (ContainerJobResult, error) {
@@ -19,7 +19,7 @@ func (client *Client) ContainerJobModify(input ContainerJobModifyInput) (Contain
 		return ContainerJobResult{}, err
 	}
 
-	return containerJobCreateResponse.GetContainerJobModify().ContainerJobResult, nil
+	return containerJobCreateResponse.GetContainerJobModify(), nil
 }
 
 func (client *Client) ContainerJobList(namespace string) ([]ContainerJobResult, error) {

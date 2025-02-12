@@ -525,91 +525,13 @@ type __containerJobModifyInput struct {
 // GetScheduledJob returns __containerJobModifyInput.ScheduledJob, and is useful for accessing the field via an interface.
 func (v *__containerJobModifyInput) GetScheduledJob() ContainerJobModifyInput { return v.ScheduledJob }
 
-// containerJobCreateContainerJobCreateContainerJob includes the requested fields of the GraphQL type ContainerJob.
-type containerJobCreateContainerJobCreateContainerJob struct {
-	ContainerJobResult `json:"-"`
-}
-
-// GetName returns containerJobCreateContainerJobCreateContainerJob.Name, and is useful for accessing the field via an interface.
-func (v *containerJobCreateContainerJobCreateContainerJob) GetName() string {
-	return v.ContainerJobResult.Name
-}
-
-// GetImage returns containerJobCreateContainerJobCreateContainerJob.Image, and is useful for accessing the field via an interface.
-func (v *containerJobCreateContainerJobCreateContainerJob) GetImage() string {
-	return v.ContainerJobResult.Image
-}
-
-// GetEnabled returns containerJobCreateContainerJobCreateContainerJob.Enabled, and is useful for accessing the field via an interface.
-func (v *containerJobCreateContainerJobCreateContainerJob) GetEnabled() bool {
-	return v.ContainerJobResult.Enabled
-}
-
-// GetState returns containerJobCreateContainerJobCreateContainerJob.State, and is useful for accessing the field via an interface.
-func (v *containerJobCreateContainerJobCreateContainerJob) GetState() string {
-	return v.ContainerJobResult.State
-}
-
-func (v *containerJobCreateContainerJobCreateContainerJob) UnmarshalJSON(b []byte) error {
-
-	if string(b) == "null" {
-		return nil
-	}
-
-	var firstPass struct {
-		*containerJobCreateContainerJobCreateContainerJob
-		graphql.NoUnmarshalJSON
-	}
-	firstPass.containerJobCreateContainerJobCreateContainerJob = v
-
-	err := json.Unmarshal(b, &firstPass)
-	if err != nil {
-		return err
-	}
-
-	err = json.Unmarshal(
-		b, &v.ContainerJobResult)
-	if err != nil {
-		return err
-	}
-	return nil
-}
-
-type __premarshalcontainerJobCreateContainerJobCreateContainerJob struct {
-	Name string `json:"name"`
-
-	Image string `json:"image"`
-
-	Enabled bool `json:"enabled"`
-
-	State string `json:"state"`
-}
-
-func (v *containerJobCreateContainerJobCreateContainerJob) MarshalJSON() ([]byte, error) {
-	premarshaled, err := v.__premarshalJSON()
-	if err != nil {
-		return nil, err
-	}
-	return json.Marshal(premarshaled)
-}
-
-func (v *containerJobCreateContainerJobCreateContainerJob) __premarshalJSON() (*__premarshalcontainerJobCreateContainerJobCreateContainerJob, error) {
-	var retval __premarshalcontainerJobCreateContainerJobCreateContainerJob
-
-	retval.Name = v.ContainerJobResult.Name
-	retval.Image = v.ContainerJobResult.Image
-	retval.Enabled = v.ContainerJobResult.Enabled
-	retval.State = v.ContainerJobResult.State
-	return &retval, nil
-}
-
 // containerJobCreateResponse is returned by containerJobCreate on success.
 type containerJobCreateResponse struct {
-	ContainerJobCreate containerJobCreateContainerJobCreateContainerJob `json:"containerJobCreate"`
+	ContainerJobCreate ContainerJobResult `json:"containerJobCreate"`
 }
 
 // GetContainerJobCreate returns containerJobCreateResponse.ContainerJobCreate, and is useful for accessing the field via an interface.
-func (v *containerJobCreateResponse) GetContainerJobCreate() containerJobCreateContainerJobCreateContainerJob {
+func (v *containerJobCreateResponse) GetContainerJobCreate() ContainerJobResult {
 	return v.ContainerJobCreate
 }
 
@@ -709,91 +631,13 @@ type containerJobListResponse struct {
 // GetNamespace returns containerJobListResponse.Namespace, and is useful for accessing the field via an interface.
 func (v *containerJobListResponse) GetNamespace() containerJobListNamespace { return v.Namespace }
 
-// containerJobModifyContainerJobModifyContainerJob includes the requested fields of the GraphQL type ContainerJob.
-type containerJobModifyContainerJobModifyContainerJob struct {
-	ContainerJobResult `json:"-"`
-}
-
-// GetName returns containerJobModifyContainerJobModifyContainerJob.Name, and is useful for accessing the field via an interface.
-func (v *containerJobModifyContainerJobModifyContainerJob) GetName() string {
-	return v.ContainerJobResult.Name
-}
-
-// GetImage returns containerJobModifyContainerJobModifyContainerJob.Image, and is useful for accessing the field via an interface.
-func (v *containerJobModifyContainerJobModifyContainerJob) GetImage() string {
-	return v.ContainerJobResult.Image
-}
-
-// GetEnabled returns containerJobModifyContainerJobModifyContainerJob.Enabled, and is useful for accessing the field via an interface.
-func (v *containerJobModifyContainerJobModifyContainerJob) GetEnabled() bool {
-	return v.ContainerJobResult.Enabled
-}
-
-// GetState returns containerJobModifyContainerJobModifyContainerJob.State, and is useful for accessing the field via an interface.
-func (v *containerJobModifyContainerJobModifyContainerJob) GetState() string {
-	return v.ContainerJobResult.State
-}
-
-func (v *containerJobModifyContainerJobModifyContainerJob) UnmarshalJSON(b []byte) error {
-
-	if string(b) == "null" {
-		return nil
-	}
-
-	var firstPass struct {
-		*containerJobModifyContainerJobModifyContainerJob
-		graphql.NoUnmarshalJSON
-	}
-	firstPass.containerJobModifyContainerJobModifyContainerJob = v
-
-	err := json.Unmarshal(b, &firstPass)
-	if err != nil {
-		return err
-	}
-
-	err = json.Unmarshal(
-		b, &v.ContainerJobResult)
-	if err != nil {
-		return err
-	}
-	return nil
-}
-
-type __premarshalcontainerJobModifyContainerJobModifyContainerJob struct {
-	Name string `json:"name"`
-
-	Image string `json:"image"`
-
-	Enabled bool `json:"enabled"`
-
-	State string `json:"state"`
-}
-
-func (v *containerJobModifyContainerJobModifyContainerJob) MarshalJSON() ([]byte, error) {
-	premarshaled, err := v.__premarshalJSON()
-	if err != nil {
-		return nil, err
-	}
-	return json.Marshal(premarshaled)
-}
-
-func (v *containerJobModifyContainerJobModifyContainerJob) __premarshalJSON() (*__premarshalcontainerJobModifyContainerJobModifyContainerJob, error) {
-	var retval __premarshalcontainerJobModifyContainerJobModifyContainerJob
-
-	retval.Name = v.ContainerJobResult.Name
-	retval.Image = v.ContainerJobResult.Image
-	retval.Enabled = v.ContainerJobResult.Enabled
-	retval.State = v.ContainerJobResult.State
-	return &retval, nil
-}
-
 // containerJobModifyResponse is returned by containerJobModify on success.
 type containerJobModifyResponse struct {
-	ContainerJobModify containerJobModifyContainerJobModifyContainerJob `json:"containerJobModify"`
+	ContainerJobModify ContainerJobResult `json:"containerJobModify"`
 }
 
 // GetContainerJobModify returns containerJobModifyResponse.ContainerJobModify, and is useful for accessing the field via an interface.
-func (v *containerJobModifyResponse) GetContainerJobModify() containerJobModifyContainerJobModifyContainerJob {
+func (v *containerJobModifyResponse) GetContainerJobModify() ContainerJobResult {
 	return v.ContainerJobModify
 }
 

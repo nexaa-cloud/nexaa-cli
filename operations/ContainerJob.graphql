@@ -6,12 +6,14 @@ fragment ContainerJobResult on ContainerJob {
 }
 
 mutation containerJobCreate($scheduledJob: ContainerJobCreateInput!) {
+    # @genqlient(flatten: true)
     containerJobCreate(scheduledJob: $scheduledJob) {
       ... ContainerJobResult
     }
 }
 
 mutation containerJobModify($scheduledJob: ContainerJobModifyInput!) {
+    # @genqlient(flatten: true)
     containerJobModify(scheduledJob: $scheduledJob) {
         ... ContainerJobResult
     }

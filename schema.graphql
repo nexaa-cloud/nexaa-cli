@@ -625,6 +625,7 @@ type Mutation {
   addPrivateRegistry(namespaceId: Int!, name: String!, source: String!, username: String!, password: String!, verify: Boolean = true): Boolean! @deprecated(reason: "use `registryCreate` mutation")
   containerJobCreate(scheduledJob: ContainerJobCreateInput!): ContainerJob!
   containerJobDelete(scheduledJob: ResourceNameInput!): Boolean!
+  # @genqlient(for: "ContainerJobModifyInput.resources", omitempty: true)
   containerJobModify(scheduledJob: ContainerJobModifyInput): ContainerJob!
   createCloudDatabase(customerId: Int!, name: String!, username: String!, version: String!, nodeType: String!, password: String!, location: String!, whitelist: [String!]! = []): Boolean!
   createContainer(containerInput: CreateContainerInput!): Boolean!
