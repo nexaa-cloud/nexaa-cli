@@ -3,14 +3,16 @@ package api
 import (
 	// "github.com/shurcooL/graphql"
 
-	"gitlab.com/Tilaa/tilaa-cli/config"
-	"gitlab.com/Tilaa/tilaa-cli/graphql"
+	"gitlab.com/tilaa/tilaa-cli/config"
+	"gitlab.com/tilaa/tilaa-cli/graphql"
 )
 
 type Registry struct {
-	Id     string
-	Name   string
-	Source string
+	Id     		string
+	Namespace 	string
+	Name   		string
+	Source 		string
+	Username	string
 }
 
 type RegistryInput struct {
@@ -58,6 +60,42 @@ func ListRegistries(namespace string) ([]Registry, error) {
 	}
 
 	return registries, nil
+}
+
+func ListRegistryByName(namespace string, registryname string) (*Registry, error) {
+	client := graphql.NewClient(config.GRAPHQL_URL, config.AccessToken)
+
+	var registryQuery struct {
+		PrivateRegistry []struct {
+			Id			string
+			Name 		string
+			Source 		string
+			Username 	string
+		} `graphql:"namespace(name: $name)"`
+	}
+
+	params := map[string]graphql.Parameter{
+		"namespace": graphql.NewString(namespace),
+	}
+
+	query := client.BuildQuery(&registryQuery, params)
+	err := client.Query(query)
+	if err != nil {
+		return nil, err
+	}
+
+	var registry Registry
+
+	for _, item := range registryQuery.PrivateRegistry {
+		if item.Name == registryname {
+			registry.Id = item.Id
+			registry.Name = item.Name
+			registry.Source = item.Source
+			registry.Username = item.Username
+		}
+	}
+
+	return &registry, err
 }
 
 func CreateRegistry(input RegistryInput) (Registry, error) {

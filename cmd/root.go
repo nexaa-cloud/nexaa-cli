@@ -6,7 +6,7 @@ import (
 	"os"
 
 	"github.com/spf13/cobra"
-	"gitlab.com/Tilaa/tilaa-cli/config"
+	"gitlab.com/tilaa/tilaa-cli/config"
 )
 
 var rootCmd = &cobra.Command{

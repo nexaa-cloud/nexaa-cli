@@ -6,8 +6,8 @@ import (
 	"os"
 	"syscall"
 
-	"gitlab.com/Tilaa/tilaa-cli/api"
-	"gitlab.com/Tilaa/tilaa-cli/config"
+	"gitlab.com/tilaa/tilaa-cli/api"
+	"gitlab.com/tilaa/tilaa-cli/config"
 
 	"github.com/spf13/cobra"
 	"golang.org/x/term"

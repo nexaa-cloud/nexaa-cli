@@ -3,7 +3,7 @@ package main
 import (
 	"log"
 
-	"gitlab.com/Tilaa/tilaa-cli/cmd"
+	"gitlab.com/tilaa/tilaa-cli/cmd"
 )
 
 func main() {

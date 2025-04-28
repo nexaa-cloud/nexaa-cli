@@ -3,8 +3,8 @@ package api
 import (
 	"strconv"
 
-	"gitlab.com/Tilaa/tilaa-cli/config"
-	"gitlab.com/Tilaa/tilaa-cli/graphql"
+	"gitlab.com/tilaa/tilaa-cli/config"
+	"gitlab.com/tilaa/tilaa-cli/graphql"
 )
 
 func GetAccountId() (int, error) {
