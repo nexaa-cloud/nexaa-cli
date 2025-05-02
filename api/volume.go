@@ -106,8 +106,8 @@ func CreateVolume(input VolumeInput) (Volume, error) {
 	client := graphql.NewClient(config.GRAPHQL_URL, config.AccessToken)
 
 	createVolumeInput := map[string]any{
-		"namespace": input.Namespace,
 		"name": input.Name,
+		"namespace": input.Namespace,
 		"size": input.Size,
 	}
 		
@@ -125,11 +125,17 @@ func CreateVolume(input VolumeInput) (Volume, error) {
 func IncreaseVolume(input VolumeInput) (Volume, error) {
 	client := graphql.NewClient(config.GRAPHQL_URL, config.AccessToken)
 
-	params := map[string]graphql.Parameter{
-		"namespace": graphql.NewInt(input.Namespace),
+	volumeInput := map[string]any{
+		"name": input.Name,
+		"namespace": input.Namespace,
+		"size": input.Size,
 	}
 
-	mutation := client.BuildMutation("increaseVolume", params)
+	params := map[string]graphql.Parameter{
+		"volumeInput": graphql.NewComplexParameter("VolumeModifyInput", volumeInput),
+	}
+
+	mutation := client.BuildMutation("volumeIncrease", params)
 
 	err := client.Mutate(mutation)
 
@@ -140,9 +146,13 @@ func IncreaseVolume(input VolumeInput) (Volume, error) {
 func DeleteVolume(name string, namespace string) error {
 	client := graphql.NewClient(config.GRAPHQL_URL, config.AccessToken)
 
+	volumeInput := map[string]any{
+		"namespace": namespace,
+		"name": name,
+	}
+
 	params := map[string]graphql.Parameter{
-		"name": graphql.NewString(name),
-		"namespace": graphql.NewString(namespace),		
+		"volumeDelete": graphql.NewComplexParameter("VolumeResourceinput", volumeInput),
 	}
 
 	mutation := client.BuildMutation("volumeDelete", params)
