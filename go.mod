@@ -1,4 +1,4 @@
-module gitlab.com/Tilaa/tilaa-cli
+module gitlab.com/tilaa/tilaa-cli
 
 go 1.23.0
 

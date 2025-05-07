@@ -3,13 +3,14 @@ package api
 import (
 	// "github.com/shurcooL/graphql"
 
-	"gitlab.com/Tilaa/tilaa-cli/config"
-	"gitlab.com/Tilaa/tilaa-cli/graphql"
+	"gitlab.com/tilaa/tilaa-cli/config"
+	"gitlab.com/tilaa/tilaa-cli/graphql"
 )
 
 type Namespace struct {
-	Name string
-	Id   string
+	Name 		string
+	Id   		string
+	Description string
 }
 
 func ListNamespaces() ([]Namespace, error) {
@@ -17,8 +18,9 @@ func ListNamespaces() ([]Namespace, error) {
 
 	var namespaceQuery struct {
 		Namespaces []struct {
-			Id   string
-			Name string
+			Id   		string
+			Name 		string
+			Description string
 		}
 	}
 
@@ -41,6 +43,37 @@ func ListNamespaces() ([]Namespace, error) {
 	}
 
 	return namespaces, nil
+}
+
+func ListNamespaceByName(name string) (*Namespace, error) {
+	client := graphql.NewClient(config.GRAPHQL_URL, config.AccessToken)
+
+	var namespaceQuery struct {
+		Namespace struct {
+			Id			string
+			Name 		string
+			Description	string
+		} `graphql:"namespace(name: $name)"`
+	}
+
+	params := map[string]graphql.Parameter{
+		"name": graphql.NewString(name),
+	}
+
+	query := client.BuildQuery(&namespaceQuery, params)
+	err := client.Query(query)
+
+	if err != nil {
+		return nil, err
+	}
+
+	var namespace Namespace
+
+	namespace.Id = namespaceQuery.Namespace.Id
+	namespace.Name = namespaceQuery.Namespace.Name
+	namespace.Description = namespaceQuery.Namespace.Description
+
+	return &namespace, nil
 }
 
 func CreateNamespace(name string, description string) error {
@@ -67,6 +100,7 @@ func CreateNamespace(name string, description string) error {
 
 	return nil
 }
+
 
 func DeleteNamespace(id int) error {
 	client := graphql.NewClient(config.GRAPHQL_URL, config.AccessToken)

@@ -3,8 +3,8 @@ package api
 import (
 	"regexp"
 
-	"gitlab.com/Tilaa/tilaa-cli/config"
-	"gitlab.com/Tilaa/tilaa-cli/graphql"
+	"gitlab.com/tilaa/tilaa-cli/config"
+	"gitlab.com/tilaa/tilaa-cli/graphql"
 )
 
 type Container struct {

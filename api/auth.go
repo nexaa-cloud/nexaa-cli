@@ -10,7 +10,7 @@ import (
 	"strings"
 	"time"
 
-	"gitlab.com/Tilaa/tilaa-cli/config"
+	"gitlab.com/tilaa/tilaa-cli/config"
 )
 
 type OAuthResponse struct {
