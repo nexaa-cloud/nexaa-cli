@@ -13,6 +13,7 @@ type Volume struct {
 	Name string
 	Size int
 	Usage int
+	Locked bool
 }
 
 type VolumeInput struct {
@@ -22,7 +23,22 @@ type VolumeInput struct {
 	Size int
 }
 
-func ListVolume(namespace string) ([]Volume, error) {
+
+type VolumeResponse struct {
+    Id        string        `json:"id"`
+    Name      string        `json:"name"`
+    Namespace respNamespace `json:"namespace"`
+    Size      int           `json:"size"`
+    Usage     int           `json:"usage"`
+	Locked	  bool			`json:"locked"`
+}
+
+type respNamespace struct {
+    Name string `json:"name"`
+}
+
+
+func ListVolumes(namespace string) ([]Volume, error) {
 	client := graphql.NewClient(config.GRAPHQL_URL, config.AccessToken)
 
 	var volumeQuery struct {
@@ -33,6 +49,8 @@ func ListVolume(namespace string) ([]Volume, error) {
 				Id 		string
 				Name 	string
 				Size 	int
+				Usage 	int
+				Locked	bool
 			}
 		} `graphql:"namespace(name: $name)"`
 	}
@@ -54,13 +72,16 @@ func ListVolume(namespace string) ([]Volume, error) {
 		volumes = append(volumes, Volume{
 			Id: string(volume.Id),
 			Name: string(volume.Name),
+			Size: int(volume.Size),
+			Usage: int(volume.Usage),
+			Locked: bool(volume.Locked),
 		})
 	}
 
 	return volumes, nil
 }
 
-func ListVolumeById(namespace string, id string) (*Volume, error) {
+func ListVolumeByName(namespaceName string, volumeName string) (*Volume, error) {
 	client := graphql.NewClient(config.GRAPHQL_URL, config.AccessToken)
 
 	var volumeQuery struct {
@@ -71,12 +92,13 @@ func ListVolumeById(namespace string, id string) (*Volume, error) {
 				Name 	string
 				Size 	int
 				Usage 	int
+				Locked 	bool
 			}
-		} `graphql:"namespace(id: $id)"`
+		} `graphql:"namespace(name: $name)"`
 	}
 
 	params := map[string]graphql.Parameter{
-		"id": graphql.NewId(namespace),
+		"name": graphql.NewString(namespaceName),
 	}
 
 	query := client.BuildQuery(&volumeQuery, params)
@@ -89,11 +111,12 @@ func ListVolumeById(namespace string, id string) (*Volume, error) {
 	var volume Volume
 	
 	for _, vol := range volumeQuery.Namespace.Volumes {
-		if vol.Id == id {
+		if vol.Name == volumeName {
 			volume.Id = vol.Id
 			volume.Name = vol.Name
 			volume.Size = vol.Size
 			volume.Usage = vol.Usage
+			volume.Locked = vol.Locked
 		}
 	}
 
@@ -115,11 +138,21 @@ func CreateVolume(input VolumeInput) (Volume, error) {
 		"volumeInput": graphql.NewComplexParameter("VolumeCreateInput", createVolumeInput),
 	}
 
-	mutation := client.BuildMutation("volumeCreate", params)
+	var resp VolumeResponse
+
+	mutation := client.BuildMutationWithQuery("volumeCreate", params, &resp)
 
 	err := client.Mutate(mutation)
 
-	return Volume{}, err
+	var vol Volume
+	vol.Id = resp.Id
+	vol.Name = resp.Name
+	vol.Namespace = resp.Namespace.Name
+	vol.Size = resp.Size
+	vol.Usage = resp.Usage
+	vol.Locked = resp.Locked
+
+	return vol, err
 }
 
 func IncreaseVolume(input VolumeInput) (Volume, error) {
@@ -135,11 +168,21 @@ func IncreaseVolume(input VolumeInput) (Volume, error) {
 		"volumeInput": graphql.NewComplexParameter("VolumeModifyInput", volumeInput),
 	}
 
-	mutation := client.BuildMutation("volumeIncrease", params)
+	var resp VolumeResponse
+
+	mutation := client.BuildMutationWithQuery("volumeIncrease", params, &resp)
 
 	err := client.Mutate(mutation)
 
-	return Volume{}, err
+	var vol Volume
+	vol.Id = resp.Id
+	vol.Name = resp.Name
+	vol.Namespace = resp.Namespace.Name
+	vol.Size = resp.Size
+	vol.Usage = resp.Usage
+	vol.Locked = resp.Locked
+
+	return vol, err
 }
 
 
@@ -152,7 +195,7 @@ func DeleteVolume(name string, namespace string) error {
 	}
 
 	params := map[string]graphql.Parameter{
-		"volumeDelete": graphql.NewComplexParameter("VolumeResourceinput", volumeInput),
+		"volume": graphql.NewComplexParameter("VolumeResourceInput", volumeInput),
 	}
 
 	mutation := client.BuildMutation("volumeDelete", params)
