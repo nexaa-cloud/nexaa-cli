@@ -1,14 +1,11 @@
 package api
 
 import (
-	// "github.com/shurcooL/graphql"
-
 	"gitlab.com/tilaa/tilaa-cli/config"
 	"gitlab.com/tilaa/tilaa-cli/graphql"
 )
 
 type Volume struct {
-	Id string
 	Namespace string
 	Name string
 	Size int
@@ -17,24 +14,17 @@ type Volume struct {
 }
 
 type VolumeInput struct {
-	Id int
 	Namespace string
 	Name string
 	Size int
 }
 
-
 type VolumeResponse struct {
-    Id        string        `json:"id"`
-    Name      string        `json:"name"`
-    Namespace respNamespace `json:"namespace"`
-    Size      int           `json:"size"`
-    Usage     int           `json:"usage"`
-	Locked	  bool			`json:"locked"`
-}
-
-type respNamespace struct {
-    Name string `json:"name"`
+    Name      string        	 `json:"name"`
+    Namespace NamespaceResponse	 `json:"namespace"`
+    Size      int           	 `json:"size"`
+    Usage     int           	 `json:"usage"`
+	Locked	  bool			 	 `json:"locked"`
 }
 
 
@@ -43,10 +33,8 @@ func ListVolumes(namespace string) ([]Volume, error) {
 
 	var volumeQuery struct {
 		Namespace struct {
-			Id			string
 			Name 		string
 			Volumes []struct {
-				Id 		string
 				Name 	string
 				Size 	int
 				Usage 	int
@@ -70,7 +58,6 @@ func ListVolumes(namespace string) ([]Volume, error) {
 
 	for _, volume := range volumeQuery.Namespace.Volumes {
 		volumes = append(volumes, Volume{
-			Id: string(volume.Id),
 			Name: string(volume.Name),
 			Size: int(volume.Size),
 			Usage: int(volume.Usage),
@@ -81,14 +68,13 @@ func ListVolumes(namespace string) ([]Volume, error) {
 	return volumes, nil
 }
 
-func ListVolumeByName(namespaceName string, volumeName string) (*Volume, error) {
+func ListVolumeByName(namespace string, volume string) (*Volume, error) {
 	client := graphql.NewClient(config.GRAPHQL_URL, config.AccessToken)
 
 	var volumeQuery struct {
 		Namespace struct {
 			Name 	string
 			Volumes []struct {
-				Id		string
 				Name 	string
 				Size 	int
 				Usage 	int
@@ -98,7 +84,7 @@ func ListVolumeByName(namespaceName string, volumeName string) (*Volume, error) 
 	}
 
 	params := map[string]graphql.Parameter{
-		"name": graphql.NewString(namespaceName),
+		"name": graphql.NewString(namespace),
 	}
 
 	query := client.BuildQuery(&volumeQuery, params)
@@ -108,21 +94,20 @@ func ListVolumeByName(namespaceName string, volumeName string) (*Volume, error) 
 		return nil, err
 	}
 
-	var volume Volume
+	var vol Volume
 	
-	for _, vol := range volumeQuery.Namespace.Volumes {
-		if vol.Name == volumeName {
-			volume.Id = vol.Id
-			volume.Name = vol.Name
-			volume.Size = vol.Size
-			volume.Usage = vol.Usage
-			volume.Locked = vol.Locked
+	for _, item := range volumeQuery.Namespace.Volumes {
+		if item.Name == volume {
+			vol.Name = item.Name
+			vol.Size = item.Size
+			vol.Usage = item.Usage
+			vol.Locked = item.Locked
 		}
 	}
 
-	volume.Namespace = volumeQuery.Namespace.Name
+	vol.Namespace = volumeQuery.Namespace.Name
 
-	return &volume, nil
+	return &vol, nil
 }
 
 func CreateVolume(input VolumeInput) (Volume, error) {
@@ -145,7 +130,6 @@ func CreateVolume(input VolumeInput) (Volume, error) {
 	err := client.Mutate(mutation)
 
 	var vol Volume
-	vol.Id = resp.Id
 	vol.Name = resp.Name
 	vol.Namespace = resp.Namespace.Name
 	vol.Size = resp.Size
@@ -175,7 +159,6 @@ func IncreaseVolume(input VolumeInput) (Volume, error) {
 	err := client.Mutate(mutation)
 
 	var vol Volume
-	vol.Id = resp.Id
 	vol.Name = resp.Name
 	vol.Namespace = resp.Namespace.Name
 	vol.Size = resp.Size

@@ -9,8 +9,17 @@ import (
 
 type Namespace struct {
 	Name 		string
-	Id   		string
 	Description string
+}
+
+type NamespaceInput struct {
+	Name 		string
+	Description string
+}
+
+type NamespaceResponse struct {
+	Name 			string		`json:"name"`
+	Description		string		`json:"description"`
 }
 
 func ListNamespaces() ([]Namespace, error) {
@@ -18,7 +27,6 @@ func ListNamespaces() ([]Namespace, error) {
 
 	var namespaceQuery struct {
 		Namespaces []struct {
-			Id   		string
 			Name 		string
 			Description string
 		}
@@ -37,8 +45,8 @@ func ListNamespaces() ([]Namespace, error) {
 
 	for _, namespace := range namespaceQuery.Namespaces {
 		namespaces = append(namespaces, Namespace{
-			Id:   string(namespace.Id),
 			Name: string(namespace.Name),
+			Description: string(namespace.Description),
 		})
 	}
 
@@ -50,7 +58,6 @@ func ListNamespaceByName(name string) (*Namespace, error) {
 
 	var namespaceQuery struct {
 		Namespace struct {
-			Id			string
 			Name 		string
 			Description	string
 		} `graphql:"namespace(name: $name)"`
@@ -69,47 +76,52 @@ func ListNamespaceByName(name string) (*Namespace, error) {
 
 	var namespace Namespace
 
-	namespace.Id = namespaceQuery.Namespace.Id
 	namespace.Name = namespaceQuery.Namespace.Name
 	namespace.Description = namespaceQuery.Namespace.Description
 
 	return &namespace, nil
 }
 
-func CreateNamespace(name string, description string) error {
+func CreateNamespace(input NamespaceInput) (Namespace, error) {
 	client := graphql.NewClient(config.GRAPHQL_URL, config.AccessToken)
 
-	customerId, err := GetAccountId()
-	if err != nil {
-		return err
+	//customerId, err := GetAccountId()
+
+	createNamespaceInput := map[string]any{
+		"name":				input.Name,
+		"description":		input.Description,
 	}
 
 	params := map[string]graphql.Parameter{
-		"customerId":    graphql.NewInt(customerId),
-		"pricingPlanId": graphql.NewInt(2),
-		"name":          graphql.NewString(name),
-		"description":   graphql.NewString(description),
+		"namespaceInput": graphql.NewComplexParameter("NamespaceCreateInput", createNamespaceInput),
 	}
 
-	mutation := client.BuildMutation("createNamespace", params)
+	var resp NamespaceResponse
 
-	err = client.Mutate(mutation)
-	if err != nil {
-		return err
-	}
+	mutation := client.BuildMutationWithQuery("namespaceCreate", params, &resp)
 
-	return nil
+	err := client.Mutate(mutation)
+
+	var namespace Namespace
+	namespace.Name = resp.Name
+	namespace.Description = resp.Description
+
+	return namespace, err
 }
 
 
-func DeleteNamespace(id int) error {
+func DeleteNamespace(name string) error {
 	client := graphql.NewClient(config.GRAPHQL_URL, config.AccessToken)
 
-	params := map[string]graphql.Parameter{
-		"id": graphql.NewInt(id),
+	deleteNamespaceInput := map[string]any{
+		"name" : name,
 	}
 
-	mutation := client.BuildMutation("deleteNamespace", params)
+	params := map[string]graphql.Parameter{
+		"namespace": graphql.NewComplexParameter("DeleteNamespaceInput", deleteNamespaceInput),
+	}
+
+	mutation := client.BuildMutation("namespaceDelete", params)
 
 	err := client.Mutate(mutation)
 	if err != nil {
