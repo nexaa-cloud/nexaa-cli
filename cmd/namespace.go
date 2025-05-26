@@ -88,7 +88,7 @@ func init() {
 	createNamespaceCmd.MarkFlagRequired("name")
 	namespaceCmd.AddCommand(createNamespaceCmd)
 
-	deleteNamespaceCmd.Flags().IntP("id", "i", 0, "Namespace id")
-	deleteNamespaceCmd.MarkFlagRequired("id")
+	deleteNamespaceCmd.Flags().StringP("name", "n", "", "Name")
+	deleteNamespaceCmd.MarkFlagRequired("name")
 	namespaceCmd.AddCommand(deleteNamespaceCmd)
 }
