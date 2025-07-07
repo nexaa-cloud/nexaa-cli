@@ -1,0 +1,70 @@
+fragment ContainerResult on Container {
+  name
+  image
+  privateRegistry {
+    name
+  }
+  resources
+  environmentVariables {
+    name
+    value
+    secret
+  }
+  ports
+  ingresses {
+    domainName
+    port
+    enableTLS
+    allowlist
+  }
+  mounts {
+    path
+    volume {
+      name
+    }
+  }
+  healthCheck {
+    port
+    path
+  }
+  availableReplicas
+  numberOfReplicas
+  autoScaling {
+    replicas {
+      minimum
+      maximum
+      }
+    triggers {
+      type
+      threshold
+    }
+  }
+  locked
+}
+
+query containerList($namespaceName: String!) {
+  namespace(name: $namespaceName) {
+    containers {
+      ...ContainerResult
+    }
+  }
+}
+
+mutation containerCreate($input: ContainerCreateInput!) {
+  # @genqlient(flatten: true)
+  containerCreate(containerInput: $input) {
+    ...ContainerResult
+  }
+}
+
+mutation containerModify($input: ContainerModifyInput!) {
+  # @genqlient(flatten: true)
+  containerModify(containerInput: $input) {
+    ...ContainerResult
+  }
+}
+
+mutation containerDelete($namespace: String!, $container: String!) {
+  containerDelete(container: {name: $container, namespace: $namespace})
+}
+

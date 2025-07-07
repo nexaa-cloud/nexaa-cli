@@ -77,7 +77,6 @@ func ListRegistryByName(namespace string, registry string) (*Registry, error) {
 		Namespace struct {
 			Name 	string
 			PrivateRegistries []struct {
-				Id			string
 				Name 		string
 				Source 		string
 				Username 	string
