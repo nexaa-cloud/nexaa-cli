@@ -1,38 +1,44 @@
 package api
 
 import (
-	// "github.com/shurcooL/graphql"
-
 	"gitlab.com/tilaa/tilaa-cli/config"
 	"gitlab.com/tilaa/tilaa-cli/graphql"
 )
 
 type Volume struct {
-	Id string
 	Namespace string
 	Name string
 	Size int
 	Usage int
+	Locked bool
 }
 
 type VolumeInput struct {
-	Id int
 	Namespace string
 	Name string
 	Size int
 }
 
-func ListVolume(namespace string) ([]Volume, error) {
+type VolumeResponse struct {
+    Name      string        	 `json:"name"`
+    Namespace NamespaceResponse	 `json:"namespace"`
+    Size      int           	 `json:"size"`
+    Usage     int           	 `json:"usage"`
+	Locked	  bool			 	 `json:"locked"`
+}
+
+
+func ListVolumes(namespace string) ([]Volume, error) {
 	client := graphql.NewClient(config.GRAPHQL_URL, config.AccessToken)
 
 	var volumeQuery struct {
 		Namespace struct {
-			Id			string
 			Name 		string
 			Volumes []struct {
-				Id 		string
 				Name 	string
 				Size 	int
+				Usage 	int
+				Locked	bool
 			}
 		} `graphql:"namespace(name: $name)"`
 	}
@@ -52,31 +58,33 @@ func ListVolume(namespace string) ([]Volume, error) {
 
 	for _, volume := range volumeQuery.Namespace.Volumes {
 		volumes = append(volumes, Volume{
-			Id: string(volume.Id),
 			Name: string(volume.Name),
+			Size: int(volume.Size),
+			Usage: int(volume.Usage),
+			Locked: bool(volume.Locked),
 		})
 	}
 
 	return volumes, nil
 }
 
-func ListVolumeById(namespace string, id string) (*Volume, error) {
+func ListVolumeByName(namespace string, volume string) (*Volume, error) {
 	client := graphql.NewClient(config.GRAPHQL_URL, config.AccessToken)
 
 	var volumeQuery struct {
 		Namespace struct {
 			Name 	string
 			Volumes []struct {
-				Id		string
 				Name 	string
 				Size 	int
 				Usage 	int
+				Locked 	bool
 			}
-		} `graphql:"namespace(id: $id)"`
+		} `graphql:"namespace(name: $name)"`
 	}
 
 	params := map[string]graphql.Parameter{
-		"id": graphql.NewId(namespace),
+		"name": graphql.NewString(namespace),
 	}
 
 	query := client.BuildQuery(&volumeQuery, params)
@@ -86,20 +94,20 @@ func ListVolumeById(namespace string, id string) (*Volume, error) {
 		return nil, err
 	}
 
-	var volume Volume
+	var vol Volume
 	
-	for _, vol := range volumeQuery.Namespace.Volumes {
-		if vol.Id == id {
-			volume.Id = vol.Id
-			volume.Name = vol.Name
-			volume.Size = vol.Size
-			volume.Usage = vol.Usage
+	for _, item := range volumeQuery.Namespace.Volumes {
+		if item.Name == volume {
+			vol.Name = item.Name
+			vol.Size = item.Size
+			vol.Usage = item.Usage
+			vol.Locked = item.Locked
 		}
 	}
 
-	volume.Namespace = volumeQuery.Namespace.Name
+	vol.Namespace = volumeQuery.Namespace.Name
 
-	return &volume, nil
+	return &vol, nil
 }
 
 func CreateVolume(input VolumeInput) (Volume, error) {
@@ -115,11 +123,20 @@ func CreateVolume(input VolumeInput) (Volume, error) {
 		"volumeInput": graphql.NewComplexParameter("VolumeCreateInput", createVolumeInput),
 	}
 
-	mutation := client.BuildMutation("volumeCreate", params)
+	var resp VolumeResponse
+
+	mutation := client.BuildMutationWithQuery("volumeCreate", params, &resp)
 
 	err := client.Mutate(mutation)
 
-	return Volume{}, err
+	var vol Volume
+	vol.Name = resp.Name
+	vol.Namespace = resp.Namespace.Name
+	vol.Size = resp.Size
+	vol.Usage = resp.Usage
+	vol.Locked = resp.Locked
+
+	return vol, err
 }
 
 func IncreaseVolume(input VolumeInput) (Volume, error) {
@@ -135,11 +152,20 @@ func IncreaseVolume(input VolumeInput) (Volume, error) {
 		"volumeInput": graphql.NewComplexParameter("VolumeModifyInput", volumeInput),
 	}
 
-	mutation := client.BuildMutation("volumeIncrease", params)
+	var resp VolumeResponse
+
+	mutation := client.BuildMutationWithQuery("volumeIncrease", params, &resp)
 
 	err := client.Mutate(mutation)
 
-	return Volume{}, err
+	var vol Volume
+	vol.Name = resp.Name
+	vol.Namespace = resp.Namespace.Name
+	vol.Size = resp.Size
+	vol.Usage = resp.Usage
+	vol.Locked = resp.Locked
+
+	return vol, err
 }
 
 
@@ -152,7 +178,7 @@ func DeleteVolume(name string, namespace string) error {
 	}
 
 	params := map[string]graphql.Parameter{
-		"volumeDelete": graphql.NewComplexParameter("VolumeResourceinput", volumeInput),
+		"volume": graphql.NewComplexParameter("VolumeResourceInput", volumeInput),
 	}
 
 	mutation := client.BuildMutation("volumeDelete", params)

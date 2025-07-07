@@ -1,205 +1,166 @@
 package api
 
 import (
-	"regexp"
-
-	"gitlab.com/tilaa/tilaa-cli/config"
-	"gitlab.com/tilaa/tilaa-cli/graphql"
+	"context"
+	"fmt"
 )
 
-type Container struct {
-	Id        string
-	Name      string
-	Image     string
-	Namespace string
-	State     string
-}
-
-type ContainerInput struct {
-	Id        int
-	Name      string
-	Image     string
-	Namespace int
-	Http      string
-	HttpPort  int
-	Https     string
-	HttpsPort int
-	Registry  int
-	Ports     []string
-	Env       []string
-	Secret    []string
-}
-
-type Ingress struct {
-	DomainName string `json:"domainName"`
-	Port       int    `json:"port"`
-	EnableTLS  bool   `json:"enableTLS"`
-}
-
-type EnvVariable struct {
-	Name   string `json:"name"`
-	Value  string `json:"value"`
-	Secret bool   `json:"secret"`
-}
-
-var containerQuery struct {
-	Namespace struct {
-		Id         string
-		Name       string
-		Containers []struct {
-			Id    string
-			Name  string
-			Image string
-			State string
-		}
-	} `graphql:"namespace(id: $id)"`
-}
-
-func ListContainers(namespace string) ([]Container, error) {
-	client := graphql.NewClient(config.GRAPHQL_URL, config.AccessToken)
-
-	params := map[string]graphql.Parameter{
-		"id": graphql.NewId(namespace),
+func (client *Client) ListContainers(namespace string) ([]ContainerResult, error) {
+	containerResponse, err := containerList(context.Background(), *client.client, namespace)
+	if err != nil {
+		return []ContainerResult{}, err
 	}
 
-	query := client.BuildQuery(&containerQuery, params)
+	namespaceResult := containerResponse.GetNamespace()
+	result := make([]ContainerResult, len(namespaceResult.Containers))
 
-	err := client.Query(query)
+	for i, container := range namespaceResult.Containers {
+		var registryName string
+		if container.PrivateRegistry == nil {
+			registryName = "public"
+		} else {
+			registryName = container.PrivateRegistry.Name
+		}
+
+		// Environment Variables
+		var envVars []ContainerResultEnvironmentVariablesEnvironmentVariable
+		if container.EnvironmentVariables != nil {
+			envVars = make([]ContainerResultEnvironmentVariablesEnvironmentVariable, len(container.EnvironmentVariables))
+			for j, ev := range container.EnvironmentVariables {
+				envVars[j] = ContainerResultEnvironmentVariablesEnvironmentVariable{
+					Name:   ev.Name,
+					Value:  ev.Value,
+					Secret: ev.Secret,
+				}
+			}
+		}
+
+		// Ingresses
+		var ingresses []ContainerResultIngressesIngress
+		if container.Ingresses != nil {
+			ingresses = make([]ContainerResultIngressesIngress, len(container.Ingresses))
+			for j, v := range container.Ingresses {
+				ingresses[j] = ContainerResultIngressesIngress{
+					DomainName: v.DomainName,
+					Port:       v.Port,
+					EnableTLS:  v.EnableTLS,
+					Allowlist:  v.Allowlist,
+				}
+			}
+		}
+
+		// Mounts
+		var mounts []ContainerResultMountsMount
+		if container.Mounts != nil {
+			mounts = make([]ContainerResultMountsMount, len(container.Mounts))
+			for j, m := range container.Mounts {
+				var volumeName string
+				if m.Volume.Name != "" {
+					volumeName = m.Volume.Name
+				}
+				mounts[j] = ContainerResultMountsMount{
+					Path: m.Path,
+					Volume: ContainerResultMountsMountVolume{
+						Name: volumeName,
+					},
+				}
+			}
+		}
+
+		// Health Check
+		var healthCheck *ContainerResultHealthCheck
+		if container.HealthCheck != nil {
+			healthCheck = &ContainerResultHealthCheck{
+				Port: container.HealthCheck.Port,
+				Path: container.HealthCheck.Path,
+			}
+		}
+
+		// Auto Scaling
+		var autoScaling *ContainerResultAutoScaling
+		if container.AutoScaling != nil {
+			var triggers []ContainerResultAutoScalingTriggersAutoScalingTrigger
+			if container.AutoScaling.Triggers != nil {
+				triggers = make([]ContainerResultAutoScalingTriggersAutoScalingTrigger, len(container.AutoScaling.Triggers))
+				for j, t := range container.AutoScaling.Triggers {
+					triggers[j] = ContainerResultAutoScalingTriggersAutoScalingTrigger{
+						Type:      t.Type,
+						Threshold: t.Threshold,
+					}
+				}
+			}
+			autoScaling = &ContainerResultAutoScaling{
+				Replicas: ContainerResultAutoScalingReplicas{
+					Minimum: container.AutoScaling.Replicas.Minimum,
+					Maximum: container.AutoScaling.Replicas.Maximum,
+				},
+				Triggers: triggers,
+			}
+		}
+
+		result[i] = ContainerResult{
+			Name:            		container.Name,
+			Image:           		container.Image,
+			PrivateRegistry: 		&ContainerResultPrivateRegistry{Name: registryName},
+			Resources:       	  	container.Resources,
+			EnvironmentVariables: 	envVars,
+			Ports:                	container.Ports,
+			Ingresses:            	ingresses,
+			Mounts:               	mounts,
+			HealthCheck:          	healthCheck,
+			NumberOfReplicas:     	container.NumberOfReplicas,
+			AutoScaling:          	autoScaling,
+			Locked:               	container.Locked,
+		}
+	}
+
+	return result, nil
+}
+
+
+
+func (client *Client) ListContainerByName(namespace string, containerName string) (*ContainerResult, error) {
+	containers, err := client.ListContainers(namespace)
 	if err != nil {
 		return nil, err
 	}
 
-	var containers []Container
-
-	namespace = string(containerQuery.Namespace.Name)
-
-	for _, container := range containerQuery.Namespace.Containers {
-		containers = append(containers, Container{
-			Namespace: namespace,
-			Id:        string(container.Id),
-			Name:      string(container.Name),
-			Image:     string(container.Image),
-			State:     string(container.State),
-		})
-	}
-
-	return containers, nil
-}
-
-func CreateContainer(input ContainerInput) (Container, error) {
-	client := graphql.NewClient(config.GRAPHQL_URL, config.AccessToken)
-
-	createContainerInput := map[string]any{
-		"namespaceId":             input.Namespace,
-		"resourceSpecificationId": 91,
-		"image":                   input.Image,
-		"name":                    input.Name,
-	}
-
-	if len(input.Ports) > 0 {
-		createContainerInput["ports"] = input.Ports
-	}
-
-	if input.Registry != 0 {
-		createContainerInput["privateRegistryId"] = input.Registry
-	}
-
-	if ingresses := getIngresses(input); len(ingresses) > 0 {
-		createContainerInput["ingresses"] = ingresses
-	}
-
-	env := getEnvironment(input.Env, false)
-	secrets := getEnvironment(input.Secret, true)
-
-	createContainerInput["environmentVariables"] = append(env, secrets...)
-
-	params := map[string]graphql.Parameter{
-		"containerInput": graphql.NewComplexParameter("CreateContainerInput", createContainerInput),
-	}
-
-	mutation := client.BuildMutation("createContainer", params)
-
-	err := client.Mutate(mutation)
-
-	return Container{}, err
-}
-
-func ModifyContainer(input ContainerInput) (Container, error) {
-	client := graphql.NewClient(config.GRAPHQL_URL, config.AccessToken)
-
-	modifyContainerInput := map[string]any{
-		"containerId": input.Id,
-	}
-
-	if len(input.Image) > 0 {
-		modifyContainerInput["image"] = input.Image
-	}
-
-	if len(input.Ports) > 0 {
-		modifyContainerInput["ports"] = input.Ports
-	}
-
-	if input.Registry != 0 {
-		modifyContainerInput["privateRegistryId"] = input.Registry
-	}
-
-	ingresses := getIngresses(input)
-	if len(ingresses) > 0 {
-		modifyContainerInput["ingresses"] = ingresses
-	}
-
-	params := map[string]graphql.Parameter{
-		"containerInput": graphql.NewComplexParameter("ConfigureContainerInput", modifyContainerInput),
-	}
-
-	mutation := client.BuildMutation("modifyContainer", params)
-
-	err := client.Mutate(mutation)
-
-	return Container{}, err
-}
-
-func getIngresses(input ContainerInput) []Ingress {
-	var ingresses []Ingress
-
-	if input.Http != "" && input.HttpPort != 0 {
-		ingresses = append(ingresses, Ingress{
-			Port:       input.HttpPort,
-			DomainName: input.Http,
-			EnableTLS:  false,
-		})
-	}
-
-	if input.Https != "" && input.HttpsPort != 0 {
-		ingresses = append(ingresses, Ingress{
-			Port:       input.HttpsPort,
-			DomainName: input.Https,
-			EnableTLS:  true,
-		})
-	}
-
-	return ingresses
-}
-
-func getEnvironment(input []string, secret bool) []EnvVariable {
-	var env []EnvVariable
-
-	re := regexp.MustCompile(`^([^=]+)(?:=(.*))?$`)
-
-	if len(input) > 0 {
-		for _, string := range input {
-			matches := re.FindStringSubmatch(string)
-			value := ""
-
-			key := matches[1]
-
-			if len(matches) > 2 {
-				value = matches[2]
-			}
-
-			env = append(env, EnvVariable{key, value, secret})
+	for _, c := range containers {
+		if c.Name == containerName {
+			return &c, nil
 		}
 	}
 
-	return env
+	return nil, fmt.Errorf("container %q not found in namespace %q", containerName, namespace)
 }
+
+
+func (client *Client) ContainerCreate(input ContainerCreateInput) (ContainerResult, error) {
+	containerCreateResponse, err := containerCreate(context.Background(), *client.client, input)
+	if err != nil {
+		return ContainerResult{}, err
+	}
+
+	return containerCreateResponse.GetContainerCreate(), nil
+}
+
+
+func (client *Client) ContainerModify(input ContainerModifyInput) (ContainerResult, error) {
+	containerModifyResponse, err := containerModify(context.Background(), *client.client, input)
+	if err != nil {
+		return ContainerResult{}, err
+	}
+
+	return containerModifyResponse.GetContainerModify(), nil
+}
+
+
+func (client *Client) ContainerDelete(namespace string, containerName string) (bool, error) {
+	containerDeleteResponse, err := containerDelete(context.Background(), *client.client, namespace, containerName)
+	if err != nil {
+		return false, err
+	}
+
+	return containerDeleteResponse.GetContainerDelete(), nil
+}
+

@@ -1,23 +1,20 @@
 package api
 
 import (
-	// "github.com/shurcooL/graphql"
-
 	"gitlab.com/tilaa/tilaa-cli/config"
 	"gitlab.com/tilaa/tilaa-cli/graphql"
 )
 
 type Registry struct {
-	Id     		string
 	Namespace 	string
 	Name   		string
 	Source 		string
 	Username	string
+	Locked 		bool
 }
 
 type RegistryInput struct {
-	Namespace int
-	Id        string
+	Namespace string
 	Name      string
 	Source    string
 	Username  string
@@ -25,22 +22,31 @@ type RegistryInput struct {
 	Verify    bool
 }
 
+type RegistryResponse struct {
+	Name 		string				`json:"name"`
+	Namespace 	NamespaceResponse	`json:"namespace"`
+	Source 		string				`json:"source"`
+	Username	string				`json:"username"`
+	Locked 		bool				`json:"locked"`
+}
+
 func ListRegistries(namespace string) ([]Registry, error) {
 	client := graphql.NewClient(config.GRAPHQL_URL, config.AccessToken)
 
 	var registryQuery struct {
 		Namespace struct {
-			Id                string
 			Name              string
 			PrivateRegistries []struct {
-				Id   string
-				Name string
+				Name 		string
+				Source		string
+				Username	string
+				Locked		bool
 			}
-		} `graphql:"namespace(id: $id)"`
+		} `graphql:"namespace(name: $name)"`
 	}
 
 	params := map[string]graphql.Parameter{
-		"id": graphql.NewId(namespace),
+		"name": graphql.NewString(namespace),
 	}
 
 	query := client.BuildQuery(&registryQuery, params)
@@ -54,65 +60,107 @@ func ListRegistries(namespace string) ([]Registry, error) {
 
 	for _, registry := range registryQuery.Namespace.PrivateRegistries {
 		registries = append(registries, Registry{
-			Id:   string(registry.Id),
 			Name: string(registry.Name),
+			Source: string(registry.Source),
+			Username: string(registry.Username),
+			Locked: bool(registry.Locked),
 		})
 	}
 
 	return registries, nil
 }
 
-func ListRegistryByName(namespace string, registryname string) (*Registry, error) {
+func ListRegistryByName(namespace string, registry string) (*Registry, error) {
 	client := graphql.NewClient(config.GRAPHQL_URL, config.AccessToken)
 
 	var registryQuery struct {
-		PrivateRegistry []struct {
-			Id			string
-			Name 		string
-			Source 		string
-			Username 	string
+		Namespace struct {
+			Name 	string
+			PrivateRegistries []struct {
+				Name 		string
+				Source 		string
+				Username 	string
+				Locked		bool
+			} 
 		} `graphql:"namespace(name: $name)"`
 	}
 
 	params := map[string]graphql.Parameter{
-		"namespace": graphql.NewString(namespace),
+		"name": graphql.NewString(namespace),
 	}
 
 	query := client.BuildQuery(&registryQuery, params)
 	err := client.Query(query)
+
 	if err != nil {
 		return nil, err
 	}
 
-	var registry Registry
+	var reg Registry
 
-	for _, item := range registryQuery.PrivateRegistry {
-		if item.Name == registryname {
-			registry.Id = item.Id
-			registry.Name = item.Name
-			registry.Source = item.Source
-			registry.Username = item.Username
+	for _, item := range registryQuery.Namespace.PrivateRegistries {
+		if item.Name == registry {
+			reg.Name = item.Name
+			reg.Source = item.Source
+			reg.Username = item.Username
 		}
 	}
 
-	return &registry, err
+	reg.Namespace = registryQuery.Namespace.Name
+
+	return &reg, err
 }
 
 func CreateRegistry(input RegistryInput) (Registry, error) {
 	client := graphql.NewClient(config.GRAPHQL_URL, config.AccessToken)
 
-	params := map[string]graphql.Parameter{
-		"namespaceId": graphql.NewInt(input.Namespace),
-		"name":        graphql.NewString(input.Name),
-		"source":      graphql.NewString(input.Source),
-		"username":    graphql.NewString(input.Username),
-		"password":    graphql.NewString(input.Password),
-		"verify":      graphql.NewBool(input.Verify),
+	createRegistryInput := map[string]any{
+		"namespace": input.Namespace,
+		"name": input.Name,
+		"source": input.Source,
+		"username": input.Username,
+		"password": input.Password,
+		"verify": input.Verify,
 	}
 
-	mutation := client.BuildMutation("addPrivateRegistry", params)
+	params := map[string]graphql.Parameter{
+		"registryInput": graphql.NewComplexParameter("RegistryCreateInput", createRegistryInput),
+	}
+
+	var resp RegistryResponse
+
+	mutation := client.BuildMutationWithQuery("registryConnectionCreate", params, &resp)
 
 	err := client.Mutate(mutation)
 
-	return Registry{}, err
+	var registry Registry
+	registry.Name = resp.Name
+	registry.Namespace = resp.Namespace.Name
+	registry.Source = resp.Source
+	registry.Username = resp.Username
+	registry.Locked = resp.Locked	
+
+	return registry, err
+}
+
+func DeleteRegistry(namespace string, name string) error {
+	client := graphql.NewClient(config.GRAPHQL_URL, config.AccessToken)
+
+	registryInput := map[string]any{
+		"namespace": namespace,
+		"name": name,
+	}
+
+	params := map[string]graphql.Parameter{
+		"registryConnection": graphql.NewComplexParameter("DeleteRegistryConnectionInput", registryInput),
+	}
+
+	mutation := client.BuildMutation("registryConnectionDelete", params)
+
+	err := client.Mutate(mutation)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }

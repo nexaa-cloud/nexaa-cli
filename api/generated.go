@@ -9,6 +9,96 @@ import (
 	"github.com/Khan/genqlient/graphql"
 )
 
+type AutoScalingInput struct {
+	Replicas ReplicasInput             `json:"replicas"`
+	Triggers []AutoScalingTriggerInput `json:"triggers"`
+}
+
+// GetReplicas returns AutoScalingInput.Replicas, and is useful for accessing the field via an interface.
+func (v *AutoScalingInput) GetReplicas() ReplicasInput { return v.Replicas }
+
+// GetTriggers returns AutoScalingInput.Triggers, and is useful for accessing the field via an interface.
+func (v *AutoScalingInput) GetTriggers() []AutoScalingTriggerInput { return v.Triggers }
+
+type AutoScalingTriggerInput struct {
+	Type      AutoScalingType `json:"type"`
+	Threshold int             `json:"threshold"`
+}
+
+// GetType returns AutoScalingTriggerInput.Type, and is useful for accessing the field via an interface.
+func (v *AutoScalingTriggerInput) GetType() AutoScalingType { return v.Type }
+
+// GetThreshold returns AutoScalingTriggerInput.Threshold, and is useful for accessing the field via an interface.
+func (v *AutoScalingTriggerInput) GetThreshold() int { return v.Threshold }
+
+type AutoScalingType string
+
+const (
+	AutoScalingTypeMemory AutoScalingType = "MEMORY"
+	AutoScalingTypeCpu    AutoScalingType = "CPU"
+)
+
+var AllAutoScalingType = []AutoScalingType{
+	AutoScalingTypeMemory,
+	AutoScalingTypeCpu,
+}
+
+type ContainerCreateInput struct {
+	Name      string             `json:"name"`
+	Namespace string             `json:"namespace"`
+	Resources ContainerResources `json:"resources"`
+	Registry  *string            `json:"registry"`
+	Image     string             `json:"image"`
+	// Environment variables to be set in the job.
+	EnvironmentVariables []EnvironmentVariableInput `json:"environmentVariables"`
+	Mounts               []MountInput               `json:"mounts"`
+	Ports                []string                   `json:"ports"`
+	Ingresses            []IngressInput             `json:"ingresses"`
+	Scaling              *ScalingInput              `json:"scaling"`
+	// Health check performed to check the status of the container.
+	// Health checks are directly performed on the container so your application must expose
+	// the port. Port mappings specified in the ports field are not used by the health check.
+	//
+	// When you want to disable the health check you must send us a null value. To leave the
+	// current health check unchanged you can omit this field.
+	HealthCheck *HealthCheckInput `json:"healthCheck"`
+}
+
+// GetName returns ContainerCreateInput.Name, and is useful for accessing the field via an interface.
+func (v *ContainerCreateInput) GetName() string { return v.Name }
+
+// GetNamespace returns ContainerCreateInput.Namespace, and is useful for accessing the field via an interface.
+func (v *ContainerCreateInput) GetNamespace() string { return v.Namespace }
+
+// GetResources returns ContainerCreateInput.Resources, and is useful for accessing the field via an interface.
+func (v *ContainerCreateInput) GetResources() ContainerResources { return v.Resources }
+
+// GetRegistry returns ContainerCreateInput.Registry, and is useful for accessing the field via an interface.
+func (v *ContainerCreateInput) GetRegistry() *string { return v.Registry }
+
+// GetImage returns ContainerCreateInput.Image, and is useful for accessing the field via an interface.
+func (v *ContainerCreateInput) GetImage() string { return v.Image }
+
+// GetEnvironmentVariables returns ContainerCreateInput.EnvironmentVariables, and is useful for accessing the field via an interface.
+func (v *ContainerCreateInput) GetEnvironmentVariables() []EnvironmentVariableInput {
+	return v.EnvironmentVariables
+}
+
+// GetMounts returns ContainerCreateInput.Mounts, and is useful for accessing the field via an interface.
+func (v *ContainerCreateInput) GetMounts() []MountInput { return v.Mounts }
+
+// GetPorts returns ContainerCreateInput.Ports, and is useful for accessing the field via an interface.
+func (v *ContainerCreateInput) GetPorts() []string { return v.Ports }
+
+// GetIngresses returns ContainerCreateInput.Ingresses, and is useful for accessing the field via an interface.
+func (v *ContainerCreateInput) GetIngresses() []IngressInput { return v.Ingresses }
+
+// GetScaling returns ContainerCreateInput.Scaling, and is useful for accessing the field via an interface.
+func (v *ContainerCreateInput) GetScaling() *ScalingInput { return v.Scaling }
+
+// GetHealthCheck returns ContainerCreateInput.HealthCheck, and is useful for accessing the field via an interface.
+func (v *ContainerCreateInput) GetHealthCheck() *HealthCheckInput { return v.HealthCheck }
+
 type ContainerJobCreateInput struct {
 	Name      string             `json:"name"`
 	Namespace string             `json:"namespace"`
@@ -182,6 +272,62 @@ func (v *ContainerJobResult) GetEnabled() bool { return v.Enabled }
 
 // GetState returns ContainerJobResult.State, and is useful for accessing the field via an interface.
 func (v *ContainerJobResult) GetState() string { return v.State }
+
+type ContainerModifyInput struct {
+	Name      string              `json:"name"`
+	Namespace string              `json:"namespace"`
+	Resources *ContainerResources `json:"resources"`
+	Registry  *string             `json:"registry"`
+	Image     *string             `json:"image"`
+	// Environment variables to be set in the job.
+	EnvironmentVariables []EnvironmentVariableInput `json:"environmentVariables"`
+	Mounts               []MountInput               `json:"mounts"`
+	Ports                []string                   `json:"ports"`
+	Ingresses            []IngressInput             `json:"ingresses"`
+	Scaling              *ScalingInput              `json:"scaling"`
+	// Health check performed to check the status of the container.
+	// Health checks are directly performed on the container so your application must expose
+	// the port. Port mappings specified in the ports field are not used by the health check.
+	//
+	// When you want to disable the health check you must send us a null value. To leave the
+	// current health check unchanged you can omit this field.
+	HealthCheck *HealthCheckInput `json:"healthCheck"`
+}
+
+// GetName returns ContainerModifyInput.Name, and is useful for accessing the field via an interface.
+func (v *ContainerModifyInput) GetName() string { return v.Name }
+
+// GetNamespace returns ContainerModifyInput.Namespace, and is useful for accessing the field via an interface.
+func (v *ContainerModifyInput) GetNamespace() string { return v.Namespace }
+
+// GetResources returns ContainerModifyInput.Resources, and is useful for accessing the field via an interface.
+func (v *ContainerModifyInput) GetResources() *ContainerResources { return v.Resources }
+
+// GetRegistry returns ContainerModifyInput.Registry, and is useful for accessing the field via an interface.
+func (v *ContainerModifyInput) GetRegistry() *string { return v.Registry }
+
+// GetImage returns ContainerModifyInput.Image, and is useful for accessing the field via an interface.
+func (v *ContainerModifyInput) GetImage() *string { return v.Image }
+
+// GetEnvironmentVariables returns ContainerModifyInput.EnvironmentVariables, and is useful for accessing the field via an interface.
+func (v *ContainerModifyInput) GetEnvironmentVariables() []EnvironmentVariableInput {
+	return v.EnvironmentVariables
+}
+
+// GetMounts returns ContainerModifyInput.Mounts, and is useful for accessing the field via an interface.
+func (v *ContainerModifyInput) GetMounts() []MountInput { return v.Mounts }
+
+// GetPorts returns ContainerModifyInput.Ports, and is useful for accessing the field via an interface.
+func (v *ContainerModifyInput) GetPorts() []string { return v.Ports }
+
+// GetIngresses returns ContainerModifyInput.Ingresses, and is useful for accessing the field via an interface.
+func (v *ContainerModifyInput) GetIngresses() []IngressInput { return v.Ingresses }
+
+// GetScaling returns ContainerModifyInput.Scaling, and is useful for accessing the field via an interface.
+func (v *ContainerModifyInput) GetScaling() *ScalingInput { return v.Scaling }
+
+// GetHealthCheck returns ContainerModifyInput.HealthCheck, and is useful for accessing the field via an interface.
+func (v *ContainerModifyInput) GetHealthCheck() *HealthCheckInput { return v.HealthCheck }
 
 type ContainerResources string
 
@@ -429,6 +575,182 @@ var AllContainerResources = []ContainerResources{
 	ContainerResourcesCpu4000Ram16000,
 }
 
+// ContainerResult includes the GraphQL fields of Container requested by the fragment ContainerResult.
+type ContainerResult struct {
+	Name                 string                                                   `json:"name"`
+	Image                string                                                   `json:"image"`
+	PrivateRegistry      *ContainerResultPrivateRegistry                          `json:"privateRegistry"`
+	Resources            ContainerResources                                       `json:"resources"`
+	EnvironmentVariables []ContainerResultEnvironmentVariablesEnvironmentVariable `json:"environmentVariables"`
+	Ports                []string                                                 `json:"ports"`
+	Ingresses            []ContainerResultIngressesIngress                        `json:"ingresses"`
+	Mounts               []ContainerResultMountsMount                             `json:"mounts"`
+	HealthCheck          *ContainerResultHealthCheck                              `json:"healthCheck"`
+	AvailableReplicas    int                                                      `json:"availableReplicas"`
+	NumberOfReplicas     int                                                      `json:"numberOfReplicas"`
+	AutoScaling          *ContainerResultAutoScaling                              `json:"autoScaling"`
+	Locked               bool                                                     `json:"locked"`
+}
+
+// GetName returns ContainerResult.Name, and is useful for accessing the field via an interface.
+func (v *ContainerResult) GetName() string { return v.Name }
+
+// GetImage returns ContainerResult.Image, and is useful for accessing the field via an interface.
+func (v *ContainerResult) GetImage() string { return v.Image }
+
+// GetPrivateRegistry returns ContainerResult.PrivateRegistry, and is useful for accessing the field via an interface.
+func (v *ContainerResult) GetPrivateRegistry() *ContainerResultPrivateRegistry {
+	return v.PrivateRegistry
+}
+
+// GetResources returns ContainerResult.Resources, and is useful for accessing the field via an interface.
+func (v *ContainerResult) GetResources() ContainerResources { return v.Resources }
+
+// GetEnvironmentVariables returns ContainerResult.EnvironmentVariables, and is useful for accessing the field via an interface.
+func (v *ContainerResult) GetEnvironmentVariables() []ContainerResultEnvironmentVariablesEnvironmentVariable {
+	return v.EnvironmentVariables
+}
+
+// GetPorts returns ContainerResult.Ports, and is useful for accessing the field via an interface.
+func (v *ContainerResult) GetPorts() []string { return v.Ports }
+
+// GetIngresses returns ContainerResult.Ingresses, and is useful for accessing the field via an interface.
+func (v *ContainerResult) GetIngresses() []ContainerResultIngressesIngress { return v.Ingresses }
+
+// GetMounts returns ContainerResult.Mounts, and is useful for accessing the field via an interface.
+func (v *ContainerResult) GetMounts() []ContainerResultMountsMount { return v.Mounts }
+
+// GetHealthCheck returns ContainerResult.HealthCheck, and is useful for accessing the field via an interface.
+func (v *ContainerResult) GetHealthCheck() *ContainerResultHealthCheck { return v.HealthCheck }
+
+// GetAvailableReplicas returns ContainerResult.AvailableReplicas, and is useful for accessing the field via an interface.
+func (v *ContainerResult) GetAvailableReplicas() int { return v.AvailableReplicas }
+
+// GetNumberOfReplicas returns ContainerResult.NumberOfReplicas, and is useful for accessing the field via an interface.
+func (v *ContainerResult) GetNumberOfReplicas() int { return v.NumberOfReplicas }
+
+// GetAutoScaling returns ContainerResult.AutoScaling, and is useful for accessing the field via an interface.
+func (v *ContainerResult) GetAutoScaling() *ContainerResultAutoScaling { return v.AutoScaling }
+
+// GetLocked returns ContainerResult.Locked, and is useful for accessing the field via an interface.
+func (v *ContainerResult) GetLocked() bool { return v.Locked }
+
+// ContainerResultAutoScaling includes the requested fields of the GraphQL type AutoScaling.
+type ContainerResultAutoScaling struct {
+	Replicas ContainerResultAutoScalingReplicas                     `json:"replicas"`
+	Triggers []ContainerResultAutoScalingTriggersAutoScalingTrigger `json:"triggers"`
+}
+
+// GetReplicas returns ContainerResultAutoScaling.Replicas, and is useful for accessing the field via an interface.
+func (v *ContainerResultAutoScaling) GetReplicas() ContainerResultAutoScalingReplicas {
+	return v.Replicas
+}
+
+// GetTriggers returns ContainerResultAutoScaling.Triggers, and is useful for accessing the field via an interface.
+func (v *ContainerResultAutoScaling) GetTriggers() []ContainerResultAutoScalingTriggersAutoScalingTrigger {
+	return v.Triggers
+}
+
+// ContainerResultAutoScalingReplicas includes the requested fields of the GraphQL type AutoScalingReplicas.
+type ContainerResultAutoScalingReplicas struct {
+	Minimum int `json:"minimum"`
+	Maximum int `json:"maximum"`
+}
+
+// GetMinimum returns ContainerResultAutoScalingReplicas.Minimum, and is useful for accessing the field via an interface.
+func (v *ContainerResultAutoScalingReplicas) GetMinimum() int { return v.Minimum }
+
+// GetMaximum returns ContainerResultAutoScalingReplicas.Maximum, and is useful for accessing the field via an interface.
+func (v *ContainerResultAutoScalingReplicas) GetMaximum() int { return v.Maximum }
+
+// ContainerResultAutoScalingTriggersAutoScalingTrigger includes the requested fields of the GraphQL type AutoScalingTrigger.
+type ContainerResultAutoScalingTriggersAutoScalingTrigger struct {
+	Type      string `json:"type"`
+	Threshold int    `json:"threshold"`
+}
+
+// GetType returns ContainerResultAutoScalingTriggersAutoScalingTrigger.Type, and is useful for accessing the field via an interface.
+func (v *ContainerResultAutoScalingTriggersAutoScalingTrigger) GetType() string { return v.Type }
+
+// GetThreshold returns ContainerResultAutoScalingTriggersAutoScalingTrigger.Threshold, and is useful for accessing the field via an interface.
+func (v *ContainerResultAutoScalingTriggersAutoScalingTrigger) GetThreshold() int { return v.Threshold }
+
+// ContainerResultEnvironmentVariablesEnvironmentVariable includes the requested fields of the GraphQL type EnvironmentVariable.
+type ContainerResultEnvironmentVariablesEnvironmentVariable struct {
+	Name   string  `json:"name"`
+	Value  *string `json:"value"`
+	Secret bool    `json:"secret"`
+}
+
+// GetName returns ContainerResultEnvironmentVariablesEnvironmentVariable.Name, and is useful for accessing the field via an interface.
+func (v *ContainerResultEnvironmentVariablesEnvironmentVariable) GetName() string { return v.Name }
+
+// GetValue returns ContainerResultEnvironmentVariablesEnvironmentVariable.Value, and is useful for accessing the field via an interface.
+func (v *ContainerResultEnvironmentVariablesEnvironmentVariable) GetValue() *string { return v.Value }
+
+// GetSecret returns ContainerResultEnvironmentVariablesEnvironmentVariable.Secret, and is useful for accessing the field via an interface.
+func (v *ContainerResultEnvironmentVariablesEnvironmentVariable) GetSecret() bool { return v.Secret }
+
+// ContainerResultHealthCheck includes the requested fields of the GraphQL type HealthCheck.
+type ContainerResultHealthCheck struct {
+	Port int    `json:"port"`
+	Path string `json:"path"`
+}
+
+// GetPort returns ContainerResultHealthCheck.Port, and is useful for accessing the field via an interface.
+func (v *ContainerResultHealthCheck) GetPort() int { return v.Port }
+
+// GetPath returns ContainerResultHealthCheck.Path, and is useful for accessing the field via an interface.
+func (v *ContainerResultHealthCheck) GetPath() string { return v.Path }
+
+// ContainerResultIngressesIngress includes the requested fields of the GraphQL type Ingress.
+type ContainerResultIngressesIngress struct {
+	DomainName string   `json:"domainName"`
+	Port       int      `json:"port"`
+	EnableTLS  bool     `json:"enableTLS"`
+	Allowlist  []string `json:"allowlist"`
+}
+
+// GetDomainName returns ContainerResultIngressesIngress.DomainName, and is useful for accessing the field via an interface.
+func (v *ContainerResultIngressesIngress) GetDomainName() string { return v.DomainName }
+
+// GetPort returns ContainerResultIngressesIngress.Port, and is useful for accessing the field via an interface.
+func (v *ContainerResultIngressesIngress) GetPort() int { return v.Port }
+
+// GetEnableTLS returns ContainerResultIngressesIngress.EnableTLS, and is useful for accessing the field via an interface.
+func (v *ContainerResultIngressesIngress) GetEnableTLS() bool { return v.EnableTLS }
+
+// GetAllowlist returns ContainerResultIngressesIngress.Allowlist, and is useful for accessing the field via an interface.
+func (v *ContainerResultIngressesIngress) GetAllowlist() []string { return v.Allowlist }
+
+// ContainerResultMountsMount includes the requested fields of the GraphQL type Mount.
+type ContainerResultMountsMount struct {
+	Path   string                           `json:"path"`
+	Volume ContainerResultMountsMountVolume `json:"volume"`
+}
+
+// GetPath returns ContainerResultMountsMount.Path, and is useful for accessing the field via an interface.
+func (v *ContainerResultMountsMount) GetPath() string { return v.Path }
+
+// GetVolume returns ContainerResultMountsMount.Volume, and is useful for accessing the field via an interface.
+func (v *ContainerResultMountsMount) GetVolume() ContainerResultMountsMountVolume { return v.Volume }
+
+// ContainerResultMountsMountVolume includes the requested fields of the GraphQL type Volume.
+type ContainerResultMountsMountVolume struct {
+	Name string `json:"name"`
+}
+
+// GetName returns ContainerResultMountsMountVolume.Name, and is useful for accessing the field via an interface.
+func (v *ContainerResultMountsMountVolume) GetName() string { return v.Name }
+
+// ContainerResultPrivateRegistry includes the requested fields of the GraphQL type PrivateRegistry.
+type ContainerResultPrivateRegistry struct {
+	Name string `json:"name"`
+}
+
+// GetName returns ContainerResultPrivateRegistry.Name, and is useful for accessing the field via an interface.
+func (v *ContainerResultPrivateRegistry) GetName() string { return v.Name }
+
 type EnvironmentVariableInput struct {
 	Name   string `json:"name"`
 	Value  string `json:"value"`
@@ -447,6 +769,47 @@ func (v *EnvironmentVariableInput) GetSecret() bool { return v.Secret }
 
 // GetState returns EnvironmentVariableInput.State, and is useful for accessing the field via an interface.
 func (v *EnvironmentVariableInput) GetState() State { return v.State }
+
+type HealthCheckInput struct {
+	Port int    `json:"port"`
+	Path string `json:"path"`
+}
+
+// GetPort returns HealthCheckInput.Port, and is useful for accessing the field via an interface.
+func (v *HealthCheckInput) GetPort() int { return v.Port }
+
+// GetPath returns HealthCheckInput.Path, and is useful for accessing the field via an interface.
+func (v *HealthCheckInput) GetPath() string { return v.Path }
+
+type IngressInput struct {
+	Port       int      `json:"port"`
+	EnableTLS  bool     `json:"enableTLS"`
+	Whitelist  []string `json:"whitelist"`
+	DomainName *string  `json:"domainName"`
+	State      State    `json:"state"`
+}
+
+// GetPort returns IngressInput.Port, and is useful for accessing the field via an interface.
+func (v *IngressInput) GetPort() int { return v.Port }
+
+// GetEnableTLS returns IngressInput.EnableTLS, and is useful for accessing the field via an interface.
+func (v *IngressInput) GetEnableTLS() bool { return v.EnableTLS }
+
+// GetWhitelist returns IngressInput.Whitelist, and is useful for accessing the field via an interface.
+func (v *IngressInput) GetWhitelist() []string { return v.Whitelist }
+
+// GetDomainName returns IngressInput.DomainName, and is useful for accessing the field via an interface.
+func (v *IngressInput) GetDomainName() *string { return v.DomainName }
+
+// GetState returns IngressInput.State, and is useful for accessing the field via an interface.
+func (v *IngressInput) GetState() State { return v.State }
+
+type ManualScalingInput struct {
+	Replicas int `json:"replicas"`
+}
+
+// GetReplicas returns ManualScalingInput.Replicas, and is useful for accessing the field via an interface.
+func (v *ManualScalingInput) GetReplicas() int { return v.Replicas }
 
 type MountInput struct {
 	// Path to mount the volume in the container.
@@ -489,6 +852,28 @@ func (v *MountVolumeInput) GetName() string { return v.Name }
 // GetSize returns MountVolumeInput.Size, and is useful for accessing the field via an interface.
 func (v *MountVolumeInput) GetSize() *int { return v.Size }
 
+type ReplicasInput struct {
+	Minimum int `json:"minimum"`
+	Maximum int `json:"maximum"`
+}
+
+// GetMinimum returns ReplicasInput.Minimum, and is useful for accessing the field via an interface.
+func (v *ReplicasInput) GetMinimum() int { return v.Minimum }
+
+// GetMaximum returns ReplicasInput.Maximum, and is useful for accessing the field via an interface.
+func (v *ReplicasInput) GetMaximum() int { return v.Maximum }
+
+type ScalingInput struct {
+	Auto   *AutoScalingInput   `json:"auto"`
+	Manual *ManualScalingInput `json:"manual"`
+}
+
+// GetAuto returns ScalingInput.Auto, and is useful for accessing the field via an interface.
+func (v *ScalingInput) GetAuto() *AutoScalingInput { return v.Auto }
+
+// GetManual returns ScalingInput.Manual, and is useful for accessing the field via an interface.
+func (v *ScalingInput) GetManual() *ManualScalingInput { return v.Manual }
+
 type State string
 
 const (
@@ -500,6 +885,26 @@ var AllState = []State{
 	StatePresent,
 	StateAbsent,
 }
+
+// __containerCreateInput is used internally by genqlient
+type __containerCreateInput struct {
+	Input ContainerCreateInput `json:"input"`
+}
+
+// GetInput returns __containerCreateInput.Input, and is useful for accessing the field via an interface.
+func (v *__containerCreateInput) GetInput() ContainerCreateInput { return v.Input }
+
+// __containerDeleteInput is used internally by genqlient
+type __containerDeleteInput struct {
+	Namespace string `json:"namespace"`
+	Container string `json:"container"`
+}
+
+// GetNamespace returns __containerDeleteInput.Namespace, and is useful for accessing the field via an interface.
+func (v *__containerDeleteInput) GetNamespace() string { return v.Namespace }
+
+// GetContainer returns __containerDeleteInput.Container, and is useful for accessing the field via an interface.
+func (v *__containerDeleteInput) GetContainer() string { return v.Container }
 
 // __containerJobCreateInput is used internally by genqlient
 type __containerJobCreateInput struct {
@@ -524,6 +929,38 @@ type __containerJobModifyInput struct {
 
 // GetScheduledJob returns __containerJobModifyInput.ScheduledJob, and is useful for accessing the field via an interface.
 func (v *__containerJobModifyInput) GetScheduledJob() ContainerJobModifyInput { return v.ScheduledJob }
+
+// __containerListInput is used internally by genqlient
+type __containerListInput struct {
+	NamespaceName string `json:"namespaceName"`
+}
+
+// GetNamespaceName returns __containerListInput.NamespaceName, and is useful for accessing the field via an interface.
+func (v *__containerListInput) GetNamespaceName() string { return v.NamespaceName }
+
+// __containerModifyInput is used internally by genqlient
+type __containerModifyInput struct {
+	Input ContainerModifyInput `json:"input"`
+}
+
+// GetInput returns __containerModifyInput.Input, and is useful for accessing the field via an interface.
+func (v *__containerModifyInput) GetInput() ContainerModifyInput { return v.Input }
+
+// containerCreateResponse is returned by containerCreate on success.
+type containerCreateResponse struct {
+	ContainerCreate ContainerResult `json:"containerCreate"`
+}
+
+// GetContainerCreate returns containerCreateResponse.ContainerCreate, and is useful for accessing the field via an interface.
+func (v *containerCreateResponse) GetContainerCreate() ContainerResult { return v.ContainerCreate }
+
+// containerDeleteResponse is returned by containerDelete on success.
+type containerDeleteResponse struct {
+	ContainerDelete bool `json:"containerDelete"`
+}
+
+// GetContainerDelete returns containerDeleteResponse.ContainerDelete, and is useful for accessing the field via an interface.
+func (v *containerDeleteResponse) GetContainerDelete() bool { return v.ContainerDelete }
 
 // containerJobCreateResponse is returned by containerJobCreate on success.
 type containerJobCreateResponse struct {
@@ -641,6 +1078,287 @@ func (v *containerJobModifyResponse) GetContainerJobModify() ContainerJobResult 
 	return v.ContainerJobModify
 }
 
+// containerListNamespace includes the requested fields of the GraphQL type Namespace.
+type containerListNamespace struct {
+	Containers []containerListNamespaceContainersContainer `json:"containers"`
+}
+
+// GetContainers returns containerListNamespace.Containers, and is useful for accessing the field via an interface.
+func (v *containerListNamespace) GetContainers() []containerListNamespaceContainersContainer {
+	return v.Containers
+}
+
+// containerListNamespaceContainersContainer includes the requested fields of the GraphQL type Container.
+type containerListNamespaceContainersContainer struct {
+	ContainerResult `json:"-"`
+}
+
+// GetName returns containerListNamespaceContainersContainer.Name, and is useful for accessing the field via an interface.
+func (v *containerListNamespaceContainersContainer) GetName() string { return v.ContainerResult.Name }
+
+// GetImage returns containerListNamespaceContainersContainer.Image, and is useful for accessing the field via an interface.
+func (v *containerListNamespaceContainersContainer) GetImage() string { return v.ContainerResult.Image }
+
+// GetPrivateRegistry returns containerListNamespaceContainersContainer.PrivateRegistry, and is useful for accessing the field via an interface.
+func (v *containerListNamespaceContainersContainer) GetPrivateRegistry() *ContainerResultPrivateRegistry {
+	return v.ContainerResult.PrivateRegistry
+}
+
+// GetResources returns containerListNamespaceContainersContainer.Resources, and is useful for accessing the field via an interface.
+func (v *containerListNamespaceContainersContainer) GetResources() ContainerResources {
+	return v.ContainerResult.Resources
+}
+
+// GetEnvironmentVariables returns containerListNamespaceContainersContainer.EnvironmentVariables, and is useful for accessing the field via an interface.
+func (v *containerListNamespaceContainersContainer) GetEnvironmentVariables() []ContainerResultEnvironmentVariablesEnvironmentVariable {
+	return v.ContainerResult.EnvironmentVariables
+}
+
+// GetPorts returns containerListNamespaceContainersContainer.Ports, and is useful for accessing the field via an interface.
+func (v *containerListNamespaceContainersContainer) GetPorts() []string {
+	return v.ContainerResult.Ports
+}
+
+// GetIngresses returns containerListNamespaceContainersContainer.Ingresses, and is useful for accessing the field via an interface.
+func (v *containerListNamespaceContainersContainer) GetIngresses() []ContainerResultIngressesIngress {
+	return v.ContainerResult.Ingresses
+}
+
+// GetMounts returns containerListNamespaceContainersContainer.Mounts, and is useful for accessing the field via an interface.
+func (v *containerListNamespaceContainersContainer) GetMounts() []ContainerResultMountsMount {
+	return v.ContainerResult.Mounts
+}
+
+// GetHealthCheck returns containerListNamespaceContainersContainer.HealthCheck, and is useful for accessing the field via an interface.
+func (v *containerListNamespaceContainersContainer) GetHealthCheck() *ContainerResultHealthCheck {
+	return v.ContainerResult.HealthCheck
+}
+
+// GetAvailableReplicas returns containerListNamespaceContainersContainer.AvailableReplicas, and is useful for accessing the field via an interface.
+func (v *containerListNamespaceContainersContainer) GetAvailableReplicas() int {
+	return v.ContainerResult.AvailableReplicas
+}
+
+// GetNumberOfReplicas returns containerListNamespaceContainersContainer.NumberOfReplicas, and is useful for accessing the field via an interface.
+func (v *containerListNamespaceContainersContainer) GetNumberOfReplicas() int {
+	return v.ContainerResult.NumberOfReplicas
+}
+
+// GetAutoScaling returns containerListNamespaceContainersContainer.AutoScaling, and is useful for accessing the field via an interface.
+func (v *containerListNamespaceContainersContainer) GetAutoScaling() *ContainerResultAutoScaling {
+	return v.ContainerResult.AutoScaling
+}
+
+// GetLocked returns containerListNamespaceContainersContainer.Locked, and is useful for accessing the field via an interface.
+func (v *containerListNamespaceContainersContainer) GetLocked() bool { return v.ContainerResult.Locked }
+
+func (v *containerListNamespaceContainersContainer) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*containerListNamespaceContainersContainer
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.containerListNamespaceContainersContainer = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	err = json.Unmarshal(
+		b, &v.ContainerResult)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+type __premarshalcontainerListNamespaceContainersContainer struct {
+	Name string `json:"name"`
+
+	Image string `json:"image"`
+
+	PrivateRegistry *ContainerResultPrivateRegistry `json:"privateRegistry"`
+
+	Resources ContainerResources `json:"resources"`
+
+	EnvironmentVariables []ContainerResultEnvironmentVariablesEnvironmentVariable `json:"environmentVariables"`
+
+	Ports []string `json:"ports"`
+
+	Ingresses []ContainerResultIngressesIngress `json:"ingresses"`
+
+	Mounts []ContainerResultMountsMount `json:"mounts"`
+
+	HealthCheck *ContainerResultHealthCheck `json:"healthCheck"`
+
+	AvailableReplicas int `json:"availableReplicas"`
+
+	NumberOfReplicas int `json:"numberOfReplicas"`
+
+	AutoScaling *ContainerResultAutoScaling `json:"autoScaling"`
+
+	Locked bool `json:"locked"`
+}
+
+func (v *containerListNamespaceContainersContainer) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *containerListNamespaceContainersContainer) __premarshalJSON() (*__premarshalcontainerListNamespaceContainersContainer, error) {
+	var retval __premarshalcontainerListNamespaceContainersContainer
+
+	retval.Name = v.ContainerResult.Name
+	retval.Image = v.ContainerResult.Image
+	retval.PrivateRegistry = v.ContainerResult.PrivateRegistry
+	retval.Resources = v.ContainerResult.Resources
+	retval.EnvironmentVariables = v.ContainerResult.EnvironmentVariables
+	retval.Ports = v.ContainerResult.Ports
+	retval.Ingresses = v.ContainerResult.Ingresses
+	retval.Mounts = v.ContainerResult.Mounts
+	retval.HealthCheck = v.ContainerResult.HealthCheck
+	retval.AvailableReplicas = v.ContainerResult.AvailableReplicas
+	retval.NumberOfReplicas = v.ContainerResult.NumberOfReplicas
+	retval.AutoScaling = v.ContainerResult.AutoScaling
+	retval.Locked = v.ContainerResult.Locked
+	return &retval, nil
+}
+
+// containerListResponse is returned by containerList on success.
+type containerListResponse struct {
+	Namespace containerListNamespace `json:"namespace"`
+}
+
+// GetNamespace returns containerListResponse.Namespace, and is useful for accessing the field via an interface.
+func (v *containerListResponse) GetNamespace() containerListNamespace { return v.Namespace }
+
+// containerModifyResponse is returned by containerModify on success.
+type containerModifyResponse struct {
+	ContainerModify ContainerResult `json:"containerModify"`
+}
+
+// GetContainerModify returns containerModifyResponse.ContainerModify, and is useful for accessing the field via an interface.
+func (v *containerModifyResponse) GetContainerModify() ContainerResult { return v.ContainerModify }
+
+// The mutation executed by containerCreate.
+const containerCreate_Operation = `
+mutation containerCreate ($input: ContainerCreateInput!) {
+	containerCreate(containerInput: $input) {
+		... ContainerResult
+	}
+}
+fragment ContainerResult on Container {
+	name
+	image
+	privateRegistry {
+		name
+	}
+	resources
+	environmentVariables {
+		name
+		value
+		secret
+	}
+	ports
+	ingresses {
+		domainName
+		port
+		enableTLS
+		allowlist
+	}
+	mounts {
+		path
+		volume {
+			name
+		}
+	}
+	healthCheck {
+		port
+		path
+	}
+	availableReplicas
+	numberOfReplicas
+	autoScaling {
+		replicas {
+			minimum
+			maximum
+		}
+		triggers {
+			type
+			threshold
+		}
+	}
+	locked
+}
+`
+
+func containerCreate(
+	ctx_ context.Context,
+	client_ graphql.Client,
+	input ContainerCreateInput,
+) (data_ *containerCreateResponse, err_ error) {
+	req_ := &graphql.Request{
+		OpName: "containerCreate",
+		Query:  containerCreate_Operation,
+		Variables: &__containerCreateInput{
+			Input: input,
+		},
+	}
+
+	data_ = &containerCreateResponse{}
+	resp_ := &graphql.Response{Data: data_}
+
+	err_ = client_.MakeRequest(
+		ctx_,
+		req_,
+		resp_,
+	)
+
+	return data_, err_
+}
+
+// The mutation executed by containerDelete.
+const containerDelete_Operation = `
+mutation containerDelete ($namespace: String!, $container: String!) {
+	containerDelete(container: {name:$container,namespace:$namespace})
+}
+`
+
+func containerDelete(
+	ctx_ context.Context,
+	client_ graphql.Client,
+	namespace string,
+	container string,
+) (data_ *containerDeleteResponse, err_ error) {
+	req_ := &graphql.Request{
+		OpName: "containerDelete",
+		Query:  containerDelete_Operation,
+		Variables: &__containerDeleteInput{
+			Namespace: namespace,
+			Container: container,
+		},
+	}
+
+	data_ = &containerDeleteResponse{}
+	resp_ := &graphql.Response{Data: data_}
+
+	err_ = client_.MakeRequest(
+		ctx_,
+		req_,
+		resp_,
+	)
+
+	return data_, err_
+}
+
 // The mutation executed by containerJobCreate.
 const containerJobCreate_Operation = `
 mutation containerJobCreate ($scheduledJob: ContainerJobCreateInput!) {
@@ -752,6 +1470,162 @@ func containerJobModify(
 	}
 
 	data_ = &containerJobModifyResponse{}
+	resp_ := &graphql.Response{Data: data_}
+
+	err_ = client_.MakeRequest(
+		ctx_,
+		req_,
+		resp_,
+	)
+
+	return data_, err_
+}
+
+// The query executed by containerList.
+const containerList_Operation = `
+query containerList ($namespaceName: String!) {
+	namespace(name: $namespaceName) {
+		containers {
+			... ContainerResult
+		}
+	}
+}
+fragment ContainerResult on Container {
+	name
+	image
+	privateRegistry {
+		name
+	}
+	resources
+	environmentVariables {
+		name
+		value
+		secret
+	}
+	ports
+	ingresses {
+		domainName
+		port
+		enableTLS
+		allowlist
+	}
+	mounts {
+		path
+		volume {
+			name
+		}
+	}
+	healthCheck {
+		port
+		path
+	}
+	availableReplicas
+	numberOfReplicas
+	autoScaling {
+		replicas {
+			minimum
+			maximum
+		}
+		triggers {
+			type
+			threshold
+		}
+	}
+	locked
+}
+`
+
+func containerList(
+	ctx_ context.Context,
+	client_ graphql.Client,
+	namespaceName string,
+) (data_ *containerListResponse, err_ error) {
+	req_ := &graphql.Request{
+		OpName: "containerList",
+		Query:  containerList_Operation,
+		Variables: &__containerListInput{
+			NamespaceName: namespaceName,
+		},
+	}
+
+	data_ = &containerListResponse{}
+	resp_ := &graphql.Response{Data: data_}
+
+	err_ = client_.MakeRequest(
+		ctx_,
+		req_,
+		resp_,
+	)
+
+	return data_, err_
+}
+
+// The mutation executed by containerModify.
+const containerModify_Operation = `
+mutation containerModify ($input: ContainerModifyInput!) {
+	containerModify(containerInput: $input) {
+		... ContainerResult
+	}
+}
+fragment ContainerResult on Container {
+	name
+	image
+	privateRegistry {
+		name
+	}
+	resources
+	environmentVariables {
+		name
+		value
+		secret
+	}
+	ports
+	ingresses {
+		domainName
+		port
+		enableTLS
+		allowlist
+	}
+	mounts {
+		path
+		volume {
+			name
+		}
+	}
+	healthCheck {
+		port
+		path
+	}
+	availableReplicas
+	numberOfReplicas
+	autoScaling {
+		replicas {
+			minimum
+			maximum
+		}
+		triggers {
+			type
+			threshold
+		}
+	}
+	locked
+}
+`
+
+func containerModify(
+	ctx_ context.Context,
+	client_ graphql.Client,
+	input ContainerModifyInput,
+) (data_ *containerModifyResponse, err_ error) {
+	req_ := &graphql.Request{
+		OpName: "containerModify",
+		Query:  containerModify_Operation,
+		Variables: &__containerModifyInput{
+			Input: input,
+		},
+	}
+
+	data_ = &containerModifyResponse{}
 	resp_ := &graphql.Response{Data: data_}
 
 	err_ = client_.MakeRequest(

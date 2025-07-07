@@ -80,6 +80,54 @@ type CloudDatabase {
   whitelist: [String!]!
 }
 
+type CloudDatabaseCluster {
+  adminUser: DatabaseUser
+  databases: [Database!]!
+  id: String!
+  name: String!
+  namespace: Namespace!
+  plan: Plan!
+  spec: Spec!
+  state: String!
+  users: [DatabaseUser!]!
+}
+
+input CloudDatabaseClusterCreateInput {
+  ""
+  name: String!
+
+  ""
+  namespace: String!
+
+  ""
+  spec: CloudDatabaseClusterSpecInput!
+
+  ""
+  plan: String!
+
+  ""
+  databases: [DatabaseInput!]!
+
+  ""
+  users: [DatabaseUserInput!]!
+}
+
+input CloudDatabaseClusterResourceInput {
+  ""
+  name: String!
+
+  ""
+  namespace: String!
+}
+
+input CloudDatabaseClusterSpecInput {
+  ""
+  type: String!
+
+  ""
+  version: String!
+}
+
 input ConfigureContainerInput {
   ""
   containerId: Int!
@@ -132,7 +180,7 @@ type Container {
   autoScaling: AutoScaling
   availableReplicas: Int!
   createdAt: DateTime!
-  deletedAt: DateTime
+  deletedAt: DateTime @deprecated(reason: "this field will be removed in the future, and doesn't have a replacement")
   environmentVariables: [EnvironmentVariable!]!
   healthCheck: HealthCheck
   id: ID!
@@ -146,9 +194,60 @@ type Container {
   ports: [String!]!
   privateRegistry: PrivateRegistry
   replicas: [Replica!]!
-  resourceSpecification: ResourceSpecification!
+  resourceSpecification: ResourceSpecification! @deprecated(reason: "use `resources` instead")
+  resources: ContainerResources!
   startedAt: DateTime!
   state: String!
+}
+
+input ContainerCreateInput {
+  ""
+  name: String!
+
+  ""
+  namespace: String!
+
+  ""
+  resources: ContainerResources!
+
+  ""
+  registry: String = null
+
+  ""
+  image: String!
+
+  "Environment variables to be set in the job."
+  environmentVariables: [EnvironmentVariableInput!] = []
+
+  ""
+  mounts: [MountInput!]
+
+  ""
+  ports: [String!]
+
+  ""
+  ingresses: [IngressInput!]! = []
+
+  ""
+  scaling: ScalingInput = null
+
+  """
+  Health check performed to check the status of the container.
+  Health checks are directly performed on the container so your application must expose
+  the port. Port mappings specified in the ports field are not used by the health check.
+  
+  When you want to disable the health check you must send us a null value. To leave the
+  current health check unchanged you can omit this field.
+  """
+  healthCheck: HealthCheckInput = null
+}
+
+input ContainerDeleteInput {
+  ""
+  name: String!
+
+  ""
+  namespace: String!
 }
 
 type ContainerJob {
@@ -157,6 +256,7 @@ type ContainerJob {
   entrypoint: [String!]
   environmentVariables: [EnvironmentVariable!]!
   image: String!
+  locked: Boolean!
   mounts: [Mount!]!
   name: String!
   namespace: Namespace!
@@ -240,7 +340,6 @@ input ContainerJobModifyInput {
   ""
   namespace: String!
 
-
   ""
   resources: ContainerResources
 
@@ -307,6 +406,56 @@ type ContainerJobRun {
   name: String!
   startTime: DateTime
   status: String!
+}
+
+input ContainerModifyInput {
+  ""
+  name: String!
+
+  ""
+  namespace: String!
+
+  ""
+  resources: ContainerResources
+
+  ""
+  registry: String
+
+  ""
+  image: String
+
+  "Environment variables to be set in the job."
+  environmentVariables: [EnvironmentVariableInput!]
+
+  ""
+  mounts: [MountInput!]
+
+  ""
+  ports: [String!]
+
+  ""
+  ingresses: [IngressInput!]
+
+  ""
+  scaling: ScalingInput
+
+  """
+  Health check performed to check the status of the container.
+  Health checks are directly performed on the container so your application must expose
+  the port. Port mappings specified in the ports field are not used by the health check.
+  
+  When you want to disable the health check you must send us a null value. To leave the
+  current health check unchanged you can omit this field.
+  """
+  healthCheck: HealthCheckInput
+}
+
+input ContainerResourceInput {
+  ""
+  name: String!
+
+  ""
+  namespace: String!
 }
 
 enum ContainerResources {
@@ -489,6 +638,35 @@ type Customer {
   termOfPayment: Int! @deprecated(reason: "this field will be removed in the future")
 }
 
+type Database {
+  name: String!
+}
+
+input DatabaseInput {
+  ""
+  name: String!
+
+  ""
+  state: State! = PRESENT
+}
+
+type DatabaseUser {
+  dsn: String!
+  name: String!
+  role: String!
+}
+
+input DatabaseUserInput {
+  ""
+  name: String!
+
+  ""
+  password: String = null
+
+  ""
+  state: State! = PRESENT
+}
+
 type DatabaseVersion {
   id: Int!
   key: String!
@@ -498,6 +676,19 @@ type DatabaseVersion {
 
 "The `DateTime` scalar type represents time data, represented as an ISO-8601 encoded UTC date string."
 scalar DateTime
+
+input DeleteNamespaceInput {
+  ""
+  name: String!
+}
+
+input DeleteRegistryConnectionInput {
+  ""
+  name: String!
+
+  ""
+  namespace: String!
+}
 
 type EnvironmentVariable {
   id: ID!
@@ -565,6 +756,9 @@ input IngressInput {
 
   ""
   domainName: String = null
+
+  ""
+  state: State! = PRESENT
 }
 
 input IngressModificationInput {
@@ -623,51 +817,61 @@ input MountVolumeInput {
 
 type Mutation {
   addPrivateRegistry(namespaceId: Int!, name: String!, source: String!, username: String!, password: String!, verify: Boolean = true): Boolean! @deprecated(reason: "use `registryCreate` mutation")
+  cloudDatabaseClusterCreate(cloudDatabaseClusterInput: CloudDatabaseClusterCreateInput): CloudDatabaseCluster!
+  cloudDatabaseClusterDelete(cloudDatabase: CloudDatabaseClusterResourceInput!): Boolean!
+  containerCreate(containerInput: ContainerCreateInput): Container!
+  containerDelete(container: ContainerDeleteInput!): Boolean!
   containerJobCreate(scheduledJob: ContainerJobCreateInput!): ContainerJob!
   containerJobDelete(scheduledJob: ResourceNameInput!): Boolean!
-  # @genqlient(for: "ContainerJobModifyInput.resources", omitempty: true)
   containerJobModify(scheduledJob: ContainerJobModifyInput): ContainerJob!
+  containerModify(containerInput: ContainerModifyInput): Container!
   createCloudDatabase(customerId: Int!, name: String!, username: String!, version: String!, nodeType: String!, password: String!, location: String!, whitelist: [String!]! = []): Boolean!
-  createContainer(containerInput: CreateContainerInput!): Boolean!
+  createContainer(containerInput: CreateContainerInput!): Boolean! @deprecated(reason: "use `containerCreate` mutation instead")
   createNamespace(name: String!, customerId: Int = null, description: String = null, pricingPlanId: Int = 2, resourceSpecificationId: Int = null): Boolean! @deprecated(reason: "use `namespaceCreate` mutation")
-  createVolume(namespaceId: Int!, name: String!, size: Int!): Volume
-  deleteContainer(containerId: Int!): Boolean!
-  deleteNamespace(id: Int!): Boolean!
-  deletePrivateRegistry(privateRegistryId: Int!): Boolean!
+  createVolume(namespaceId: Int!, name: String!, size: Int!): Volume @deprecated(reason: "use `volumeCreate` mutation")
+  deleteContainer(containerId: Int!): Boolean! @deprecated(reason: "use `containerDelete` mutation instead")
+  deleteNamespace(id: Int!): Boolean! @deprecated(reason: "use `namespaceDelete` mutation")
+  deletePrivateRegistry(privateRegistryId: Int!): Boolean! @deprecated(reason: "use `registryConnectionDelete` mutation instead")
 
   """
   Deletes a volume.
   Volumes can be deleted if they are not mounted to any container.
   """
-  deleteVolume(namespaceId: NamespaceId!, volumeId: Int = null, volumeName: String = null): Boolean!
+  deleteVolume(namespaceId: NamespaceId!, volumeId: Int = null, volumeName: String = null): Boolean! @deprecated(reason: "use `volumeDelete` mutation")
 
   """
   Increases the size of a volume.
   Volumes sizes can only be increased. Increase of volume will not be possible if the volume state is locked.
   We do increase volumes on the fly, so the volume will be increased without any downtime.
   """
-  increaseVolume(namespaceId: NamespaceId!, name: String!, size: Int!): Volume!
+  increaseVolume(namespaceId: NamespaceId!, name: String!, size: Int!): Volume! @deprecated(reason: "use `volumeIncrease` mutation")
 
-  modifyContainer(containerInput: ConfigureContainerInput!): Boolean!
+  modifyContainer(containerInput: ConfigureContainerInput!): Boolean! @deprecated(reason: "use `containerModify` mutation instead")
   namespaceCreate(namespaceInput: NamespaceCreateInput!): Namespace!
-  registryCreate(registryInput: RegistryCreateInput!): PrivateRegistry!
+  namespaceDelete(namespace: DeleteNamespaceInput!): Boolean!
+  registryConnectionCreate(registryInput: RegistryCreateInput!): PrivateRegistry!
+  registryConnectionDelete(registryConnection: DeleteRegistryConnectionInput!): Boolean!
+  volumeCreate(volumeInput: VolumeCreateInput): Volume
+  volumeDelete(volume: VolumeResourceInput!): Boolean!
+  volumeIncrease(volumeInput: VolumeModifyInput): Volume!
 }
 
 type Namespace {
+  cloudDatabaseClusters: [CloudDatabaseCluster!]!
   containerJobs: [ContainerJob!]!
-  containers: [Container!] @deprecated(reason: "use {@see \\ServerlessContainers\\Domain\\Entity\\ClusterNamespace\\self::getReference()} as this will return a more reliable interface")
-  createdAt: DateTime! @deprecated(reason: "use {@see \\ServerlessContainers\\Domain\\Entity\\ClusterNamespace\\self::getReference()} as this will return a more reliable interface")
-  deletedAt: DateTime @deprecated(reason: "use {@see \\ServerlessContainers\\Domain\\Entity\\ClusterNamespace\\self::getReference()} as this will return a more reliable interface")
-  description: String! @deprecated(reason: "use {@see \\ServerlessContainers\\Domain\\Entity\\ClusterNamespace\\self::getReference()} as this will return a more reliable interface")
-  id: ID!
-  internalName: String! @deprecated(reason: "use {@see \\ServerlessContainers\\Domain\\Entity\\ClusterNamespace\\self::getReference()} as this will return a more reliable interface")
-  modifiedAt: DateTime @deprecated(reason: "use {@see \\ServerlessContainers\\Domain\\Entity\\ClusterNamespace\\self::getReference()} as this will return a more reliable interface")
+  containers: [Container!]
+  createdAt: DateTime!
+  deletedAt: DateTime
+  description: String!
+  id(legacy: Boolean = true): ID!
+  internalName: String! @deprecated(reason: "this field will be removed in the future. There is no replacement")
+  modifiedAt: DateTime
   name: String!
   pricingPlan: PricingPlan!
   privateRegistries: [PrivateRegistry!]!
-  resourceSpecification: ResourceSpecification @deprecated(reason: "use {@see \\ServerlessContainers\\Domain\\Entity\\ClusterNamespace\\self::getReference()} as this will return a more reliable interface")
-  state: String! @deprecated(reason: "use {@see \\ServerlessContainers\\Domain\\Entity\\ClusterNamespace\\self::getReference()} as this will return a more reliable interface")
-  volumes: [Volume!] @deprecated(reason: "use {@see \\ServerlessContainers\\Domain\\Entity\\ClusterNamespace\\self::getReference()} as this will return a more reliable interface")
+  resourceSpecification: ResourceSpecification
+  state: String!
+  volumes: [Volume!]
 }
 
 input NamespaceCreateInput {
@@ -697,9 +901,20 @@ type NodeTypeSpecification {
   storage: Int!
 }
 
+type Plan {
+  cpu: Int!
+  group: String!
+  id: String!
+  memory(unit: Unit = GB): Float!
+  name: String!
+  price: Price!
+  replicas: Int!
+  storage: Int!
+}
+
 type Price {
-  amount: Int!
-  currency: String!
+  amount: Int
+  currency: String
 }
 
 type PricingPlan {
@@ -727,8 +942,13 @@ type Query {
 
   auditLogs(customerId: ID!, filter: AuditLogFilterInput = null): [AuditLog]!
   cloudDatabase(id: ID!): CloudDatabase
+  cloudDatabaseCluster(cloudDatabase: CloudDatabaseClusterResourceInput!): CloudDatabaseCluster!
+  cloudDatabaseClusterPlans: [Plan!]!
+  cloudDatabaseClusterUserCredentials(cloudDatabase: CloudDatabaseClusterResourceInput!, username: String!): DatabaseUser!
+  cloudDatabaseClusterVersions: [Spec!]!
+  cloudDatabaseClusters: [CloudDatabaseCluster!]!
   cloudDatabases: [CloudDatabase!]!
-  container(id: ID!): Container!
+  container(id: ID = null, containerResourceInput: ContainerResourceInput = null): Container!
   containerJob(namespace: String!, name: String!): ContainerJob!
   databaseVersions: [DatabaseVersion!]!
   locations: [Location!]!
@@ -737,9 +957,9 @@ type Query {
   nodeType(id: String!): NodeType!
   nodeTypes(numberOfNodes: Int = null): [NodeType!]!
   pricingPlans: [PricingPlan!]!
-  privateRegistries(namespaceId: ID!): [PrivateRegistry!]!
+  privateRegistries(namespaceId: ID = null, namespace: String = null): [PrivateRegistry!]!
   resourceSpecifications(kind: String!): [ResourceSpecification!]!
-  volume(id: ID!): Volume!
+  volume(id: ID!): Volume
   volumes(namespaceId: Int!): [Volume!]!
 }
 
@@ -798,6 +1018,11 @@ type ResourceSpecification {
 input ScalingInput {
   auto: AutoScalingInput = null
   manual: ManualScalingInput = null
+}
+
+type Spec {
+  type: String!
+  version: String!
 }
 
 enum State {
@@ -867,5 +1092,35 @@ type Volume {
   size(unit: Unit = GB): Float!
   state: String!
   usage(unit: Unit = GB): Float!
+}
+
+input VolumeCreateInput {
+  ""
+  name: String!
+
+  ""
+  namespace: String!
+
+  ""
+  size: Int!
+}
+
+input VolumeModifyInput {
+  ""
+  name: String!
+
+  ""
+  namespace: String!
+
+  ""
+  size: Int!
+}
+
+input VolumeResourceInput {
+  ""
+  name: String!
+
+  ""
+  namespace: String!
 }
 

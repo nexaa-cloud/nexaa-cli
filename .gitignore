@@ -3,5 +3,3 @@ dist/
 pkg/
 build/
 vendor/
-tilaa-cli
-terraform-provider-nexaa/

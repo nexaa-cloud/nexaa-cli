@@ -37,7 +37,7 @@ var listRegistriesCmd = &cobra.Command{
 		fmt.Fprintln(writer, "NAME\t STATE\t IMAGE\t")
 
 		for _, registry := range registries {
-			fmt.Fprintf(writer, "%s\t %s\t\n", registry.Id, registry.Name)
+			fmt.Fprintf(writer, "%s\t %s\t\n", registry.Name, registry.Source)
 		}
 
 		writer.Flush()
@@ -48,7 +48,7 @@ var createRegistryCmd = &cobra.Command{
 	Use:   "create",
 	Short: "Create a new private registry",
 	Run: func(cmd *cobra.Command, args []string) {
-		namespace, _ := cmd.Flags().GetInt("namespace")
+		namespace, _ := cmd.Flags().GetString("namespace")
 		name, _ := cmd.Flags().GetString("name")
 		source, _ := cmd.Flags().GetString("source")
 		username, _ := cmd.Flags().GetString("username")
@@ -68,6 +68,8 @@ var createRegistryCmd = &cobra.Command{
 		if err != nil {
 			log.Fatalf("Failed to create registry: %v", err)
 		}
+
+		fmt.Println("Registry created succesfully.")
 	},
 }
 
