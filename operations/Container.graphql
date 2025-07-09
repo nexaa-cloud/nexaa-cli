@@ -39,6 +39,7 @@ fragment ContainerResult on Container {
       threshold
     }
   }
+  state
   locked
 }
 

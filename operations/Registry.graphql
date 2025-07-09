@@ -1,0 +1,26 @@
+fragment RegistryResult on PrivateRegistry {
+    name
+    source
+    username
+    state
+    locked   
+}
+
+query registryList($namespaceName: String!) {
+    namespace(name: $namespaceName) {
+        privateRegistries {
+            ...RegistryResult
+        }
+    }
+}
+
+mutation registryCreate($input: RegistryCreateInput!) {
+    # @genqlient(flatten: true)
+    registryConnectionCreate(registryInput: $input) {
+        ...RegistryResult
+    }
+}
+
+mutation registryDelete($namespaceName: String!, $registryName: String!) {
+    registryConnectionDelete( registryConnection    : {name: $registryName, namespace: $namespaceName})
+}

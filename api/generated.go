@@ -589,6 +589,7 @@ type ContainerResult struct {
 	AvailableReplicas    int                                                      `json:"availableReplicas"`
 	NumberOfReplicas     int                                                      `json:"numberOfReplicas"`
 	AutoScaling          *ContainerResultAutoScaling                              `json:"autoScaling"`
+	State                string                                                   `json:"state"`
 	Locked               bool                                                     `json:"locked"`
 }
 
@@ -631,6 +632,9 @@ func (v *ContainerResult) GetNumberOfReplicas() int { return v.NumberOfReplicas 
 
 // GetAutoScaling returns ContainerResult.AutoScaling, and is useful for accessing the field via an interface.
 func (v *ContainerResult) GetAutoScaling() *ContainerResultAutoScaling { return v.AutoScaling }
+
+// GetState returns ContainerResult.State, and is useful for accessing the field via an interface.
+func (v *ContainerResult) GetState() string { return v.State }
 
 // GetLocked returns ContainerResult.Locked, and is useful for accessing the field via an interface.
 func (v *ContainerResult) GetLocked() bool { return v.Locked }
@@ -852,6 +856,57 @@ func (v *MountVolumeInput) GetName() string { return v.Name }
 // GetSize returns MountVolumeInput.Size, and is useful for accessing the field via an interface.
 func (v *MountVolumeInput) GetSize() *int { return v.Size }
 
+type RegistryCreateInput struct {
+	Namespace string `json:"namespace"`
+	Name      string `json:"name"`
+	Source    string `json:"source"`
+	Username  string `json:"username"`
+	Password  string `json:"password"`
+	Verify    bool   `json:"verify"`
+}
+
+// GetNamespace returns RegistryCreateInput.Namespace, and is useful for accessing the field via an interface.
+func (v *RegistryCreateInput) GetNamespace() string { return v.Namespace }
+
+// GetName returns RegistryCreateInput.Name, and is useful for accessing the field via an interface.
+func (v *RegistryCreateInput) GetName() string { return v.Name }
+
+// GetSource returns RegistryCreateInput.Source, and is useful for accessing the field via an interface.
+func (v *RegistryCreateInput) GetSource() string { return v.Source }
+
+// GetUsername returns RegistryCreateInput.Username, and is useful for accessing the field via an interface.
+func (v *RegistryCreateInput) GetUsername() string { return v.Username }
+
+// GetPassword returns RegistryCreateInput.Password, and is useful for accessing the field via an interface.
+func (v *RegistryCreateInput) GetPassword() string { return v.Password }
+
+// GetVerify returns RegistryCreateInput.Verify, and is useful for accessing the field via an interface.
+func (v *RegistryCreateInput) GetVerify() bool { return v.Verify }
+
+// RegistryResult includes the GraphQL fields of PrivateRegistry requested by the fragment RegistryResult.
+type RegistryResult struct {
+	Name     string `json:"name"`
+	Source   string `json:"source"`
+	Username string `json:"username"`
+	State    string `json:"state"`
+	Locked   bool   `json:"locked"`
+}
+
+// GetName returns RegistryResult.Name, and is useful for accessing the field via an interface.
+func (v *RegistryResult) GetName() string { return v.Name }
+
+// GetSource returns RegistryResult.Source, and is useful for accessing the field via an interface.
+func (v *RegistryResult) GetSource() string { return v.Source }
+
+// GetUsername returns RegistryResult.Username, and is useful for accessing the field via an interface.
+func (v *RegistryResult) GetUsername() string { return v.Username }
+
+// GetState returns RegistryResult.State, and is useful for accessing the field via an interface.
+func (v *RegistryResult) GetState() string { return v.State }
+
+// GetLocked returns RegistryResult.Locked, and is useful for accessing the field via an interface.
+func (v *RegistryResult) GetLocked() bool { return v.Locked }
+
 type ReplicasInput struct {
 	Minimum int `json:"minimum"`
 	Maximum int `json:"maximum"`
@@ -885,6 +940,60 @@ var AllState = []State{
 	StatePresent,
 	StateAbsent,
 }
+
+type VolumeCreateInput struct {
+	Name      string `json:"name"`
+	Namespace string `json:"namespace"`
+	Size      int    `json:"size"`
+}
+
+// GetName returns VolumeCreateInput.Name, and is useful for accessing the field via an interface.
+func (v *VolumeCreateInput) GetName() string { return v.Name }
+
+// GetNamespace returns VolumeCreateInput.Namespace, and is useful for accessing the field via an interface.
+func (v *VolumeCreateInput) GetNamespace() string { return v.Namespace }
+
+// GetSize returns VolumeCreateInput.Size, and is useful for accessing the field via an interface.
+func (v *VolumeCreateInput) GetSize() int { return v.Size }
+
+type VolumeModifyInput struct {
+	Name      string `json:"name"`
+	Namespace string `json:"namespace"`
+	Size      int    `json:"size"`
+}
+
+// GetName returns VolumeModifyInput.Name, and is useful for accessing the field via an interface.
+func (v *VolumeModifyInput) GetName() string { return v.Name }
+
+// GetNamespace returns VolumeModifyInput.Namespace, and is useful for accessing the field via an interface.
+func (v *VolumeModifyInput) GetNamespace() string { return v.Namespace }
+
+// GetSize returns VolumeModifyInput.Size, and is useful for accessing the field via an interface.
+func (v *VolumeModifyInput) GetSize() int { return v.Size }
+
+// VolumeResult includes the GraphQL fields of Volume requested by the fragment VolumeResult.
+type VolumeResult struct {
+	Name   string  `json:"name"`
+	Size   float64 `json:"size"`
+	Usage  float64 `json:"usage"`
+	State  string  `json:"state"`
+	Locked bool    `json:"locked"`
+}
+
+// GetName returns VolumeResult.Name, and is useful for accessing the field via an interface.
+func (v *VolumeResult) GetName() string { return v.Name }
+
+// GetSize returns VolumeResult.Size, and is useful for accessing the field via an interface.
+func (v *VolumeResult) GetSize() float64 { return v.Size }
+
+// GetUsage returns VolumeResult.Usage, and is useful for accessing the field via an interface.
+func (v *VolumeResult) GetUsage() float64 { return v.Usage }
+
+// GetState returns VolumeResult.State, and is useful for accessing the field via an interface.
+func (v *VolumeResult) GetState() string { return v.State }
+
+// GetLocked returns VolumeResult.Locked, and is useful for accessing the field via an interface.
+func (v *VolumeResult) GetLocked() bool { return v.Locked }
 
 // __containerCreateInput is used internally by genqlient
 type __containerCreateInput struct {
@@ -945,6 +1054,70 @@ type __containerModifyInput struct {
 
 // GetInput returns __containerModifyInput.Input, and is useful for accessing the field via an interface.
 func (v *__containerModifyInput) GetInput() ContainerModifyInput { return v.Input }
+
+// __registryCreateInput is used internally by genqlient
+type __registryCreateInput struct {
+	Input RegistryCreateInput `json:"input"`
+}
+
+// GetInput returns __registryCreateInput.Input, and is useful for accessing the field via an interface.
+func (v *__registryCreateInput) GetInput() RegistryCreateInput { return v.Input }
+
+// __registryDeleteInput is used internally by genqlient
+type __registryDeleteInput struct {
+	NamespaceName string `json:"namespaceName"`
+	RegistryName  string `json:"registryName"`
+}
+
+// GetNamespaceName returns __registryDeleteInput.NamespaceName, and is useful for accessing the field via an interface.
+func (v *__registryDeleteInput) GetNamespaceName() string { return v.NamespaceName }
+
+// GetRegistryName returns __registryDeleteInput.RegistryName, and is useful for accessing the field via an interface.
+func (v *__registryDeleteInput) GetRegistryName() string { return v.RegistryName }
+
+// __registryListInput is used internally by genqlient
+type __registryListInput struct {
+	NamespaceName string `json:"namespaceName"`
+}
+
+// GetNamespaceName returns __registryListInput.NamespaceName, and is useful for accessing the field via an interface.
+func (v *__registryListInput) GetNamespaceName() string { return v.NamespaceName }
+
+// __volumeCreateInput is used internally by genqlient
+type __volumeCreateInput struct {
+	Input VolumeCreateInput `json:"input"`
+}
+
+// GetInput returns __volumeCreateInput.Input, and is useful for accessing the field via an interface.
+func (v *__volumeCreateInput) GetInput() VolumeCreateInput { return v.Input }
+
+// __volumeDeleteInput is used internally by genqlient
+type __volumeDeleteInput struct {
+	NamespaceName string `json:"namespaceName"`
+	VolumeName    string `json:"volumeName"`
+}
+
+// GetNamespaceName returns __volumeDeleteInput.NamespaceName, and is useful for accessing the field via an interface.
+func (v *__volumeDeleteInput) GetNamespaceName() string { return v.NamespaceName }
+
+// GetVolumeName returns __volumeDeleteInput.VolumeName, and is useful for accessing the field via an interface.
+func (v *__volumeDeleteInput) GetVolumeName() string { return v.VolumeName }
+
+// __volumeIncreaseInput is used internally by genqlient
+type __volumeIncreaseInput struct {
+	Input VolumeModifyInput `json:"input"`
+}
+
+// GetInput returns __volumeIncreaseInput.Input, and is useful for accessing the field via an interface.
+func (v *__volumeIncreaseInput) GetInput() VolumeModifyInput { return v.Input }
+
+// __volumeListInput is used internally by genqlient
+type __volumeListInput struct {
+	NamespaceName string `json:"namespaceName"`
+}
+
+// GetNamespaceName returns __volumeListInput.NamespaceName, and is useful for accessing the field via an interface.
+func (v *__volumeListInput) GetNamespaceName() string { return v.NamespaceName }
 
 // containerCreateResponse is returned by containerCreate on success.
 type containerCreateResponse struct {
@@ -1149,6 +1322,9 @@ func (v *containerListNamespaceContainersContainer) GetAutoScaling() *ContainerR
 	return v.ContainerResult.AutoScaling
 }
 
+// GetState returns containerListNamespaceContainersContainer.State, and is useful for accessing the field via an interface.
+func (v *containerListNamespaceContainersContainer) GetState() string { return v.ContainerResult.State }
+
 // GetLocked returns containerListNamespaceContainersContainer.Locked, and is useful for accessing the field via an interface.
 func (v *containerListNamespaceContainersContainer) GetLocked() bool { return v.ContainerResult.Locked }
 
@@ -1202,6 +1378,8 @@ type __premarshalcontainerListNamespaceContainersContainer struct {
 
 	AutoScaling *ContainerResultAutoScaling `json:"autoScaling"`
 
+	State string `json:"state"`
+
 	Locked bool `json:"locked"`
 }
 
@@ -1228,6 +1406,7 @@ func (v *containerListNamespaceContainersContainer) __premarshalJSON() (*__prema
 	retval.AvailableReplicas = v.ContainerResult.AvailableReplicas
 	retval.NumberOfReplicas = v.ContainerResult.NumberOfReplicas
 	retval.AutoScaling = v.ContainerResult.AutoScaling
+	retval.State = v.ContainerResult.State
 	retval.Locked = v.ContainerResult.Locked
 	return &retval, nil
 }
@@ -1247,6 +1426,246 @@ type containerModifyResponse struct {
 
 // GetContainerModify returns containerModifyResponse.ContainerModify, and is useful for accessing the field via an interface.
 func (v *containerModifyResponse) GetContainerModify() ContainerResult { return v.ContainerModify }
+
+// registryCreateResponse is returned by registryCreate on success.
+type registryCreateResponse struct {
+	RegistryConnectionCreate RegistryResult `json:"registryConnectionCreate"`
+}
+
+// GetRegistryConnectionCreate returns registryCreateResponse.RegistryConnectionCreate, and is useful for accessing the field via an interface.
+func (v *registryCreateResponse) GetRegistryConnectionCreate() RegistryResult {
+	return v.RegistryConnectionCreate
+}
+
+// registryDeleteResponse is returned by registryDelete on success.
+type registryDeleteResponse struct {
+	RegistryConnectionDelete bool `json:"registryConnectionDelete"`
+}
+
+// GetRegistryConnectionDelete returns registryDeleteResponse.RegistryConnectionDelete, and is useful for accessing the field via an interface.
+func (v *registryDeleteResponse) GetRegistryConnectionDelete() bool {
+	return v.RegistryConnectionDelete
+}
+
+// registryListNamespace includes the requested fields of the GraphQL type Namespace.
+type registryListNamespace struct {
+	PrivateRegistries []registryListNamespacePrivateRegistriesPrivateRegistry `json:"privateRegistries"`
+}
+
+// GetPrivateRegistries returns registryListNamespace.PrivateRegistries, and is useful for accessing the field via an interface.
+func (v *registryListNamespace) GetPrivateRegistries() []registryListNamespacePrivateRegistriesPrivateRegistry {
+	return v.PrivateRegistries
+}
+
+// registryListNamespacePrivateRegistriesPrivateRegistry includes the requested fields of the GraphQL type PrivateRegistry.
+type registryListNamespacePrivateRegistriesPrivateRegistry struct {
+	RegistryResult `json:"-"`
+}
+
+// GetName returns registryListNamespacePrivateRegistriesPrivateRegistry.Name, and is useful for accessing the field via an interface.
+func (v *registryListNamespacePrivateRegistriesPrivateRegistry) GetName() string {
+	return v.RegistryResult.Name
+}
+
+// GetSource returns registryListNamespacePrivateRegistriesPrivateRegistry.Source, and is useful for accessing the field via an interface.
+func (v *registryListNamespacePrivateRegistriesPrivateRegistry) GetSource() string {
+	return v.RegistryResult.Source
+}
+
+// GetUsername returns registryListNamespacePrivateRegistriesPrivateRegistry.Username, and is useful for accessing the field via an interface.
+func (v *registryListNamespacePrivateRegistriesPrivateRegistry) GetUsername() string {
+	return v.RegistryResult.Username
+}
+
+// GetState returns registryListNamespacePrivateRegistriesPrivateRegistry.State, and is useful for accessing the field via an interface.
+func (v *registryListNamespacePrivateRegistriesPrivateRegistry) GetState() string {
+	return v.RegistryResult.State
+}
+
+// GetLocked returns registryListNamespacePrivateRegistriesPrivateRegistry.Locked, and is useful for accessing the field via an interface.
+func (v *registryListNamespacePrivateRegistriesPrivateRegistry) GetLocked() bool {
+	return v.RegistryResult.Locked
+}
+
+func (v *registryListNamespacePrivateRegistriesPrivateRegistry) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*registryListNamespacePrivateRegistriesPrivateRegistry
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.registryListNamespacePrivateRegistriesPrivateRegistry = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	err = json.Unmarshal(
+		b, &v.RegistryResult)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+type __premarshalregistryListNamespacePrivateRegistriesPrivateRegistry struct {
+	Name string `json:"name"`
+
+	Source string `json:"source"`
+
+	Username string `json:"username"`
+
+	State string `json:"state"`
+
+	Locked bool `json:"locked"`
+}
+
+func (v *registryListNamespacePrivateRegistriesPrivateRegistry) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *registryListNamespacePrivateRegistriesPrivateRegistry) __premarshalJSON() (*__premarshalregistryListNamespacePrivateRegistriesPrivateRegistry, error) {
+	var retval __premarshalregistryListNamespacePrivateRegistriesPrivateRegistry
+
+	retval.Name = v.RegistryResult.Name
+	retval.Source = v.RegistryResult.Source
+	retval.Username = v.RegistryResult.Username
+	retval.State = v.RegistryResult.State
+	retval.Locked = v.RegistryResult.Locked
+	return &retval, nil
+}
+
+// registryListResponse is returned by registryList on success.
+type registryListResponse struct {
+	Namespace registryListNamespace `json:"namespace"`
+}
+
+// GetNamespace returns registryListResponse.Namespace, and is useful for accessing the field via an interface.
+func (v *registryListResponse) GetNamespace() registryListNamespace { return v.Namespace }
+
+// volumeCreateResponse is returned by volumeCreate on success.
+type volumeCreateResponse struct {
+	VolumeCreate *VolumeResult `json:"volumeCreate"`
+}
+
+// GetVolumeCreate returns volumeCreateResponse.VolumeCreate, and is useful for accessing the field via an interface.
+func (v *volumeCreateResponse) GetVolumeCreate() *VolumeResult { return v.VolumeCreate }
+
+// volumeDeleteResponse is returned by volumeDelete on success.
+type volumeDeleteResponse struct {
+	VolumeDelete bool `json:"volumeDelete"`
+}
+
+// GetVolumeDelete returns volumeDeleteResponse.VolumeDelete, and is useful for accessing the field via an interface.
+func (v *volumeDeleteResponse) GetVolumeDelete() bool { return v.VolumeDelete }
+
+// volumeIncreaseResponse is returned by volumeIncrease on success.
+type volumeIncreaseResponse struct {
+	VolumeIncrease VolumeResult `json:"volumeIncrease"`
+}
+
+// GetVolumeIncrease returns volumeIncreaseResponse.VolumeIncrease, and is useful for accessing the field via an interface.
+func (v *volumeIncreaseResponse) GetVolumeIncrease() VolumeResult { return v.VolumeIncrease }
+
+// volumeListNamespace includes the requested fields of the GraphQL type Namespace.
+type volumeListNamespace struct {
+	Volumes []volumeListNamespaceVolumesVolume `json:"volumes"`
+}
+
+// GetVolumes returns volumeListNamespace.Volumes, and is useful for accessing the field via an interface.
+func (v *volumeListNamespace) GetVolumes() []volumeListNamespaceVolumesVolume { return v.Volumes }
+
+// volumeListNamespaceVolumesVolume includes the requested fields of the GraphQL type Volume.
+type volumeListNamespaceVolumesVolume struct {
+	VolumeResult `json:"-"`
+}
+
+// GetName returns volumeListNamespaceVolumesVolume.Name, and is useful for accessing the field via an interface.
+func (v *volumeListNamespaceVolumesVolume) GetName() string { return v.VolumeResult.Name }
+
+// GetSize returns volumeListNamespaceVolumesVolume.Size, and is useful for accessing the field via an interface.
+func (v *volumeListNamespaceVolumesVolume) GetSize() float64 { return v.VolumeResult.Size }
+
+// GetUsage returns volumeListNamespaceVolumesVolume.Usage, and is useful for accessing the field via an interface.
+func (v *volumeListNamespaceVolumesVolume) GetUsage() float64 { return v.VolumeResult.Usage }
+
+// GetState returns volumeListNamespaceVolumesVolume.State, and is useful for accessing the field via an interface.
+func (v *volumeListNamespaceVolumesVolume) GetState() string { return v.VolumeResult.State }
+
+// GetLocked returns volumeListNamespaceVolumesVolume.Locked, and is useful for accessing the field via an interface.
+func (v *volumeListNamespaceVolumesVolume) GetLocked() bool { return v.VolumeResult.Locked }
+
+func (v *volumeListNamespaceVolumesVolume) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*volumeListNamespaceVolumesVolume
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.volumeListNamespaceVolumesVolume = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	err = json.Unmarshal(
+		b, &v.VolumeResult)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+type __premarshalvolumeListNamespaceVolumesVolume struct {
+	Name string `json:"name"`
+
+	Size float64 `json:"size"`
+
+	Usage float64 `json:"usage"`
+
+	State string `json:"state"`
+
+	Locked bool `json:"locked"`
+}
+
+func (v *volumeListNamespaceVolumesVolume) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *volumeListNamespaceVolumesVolume) __premarshalJSON() (*__premarshalvolumeListNamespaceVolumesVolume, error) {
+	var retval __premarshalvolumeListNamespaceVolumesVolume
+
+	retval.Name = v.VolumeResult.Name
+	retval.Size = v.VolumeResult.Size
+	retval.Usage = v.VolumeResult.Usage
+	retval.State = v.VolumeResult.State
+	retval.Locked = v.VolumeResult.Locked
+	return &retval, nil
+}
+
+// volumeListResponse is returned by volumeList on success.
+type volumeListResponse struct {
+	Namespace volumeListNamespace `json:"namespace"`
+}
+
+// GetNamespace returns volumeListResponse.Namespace, and is useful for accessing the field via an interface.
+func (v *volumeListResponse) GetNamespace() volumeListNamespace { return v.Namespace }
 
 // The mutation executed by containerCreate.
 const containerCreate_Operation = `
@@ -1296,6 +1715,7 @@ fragment ContainerResult on Container {
 			threshold
 		}
 	}
+	state
 	locked
 }
 `
@@ -1531,6 +1951,7 @@ fragment ContainerResult on Container {
 			threshold
 		}
 	}
+	state
 	locked
 }
 `
@@ -1608,6 +2029,7 @@ fragment ContainerResult on Container {
 			threshold
 		}
 	}
+	state
 	locked
 }
 `
@@ -1626,6 +2048,283 @@ func containerModify(
 	}
 
 	data_ = &containerModifyResponse{}
+	resp_ := &graphql.Response{Data: data_}
+
+	err_ = client_.MakeRequest(
+		ctx_,
+		req_,
+		resp_,
+	)
+
+	return data_, err_
+}
+
+// The mutation executed by registryCreate.
+const registryCreate_Operation = `
+mutation registryCreate ($input: RegistryCreateInput!) {
+	registryConnectionCreate(registryInput: $input) {
+		... RegistryResult
+	}
+}
+fragment RegistryResult on PrivateRegistry {
+	name
+	source
+	username
+	state
+	locked
+}
+`
+
+func registryCreate(
+	ctx_ context.Context,
+	client_ graphql.Client,
+	input RegistryCreateInput,
+) (data_ *registryCreateResponse, err_ error) {
+	req_ := &graphql.Request{
+		OpName: "registryCreate",
+		Query:  registryCreate_Operation,
+		Variables: &__registryCreateInput{
+			Input: input,
+		},
+	}
+
+	data_ = &registryCreateResponse{}
+	resp_ := &graphql.Response{Data: data_}
+
+	err_ = client_.MakeRequest(
+		ctx_,
+		req_,
+		resp_,
+	)
+
+	return data_, err_
+}
+
+// The mutation executed by registryDelete.
+const registryDelete_Operation = `
+mutation registryDelete ($namespaceName: String!, $registryName: String!) {
+	registryConnectionDelete(registryConnection: {name:$registryName,namespace:$namespaceName})
+}
+`
+
+func registryDelete(
+	ctx_ context.Context,
+	client_ graphql.Client,
+	namespaceName string,
+	registryName string,
+) (data_ *registryDeleteResponse, err_ error) {
+	req_ := &graphql.Request{
+		OpName: "registryDelete",
+		Query:  registryDelete_Operation,
+		Variables: &__registryDeleteInput{
+			NamespaceName: namespaceName,
+			RegistryName:  registryName,
+		},
+	}
+
+	data_ = &registryDeleteResponse{}
+	resp_ := &graphql.Response{Data: data_}
+
+	err_ = client_.MakeRequest(
+		ctx_,
+		req_,
+		resp_,
+	)
+
+	return data_, err_
+}
+
+// The query executed by registryList.
+const registryList_Operation = `
+query registryList ($namespaceName: String!) {
+	namespace(name: $namespaceName) {
+		privateRegistries {
+			... RegistryResult
+		}
+	}
+}
+fragment RegistryResult on PrivateRegistry {
+	name
+	source
+	username
+	state
+	locked
+}
+`
+
+func registryList(
+	ctx_ context.Context,
+	client_ graphql.Client,
+	namespaceName string,
+) (data_ *registryListResponse, err_ error) {
+	req_ := &graphql.Request{
+		OpName: "registryList",
+		Query:  registryList_Operation,
+		Variables: &__registryListInput{
+			NamespaceName: namespaceName,
+		},
+	}
+
+	data_ = &registryListResponse{}
+	resp_ := &graphql.Response{Data: data_}
+
+	err_ = client_.MakeRequest(
+		ctx_,
+		req_,
+		resp_,
+	)
+
+	return data_, err_
+}
+
+// The mutation executed by volumeCreate.
+const volumeCreate_Operation = `
+mutation volumeCreate ($input: VolumeCreateInput!) {
+	volumeCreate(volumeInput: $input) {
+		... VolumeResult
+	}
+}
+fragment VolumeResult on Volume {
+	name
+	size
+	usage
+	state
+	locked
+}
+`
+
+func volumeCreate(
+	ctx_ context.Context,
+	client_ graphql.Client,
+	input VolumeCreateInput,
+) (data_ *volumeCreateResponse, err_ error) {
+	req_ := &graphql.Request{
+		OpName: "volumeCreate",
+		Query:  volumeCreate_Operation,
+		Variables: &__volumeCreateInput{
+			Input: input,
+		},
+	}
+
+	data_ = &volumeCreateResponse{}
+	resp_ := &graphql.Response{Data: data_}
+
+	err_ = client_.MakeRequest(
+		ctx_,
+		req_,
+		resp_,
+	)
+
+	return data_, err_
+}
+
+// The mutation executed by volumeDelete.
+const volumeDelete_Operation = `
+mutation volumeDelete ($namespaceName: String!, $volumeName: String!) {
+	volumeDelete(volume: {name:$volumeName,namespace:$namespaceName})
+}
+`
+
+func volumeDelete(
+	ctx_ context.Context,
+	client_ graphql.Client,
+	namespaceName string,
+	volumeName string,
+) (data_ *volumeDeleteResponse, err_ error) {
+	req_ := &graphql.Request{
+		OpName: "volumeDelete",
+		Query:  volumeDelete_Operation,
+		Variables: &__volumeDeleteInput{
+			NamespaceName: namespaceName,
+			VolumeName:    volumeName,
+		},
+	}
+
+	data_ = &volumeDeleteResponse{}
+	resp_ := &graphql.Response{Data: data_}
+
+	err_ = client_.MakeRequest(
+		ctx_,
+		req_,
+		resp_,
+	)
+
+	return data_, err_
+}
+
+// The mutation executed by volumeIncrease.
+const volumeIncrease_Operation = `
+mutation volumeIncrease ($input: VolumeModifyInput!) {
+	volumeIncrease(volumeInput: $input) {
+		... VolumeResult
+	}
+}
+fragment VolumeResult on Volume {
+	name
+	size
+	usage
+	state
+	locked
+}
+`
+
+func volumeIncrease(
+	ctx_ context.Context,
+	client_ graphql.Client,
+	input VolumeModifyInput,
+) (data_ *volumeIncreaseResponse, err_ error) {
+	req_ := &graphql.Request{
+		OpName: "volumeIncrease",
+		Query:  volumeIncrease_Operation,
+		Variables: &__volumeIncreaseInput{
+			Input: input,
+		},
+	}
+
+	data_ = &volumeIncreaseResponse{}
+	resp_ := &graphql.Response{Data: data_}
+
+	err_ = client_.MakeRequest(
+		ctx_,
+		req_,
+		resp_,
+	)
+
+	return data_, err_
+}
+
+// The query executed by volumeList.
+const volumeList_Operation = `
+query volumeList ($namespaceName: String!) {
+	namespace(name: $namespaceName) {
+		volumes {
+			... VolumeResult
+		}
+	}
+}
+fragment VolumeResult on Volume {
+	name
+	size
+	usage
+	state
+	locked
+}
+`
+
+func volumeList(
+	ctx_ context.Context,
+	client_ graphql.Client,
+	namespaceName string,
+) (data_ *volumeListResponse, err_ error) {
+	req_ := &graphql.Request{
+		OpName: "volumeList",
+		Query:  volumeList_Operation,
+		Variables: &__volumeListInput{
+			NamespaceName: namespaceName,
+		},
+	}
+
+	data_ = &volumeListResponse{}
 	resp_ := &graphql.Response{Data: data_}
 
 	err_ = client_.MakeRequest(

@@ -1,192 +1,70 @@
 package api
 
 import (
-	"gitlab.com/tilaa/tilaa-cli/config"
-	"gitlab.com/tilaa/tilaa-cli/graphql"
+	"context"
+	"fmt"
 )
 
-type Volume struct {
-	Namespace string
-	Name string
-	Size int
-	Usage int
-	Locked bool
-}
-
-type VolumeInput struct {
-	Namespace string
-	Name string
-	Size int
-}
-
-type VolumeResponse struct {
-    Name      string        	 `json:"name"`
-    Namespace NamespaceResponse	 `json:"namespace"`
-    Size      int           	 `json:"size"`
-    Usage     int           	 `json:"usage"`
-	Locked	  bool			 	 `json:"locked"`
-}
-
-
-func ListVolumes(namespace string) ([]Volume, error) {
-	client := graphql.NewClient(config.GRAPHQL_URL, config.AccessToken)
-
-	var volumeQuery struct {
-		Namespace struct {
-			Name 		string
-			Volumes []struct {
-				Name 	string
-				Size 	int
-				Usage 	int
-				Locked	bool
-			}
-		} `graphql:"namespace(name: $name)"`
-	}
-
-	params := map[string]graphql.Parameter{
-		"name": graphql.NewString(namespace),
-	}
-
-	query := client.BuildQuery(&volumeQuery, params)
-	err := client.Query(query)
-
+func (client *Client) ListVolumes(namespace string) ([]VolumeResult, error) {
+	volumeResponse, err := volumeList(context.Background(), *client.client, namespace)
 	if err != nil {
-		return nil, err
+		return []VolumeResult{}, err
 	}
 
-	var volumes []Volume
+	namespaceResult := volumeResponse.GetNamespace()
 
-	for _, volume := range volumeQuery.Namespace.Volumes {
-		volumes = append(volumes, Volume{
-			Name: string(volume.Name),
-			Size: int(volume.Size),
-			Usage: int(volume.Usage),
-			Locked: bool(volume.Locked),
-		})
-	}
-
-	return volumes, nil
-}
-
-func ListVolumeByName(namespace string, volume string) (*Volume, error) {
-	client := graphql.NewClient(config.GRAPHQL_URL, config.AccessToken)
-
-	var volumeQuery struct {
-		Namespace struct {
-			Name 	string
-			Volumes []struct {
-				Name 	string
-				Size 	int
-				Usage 	int
-				Locked 	bool
-			}
-		} `graphql:"namespace(name: $name)"`
-	}
-
-	params := map[string]graphql.Parameter{
-		"name": graphql.NewString(namespace),
-	}
-
-	query := client.BuildQuery(&volumeQuery, params)
-	err := client.Query(query)
-
-	if err != nil {
-		return nil, err
-	}
-
-	var vol Volume
-	
-	for _, item := range volumeQuery.Namespace.Volumes {
-		if item.Name == volume {
-			vol.Name = item.Name
-			vol.Size = item.Size
-			vol.Usage = item.Usage
-			vol.Locked = item.Locked
+	result := make([]VolumeResult, len(namespaceResult.Volumes))
+	for i, vol := range namespaceResult.Volumes {
+		result[i] = VolumeResult{
+			Name: vol.Name,
+			Size: vol.Size,
+			Usage: vol.Usage,
+			State: vol.State,
+			Locked: vol.Locked,
 		}
 	}
 
-	vol.Namespace = volumeQuery.Namespace.Name
-
-	return &vol, nil
+	return result, nil
 }
 
-func CreateVolume(input VolumeInput) (Volume, error) {
-	client := graphql.NewClient(config.GRAPHQL_URL, config.AccessToken)
-
-	createVolumeInput := map[string]any{
-		"name": input.Name,
-		"namespace": input.Namespace,
-		"size": input.Size,
-	}
-		
-	params := map[string]graphql.Parameter{
-		"volumeInput": graphql.NewComplexParameter("VolumeCreateInput", createVolumeInput),
-	}
-
-	var resp VolumeResponse
-
-	mutation := client.BuildMutationWithQuery("volumeCreate", params, &resp)
-
-	err := client.Mutate(mutation)
-
-	var vol Volume
-	vol.Name = resp.Name
-	vol.Namespace = resp.Namespace.Name
-	vol.Size = resp.Size
-	vol.Usage = resp.Usage
-	vol.Locked = resp.Locked
-
-	return vol, err
-}
-
-func IncreaseVolume(input VolumeInput) (Volume, error) {
-	client := graphql.NewClient(config.GRAPHQL_URL, config.AccessToken)
-
-	volumeInput := map[string]any{
-		"name": input.Name,
-		"namespace": input.Namespace,
-		"size": input.Size,
-	}
-
-	params := map[string]graphql.Parameter{
-		"volumeInput": graphql.NewComplexParameter("VolumeModifyInput", volumeInput),
-	}
-
-	var resp VolumeResponse
-
-	mutation := client.BuildMutationWithQuery("volumeIncrease", params, &resp)
-
-	err := client.Mutate(mutation)
-
-	var vol Volume
-	vol.Name = resp.Name
-	vol.Namespace = resp.Namespace.Name
-	vol.Size = resp.Size
-	vol.Usage = resp.Usage
-	vol.Locked = resp.Locked
-
-	return vol, err
-}
-
-
-func DeleteVolume(name string, namespace string) error {
-	client := graphql.NewClient(config.GRAPHQL_URL, config.AccessToken)
-
-	volumeInput := map[string]any{
-		"namespace": namespace,
-		"name": name,
-	}
-
-	params := map[string]graphql.Parameter{
-		"volume": graphql.NewComplexParameter("VolumeResourceInput", volumeInput),
-	}
-
-	mutation := client.BuildMutation("volumeDelete", params)
-
-	err := client.Mutate(mutation)
+func (client *Client) ListVolumeByName(namespace string, volumeName string) (*VolumeResult, error) {
+	volumes, err := client.ListVolumes(namespace)
 	if err != nil {
-		return err
+		return  nil, err
 	}
 
-	return nil
+	for _, vol := range volumes {
+		if vol.Name == volumeName {
+			return &vol, nil
+		}
+	}
+
+	return nil, fmt.Errorf("volume %q not found in namespace %q", volumeName, namespace)
+}
+
+func (client *Client) VolumeCreate(input VolumeCreateInput) (VolumeResult, error) {
+	volumeCreateResponse, err := volumeCreate(context.Background(), *client.client, input)
+	if err != nil {
+		return VolumeResult{}, err
+	}
+
+	return *volumeCreateResponse.GetVolumeCreate(), nil
+}
+
+func (client *Client) VolumeIncrease(input VolumeModifyInput) (VolumeResult, error) {
+	volumeIncreaseResponse, err := volumeIncrease(context.Background(), *client.client, input)
+	if err !=nil {
+		return VolumeResult{}, nil
+	}
+
+	return volumeIncreaseResponse.GetVolumeIncrease(), nil
+}
+
+func (client *Client) VolumeDelete(namespace string, volumeName string) (bool, error) {
+	volumeDeleteResponse, err := volumeDelete(context.Background(), *client.client, namespace, volumeName)
+	if err != nil {
+		return false, err
+	}
+
+	return volumeDeleteResponse.GetVolumeDelete(), nil
 }
