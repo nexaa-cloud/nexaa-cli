@@ -1046,6 +1046,18 @@ type __containerJobCreateInput struct {
 // GetScheduledJob returns __containerJobCreateInput.ScheduledJob, and is useful for accessing the field via an interface.
 func (v *__containerJobCreateInput) GetScheduledJob() ContainerJobCreateInput { return v.ScheduledJob }
 
+// __containerJobDeleteInput is used internally by genqlient
+type __containerJobDeleteInput struct {
+	NamesapceName    string `json:"namesapceName"`
+	ContainerJobName string `json:"containerJobName"`
+}
+
+// GetNamesapceName returns __containerJobDeleteInput.NamesapceName, and is useful for accessing the field via an interface.
+func (v *__containerJobDeleteInput) GetNamesapceName() string { return v.NamesapceName }
+
+// GetContainerJobName returns __containerJobDeleteInput.ContainerJobName, and is useful for accessing the field via an interface.
+func (v *__containerJobDeleteInput) GetContainerJobName() string { return v.ContainerJobName }
+
 // __containerJobListInput is used internally by genqlient
 type __containerJobListInput struct {
 	NamespaceName string `json:"namespaceName"`
@@ -1191,6 +1203,14 @@ type containerJobCreateResponse struct {
 func (v *containerJobCreateResponse) GetContainerJobCreate() ContainerJobResult {
 	return v.ContainerJobCreate
 }
+
+// containerJobDeleteResponse is returned by containerJobDelete on success.
+type containerJobDeleteResponse struct {
+	ContainerJobDelete bool `json:"containerJobDelete"`
+}
+
+// GetContainerJobDelete returns containerJobDeleteResponse.ContainerJobDelete, and is useful for accessing the field via an interface.
+func (v *containerJobDeleteResponse) GetContainerJobDelete() bool { return v.ContainerJobDelete }
 
 // containerJobListNamespace includes the requested fields of the GraphQL type Namespace.
 type containerJobListNamespace struct {
@@ -2007,6 +2027,40 @@ func containerJobCreate(
 	}
 
 	data_ = &containerJobCreateResponse{}
+	resp_ := &graphql.Response{Data: data_}
+
+	err_ = client_.MakeRequest(
+		ctx_,
+		req_,
+		resp_,
+	)
+
+	return data_, err_
+}
+
+// The mutation executed by containerJobDelete.
+const containerJobDelete_Operation = `
+mutation containerJobDelete ($namesapceName: String!, $containerJobName: String!) {
+	containerJobDelete(scheduledJob: {name:$containerJobName,namespace:$namesapceName})
+}
+`
+
+func containerJobDelete(
+	ctx_ context.Context,
+	client_ graphql.Client,
+	namesapceName string,
+	containerJobName string,
+) (data_ *containerJobDeleteResponse, err_ error) {
+	req_ := &graphql.Request{
+		OpName: "containerJobDelete",
+		Query:  containerJobDelete_Operation,
+		Variables: &__containerJobDeleteInput{
+			NamesapceName:    namesapceName,
+			ContainerJobName: containerJobName,
+		},
+	}
+
+	data_ = &containerJobDeleteResponse{}
 	resp_ := &graphql.Response{Data: data_}
 
 	err_ = client_.MakeRequest(

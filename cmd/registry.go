@@ -95,7 +95,7 @@ var deleteRegistryCmd = &cobra.Command{
 			return
 		}
 
-		log.Println("deleted registry wiht name: ", name)
+		log.Println("deleted registry with name: ", name)
 	},
 }
 
