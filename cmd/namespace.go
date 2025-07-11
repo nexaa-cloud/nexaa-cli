@@ -21,7 +21,8 @@ var listNamespacesCmd = &cobra.Command{
 	Use:   "list",
 	Short: "List all namespaces",
 	Run: func(cmd *cobra.Command, args []string) {
-		namespaces, err := api.ListNamespaces()
+		client := api.NewClient()
+		namespaces, err := client.NamespacesList()
 
 		if err != nil {
 			log.Fatalf("Failed to list namespaces: %v", err)
@@ -34,7 +35,7 @@ var listNamespacesCmd = &cobra.Command{
 
 		writer := tabwriter.NewWriter(os.Stdout, 0, 0, 3, ' ', tabwriter.Debug)
 
-		fmt.Fprintln(writer, "ID\t NAME\t")
+		fmt.Fprintln(writer, "NAME\t DESCRIPTION\t")
 
 		for _, namespace := range namespaces {
 			fmt.Fprintf(writer, "%s\t %s\t\n", namespace.Name, namespace.Description)
@@ -51,17 +52,19 @@ var createNamespaceCmd = &cobra.Command{
 		name, _ := cmd.Flags().GetString("name")
 		description, _ := cmd.Flags().GetString("description")
 
-		input := api.NamespaceInput{
+		input := api.NamespaceCreateInput{
 			Name: name,
-			Description: description,
+			Description: &description,
 		}
 
-		_, err := api.CreateNamespace(input)
+		client := api.NewClient()
+
+		namespace, err := client.NamespaceCreate(input)
 		if err != nil {
 			log.Fatalf("Failed to create namespace: %v", err)
 		}
 
-		fmt.Println("Namespace created successfully.")
+		fmt.Println("Created namespace: ", namespace.Name)
 	},
 }
 
@@ -71,12 +74,14 @@ var deleteNamespaceCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		name, _ := cmd.Flags().GetString("name")
 
-		err := api.DeleteNamespace(name)
+		client := api.NewClient()
+
+		_, err := client.NamespaceDelete(name)
 		if err != nil {
 			log.Fatalf("Failed to delete namespace: %v", err)
 		}
 
-		fmt.Println("Namespace removed successfully.")
+		fmt.Println("Deleted namespace with name: ", name)
 	},
 }
 

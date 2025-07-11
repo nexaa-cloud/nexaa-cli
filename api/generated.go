@@ -856,6 +856,29 @@ func (v *MountVolumeInput) GetName() string { return v.Name }
 // GetSize returns MountVolumeInput.Size, and is useful for accessing the field via an interface.
 func (v *MountVolumeInput) GetSize() *int { return v.Size }
 
+type NamespaceCreateInput struct {
+	Name        string  `json:"name"`
+	Description *string `json:"description"`
+}
+
+// GetName returns NamespaceCreateInput.Name, and is useful for accessing the field via an interface.
+func (v *NamespaceCreateInput) GetName() string { return v.Name }
+
+// GetDescription returns NamespaceCreateInput.Description, and is useful for accessing the field via an interface.
+func (v *NamespaceCreateInput) GetDescription() *string { return v.Description }
+
+// NamespaceResult includes the GraphQL fields of Namespace requested by the fragment NamespaceResult.
+type NamespaceResult struct {
+	Name        string `json:"name"`
+	Description string `json:"description"`
+}
+
+// GetName returns NamespaceResult.Name, and is useful for accessing the field via an interface.
+func (v *NamespaceResult) GetName() string { return v.Name }
+
+// GetDescription returns NamespaceResult.Description, and is useful for accessing the field via an interface.
+func (v *NamespaceResult) GetDescription() string { return v.Description }
+
 type RegistryCreateInput struct {
 	Namespace string `json:"namespace"`
 	Name      string `json:"name"`
@@ -1054,6 +1077,30 @@ type __containerModifyInput struct {
 
 // GetInput returns __containerModifyInput.Input, and is useful for accessing the field via an interface.
 func (v *__containerModifyInput) GetInput() ContainerModifyInput { return v.Input }
+
+// __namespaceCreateInput is used internally by genqlient
+type __namespaceCreateInput struct {
+	Input NamespaceCreateInput `json:"input"`
+}
+
+// GetInput returns __namespaceCreateInput.Input, and is useful for accessing the field via an interface.
+func (v *__namespaceCreateInput) GetInput() NamespaceCreateInput { return v.Input }
+
+// __namespaceDeleteInput is used internally by genqlient
+type __namespaceDeleteInput struct {
+	Name string `json:"name"`
+}
+
+// GetName returns __namespaceDeleteInput.Name, and is useful for accessing the field via an interface.
+func (v *__namespaceDeleteInput) GetName() string { return v.Name }
+
+// __namespaceListByNameInput is used internally by genqlient
+type __namespaceListByNameInput struct {
+	Name string `json:"name"`
+}
+
+// GetName returns __namespaceListByNameInput.Name, and is useful for accessing the field via an interface.
+func (v *__namespaceListByNameInput) GetName() string { return v.Name }
 
 // __registryCreateInput is used internally by genqlient
 type __registryCreateInput struct {
@@ -1426,6 +1473,158 @@ type containerModifyResponse struct {
 
 // GetContainerModify returns containerModifyResponse.ContainerModify, and is useful for accessing the field via an interface.
 func (v *containerModifyResponse) GetContainerModify() ContainerResult { return v.ContainerModify }
+
+// namespaceCreateResponse is returned by namespaceCreate on success.
+type namespaceCreateResponse struct {
+	NamespaceCreate NamespaceResult `json:"namespaceCreate"`
+}
+
+// GetNamespaceCreate returns namespaceCreateResponse.NamespaceCreate, and is useful for accessing the field via an interface.
+func (v *namespaceCreateResponse) GetNamespaceCreate() NamespaceResult { return v.NamespaceCreate }
+
+// namespaceDeleteResponse is returned by namespaceDelete on success.
+type namespaceDeleteResponse struct {
+	NamespaceDelete bool `json:"namespaceDelete"`
+}
+
+// GetNamespaceDelete returns namespaceDeleteResponse.NamespaceDelete, and is useful for accessing the field via an interface.
+func (v *namespaceDeleteResponse) GetNamespaceDelete() bool { return v.NamespaceDelete }
+
+// namespaceListByNameNamespace includes the requested fields of the GraphQL type Namespace.
+type namespaceListByNameNamespace struct {
+	NamespaceResult `json:"-"`
+}
+
+// GetName returns namespaceListByNameNamespace.Name, and is useful for accessing the field via an interface.
+func (v *namespaceListByNameNamespace) GetName() string { return v.NamespaceResult.Name }
+
+// GetDescription returns namespaceListByNameNamespace.Description, and is useful for accessing the field via an interface.
+func (v *namespaceListByNameNamespace) GetDescription() string { return v.NamespaceResult.Description }
+
+func (v *namespaceListByNameNamespace) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*namespaceListByNameNamespace
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.namespaceListByNameNamespace = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	err = json.Unmarshal(
+		b, &v.NamespaceResult)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+type __premarshalnamespaceListByNameNamespace struct {
+	Name string `json:"name"`
+
+	Description string `json:"description"`
+}
+
+func (v *namespaceListByNameNamespace) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *namespaceListByNameNamespace) __premarshalJSON() (*__premarshalnamespaceListByNameNamespace, error) {
+	var retval __premarshalnamespaceListByNameNamespace
+
+	retval.Name = v.NamespaceResult.Name
+	retval.Description = v.NamespaceResult.Description
+	return &retval, nil
+}
+
+// namespaceListByNameResponse is returned by namespaceListByName on success.
+type namespaceListByNameResponse struct {
+	Namespace namespaceListByNameNamespace `json:"namespace"`
+}
+
+// GetNamespace returns namespaceListByNameResponse.Namespace, and is useful for accessing the field via an interface.
+func (v *namespaceListByNameResponse) GetNamespace() namespaceListByNameNamespace { return v.Namespace }
+
+// namespaceListNamespacesNamespace includes the requested fields of the GraphQL type Namespace.
+type namespaceListNamespacesNamespace struct {
+	NamespaceResult `json:"-"`
+}
+
+// GetName returns namespaceListNamespacesNamespace.Name, and is useful for accessing the field via an interface.
+func (v *namespaceListNamespacesNamespace) GetName() string { return v.NamespaceResult.Name }
+
+// GetDescription returns namespaceListNamespacesNamespace.Description, and is useful for accessing the field via an interface.
+func (v *namespaceListNamespacesNamespace) GetDescription() string {
+	return v.NamespaceResult.Description
+}
+
+func (v *namespaceListNamespacesNamespace) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*namespaceListNamespacesNamespace
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.namespaceListNamespacesNamespace = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	err = json.Unmarshal(
+		b, &v.NamespaceResult)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+type __premarshalnamespaceListNamespacesNamespace struct {
+	Name string `json:"name"`
+
+	Description string `json:"description"`
+}
+
+func (v *namespaceListNamespacesNamespace) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *namespaceListNamespacesNamespace) __premarshalJSON() (*__premarshalnamespaceListNamespacesNamespace, error) {
+	var retval __premarshalnamespaceListNamespacesNamespace
+
+	retval.Name = v.NamespaceResult.Name
+	retval.Description = v.NamespaceResult.Description
+	return &retval, nil
+}
+
+// namespaceListResponse is returned by namespaceList on success.
+type namespaceListResponse struct {
+	Namespaces []namespaceListNamespacesNamespace `json:"namespaces"`
+}
+
+// GetNamespaces returns namespaceListResponse.Namespaces, and is useful for accessing the field via an interface.
+func (v *namespaceListResponse) GetNamespaces() []namespaceListNamespacesNamespace {
+	return v.Namespaces
+}
 
 // registryCreateResponse is returned by registryCreate on success.
 type registryCreateResponse struct {
@@ -2048,6 +2247,148 @@ func containerModify(
 	}
 
 	data_ = &containerModifyResponse{}
+	resp_ := &graphql.Response{Data: data_}
+
+	err_ = client_.MakeRequest(
+		ctx_,
+		req_,
+		resp_,
+	)
+
+	return data_, err_
+}
+
+// The mutation executed by namespaceCreate.
+const namespaceCreate_Operation = `
+mutation namespaceCreate ($input: NamespaceCreateInput!) {
+	namespaceCreate(namespaceInput: $input) {
+		... NamespaceResult
+	}
+}
+fragment NamespaceResult on Namespace {
+	name
+	description
+}
+`
+
+func namespaceCreate(
+	ctx_ context.Context,
+	client_ graphql.Client,
+	input NamespaceCreateInput,
+) (data_ *namespaceCreateResponse, err_ error) {
+	req_ := &graphql.Request{
+		OpName: "namespaceCreate",
+		Query:  namespaceCreate_Operation,
+		Variables: &__namespaceCreateInput{
+			Input: input,
+		},
+	}
+
+	data_ = &namespaceCreateResponse{}
+	resp_ := &graphql.Response{Data: data_}
+
+	err_ = client_.MakeRequest(
+		ctx_,
+		req_,
+		resp_,
+	)
+
+	return data_, err_
+}
+
+// The mutation executed by namespaceDelete.
+const namespaceDelete_Operation = `
+mutation namespaceDelete ($name: String!) {
+	namespaceDelete(namespace: {name:$name})
+}
+`
+
+func namespaceDelete(
+	ctx_ context.Context,
+	client_ graphql.Client,
+	name string,
+) (data_ *namespaceDeleteResponse, err_ error) {
+	req_ := &graphql.Request{
+		OpName: "namespaceDelete",
+		Query:  namespaceDelete_Operation,
+		Variables: &__namespaceDeleteInput{
+			Name: name,
+		},
+	}
+
+	data_ = &namespaceDeleteResponse{}
+	resp_ := &graphql.Response{Data: data_}
+
+	err_ = client_.MakeRequest(
+		ctx_,
+		req_,
+		resp_,
+	)
+
+	return data_, err_
+}
+
+// The query executed by namespaceList.
+const namespaceList_Operation = `
+query namespaceList {
+	namespaces {
+		... NamespaceResult
+	}
+}
+fragment NamespaceResult on Namespace {
+	name
+	description
+}
+`
+
+func namespaceList(
+	ctx_ context.Context,
+	client_ graphql.Client,
+) (data_ *namespaceListResponse, err_ error) {
+	req_ := &graphql.Request{
+		OpName: "namespaceList",
+		Query:  namespaceList_Operation,
+	}
+
+	data_ = &namespaceListResponse{}
+	resp_ := &graphql.Response{Data: data_}
+
+	err_ = client_.MakeRequest(
+		ctx_,
+		req_,
+		resp_,
+	)
+
+	return data_, err_
+}
+
+// The query executed by namespaceListByName.
+const namespaceListByName_Operation = `
+query namespaceListByName ($name: String!) {
+	namespace(name: $name) {
+		... NamespaceResult
+	}
+}
+fragment NamespaceResult on Namespace {
+	name
+	description
+}
+`
+
+func namespaceListByName(
+	ctx_ context.Context,
+	client_ graphql.Client,
+	name string,
+) (data_ *namespaceListByNameResponse, err_ error) {
+	req_ := &graphql.Request{
+		OpName: "namespaceListByName",
+		Query:  namespaceListByName_Operation,
+		Variables: &__namespaceListByNameInput{
+			Name: name,
+		},
+	}
+
+	data_ = &namespaceListByNameResponse{}
 	resp_ := &graphql.Response{Data: data_}
 
 	err_ = client_.MakeRequest(
