@@ -129,6 +129,29 @@ var listContainerJobsCmd = &cobra.Command{
 	},
 }
 
+var deleteContainerJobCmd = &cobra.Command{
+	Use: "delete",
+	Short: "Delete a container job",
+	Run: func(cmd *cobra.Command, args []string) {
+		namespace, _ := cmd.Flags().GetString("namespace")
+		name, _ := cmd.Flags().GetString("name")
+
+		client := api.NewClient()
+
+		result, err := client.ContainerJobDelete(namespace, name)
+		if err != nil {
+			log.Fatalf("Failed to delete containerJob: %q", err)
+			return
+		}
+
+		if !result {
+			log.Fatalf("Could not delete containerJob with name: %q", name)
+		}
+
+		log.Println("deleted containerjob with name: ", name)
+	},
+}
+
 func init() {
 	createContainerJobCmd.Flags().String("namespace", "", "Namespace")
 	createContainerJobCmd.Flags().String("name", "", "Name for this container")
@@ -156,4 +179,10 @@ func init() {
 	listContainerJobsCmd.Flags().String("namespace", "", "Namespace")
 	listContainerJobsCmd.MarkFlagRequired("namespace")
 	containerjobCmd.AddCommand(listContainerJobsCmd)
+
+	deleteContainerJobCmd.Flags().String("namespace", "", "Namespace")
+	deleteContainerJobCmd.Flags().String("name", "", "Name of the containerjob")
+	deleteContainerJobCmd.MarkFlagRequired("namespace")
+	deleteContainerJobCmd.MarkFlagRequired("name")
+	containerjobCmd.AddCommand(deleteContainerJobCmd)
 }

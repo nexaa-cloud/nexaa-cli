@@ -130,7 +130,7 @@ var deleteContainerCmd = &cobra.Command{
 		}
 
 		if !result {
-			log.Fatalf("Could not delete container with name ", name)
+			log.Fatalf("Could not delete container with name: %s", name)
 			return
 		}
 		log.Println("Deleted container with name: ", name)

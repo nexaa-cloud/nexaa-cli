@@ -1,132 +1,56 @@
 package api
 
-import (
-	// "github.com/shurcooL/graphql"
+import "context"
 
-	"gitlab.com/tilaa/tilaa-cli/config"
-	"gitlab.com/tilaa/tilaa-cli/graphql"
-)
+func (client *Client) NamespacesList() ([]NamespaceResult, error) {
+	namespaceResponse, err := namespaceList(context.Background(), *client.client)
+	if err != nil {
+		return []NamespaceResult{}, err
+	}
 
-type Namespace struct {
-	Name 		string
-	Description string
-}
+	namespaceResult := namespaceResponse.GetNamespaces()
 
-type NamespaceInput struct {
-	Name 		string
-	Description string
-}
-
-type NamespaceResponse struct {
-	Name 			string		`json:"name"`
-	Description		string		`json:"description"`
-}
-
-func ListNamespaces() ([]Namespace, error) {
-	client := graphql.NewClient(config.GRAPHQL_URL, config.AccessToken)
-
-	var namespaceQuery struct {
-		Namespaces []struct {
-			Name 		string
-			Description string
+	result := make([]NamespaceResult, len(namespaceResult))
+	for i, namespace := range namespaceResult {
+		result[i] = NamespaceResult{
+			Name: namespace.Name,
+			Description: namespace.Description,
 		}
 	}
-
-	params := map[string]graphql.Parameter{}
-
-	query := client.BuildQuery(&namespaceQuery, params)
-	err := client.Query(query)
-
-	if err != nil {
-		return nil, err
-	}
-
-	var namespaces []Namespace
-
-	for _, namespace := range namespaceQuery.Namespaces {
-		namespaces = append(namespaces, Namespace{
-			Name: string(namespace.Name),
-			Description: string(namespace.Description),
-		})
-	}
-
-	return namespaces, nil
+	
+	return  result, nil
 }
 
-func ListNamespaceByName(name string) (*Namespace, error) {
-	client := graphql.NewClient(config.GRAPHQL_URL, config.AccessToken)
-
-	var namespaceQuery struct {
-		Namespace struct {
-			Name 		string
-			Description	string
-		} `graphql:"namespace(name: $name)"`
-	}
-
-	params := map[string]graphql.Parameter{
-		"name": graphql.NewString(name),
-	}
-
-	query := client.BuildQuery(&namespaceQuery, params)
-	err := client.Query(query)
-
+func (client *Client) NamespaceListByName(name string) (NamespaceResult, error) {
+	namespaceResponse, err := namespaceListByName(context.Background(), *client.client, name)
 	if err != nil {
-		return nil, err
+		return NamespaceResult{}, err
 	}
 
-	var namespace Namespace
+	namespaceResult := namespaceResponse.GetNamespace()
 
-	namespace.Name = namespaceQuery.Namespace.Name
-	namespace.Description = namespaceQuery.Namespace.Description
+	result := NamespaceResult{
+		Name: namespaceResult.Name,
+		Description: namespaceResult.Description,
+	}
 
-	return &namespace, nil
+	return result, nil
 }
 
-func CreateNamespace(input NamespaceInput) (Namespace, error) {
-	client := graphql.NewClient(config.GRAPHQL_URL, config.AccessToken)
-
-	//customerId, err := GetAccountId()
-
-	createNamespaceInput := map[string]any{
-		"name":				input.Name,
-		"description":		input.Description,
+func (client *Client) NamespaceCreate(input NamespaceCreateInput) (NamespaceResult, error) {
+	namespaceCreateResponse, err := namespaceCreate(context.Background(), *client.client, input)
+	if err != nil {
+		return NamespaceResult{}, err
 	}
 
-	params := map[string]graphql.Parameter{
-		"namespaceInput": graphql.NewComplexParameter("NamespaceCreateInput", createNamespaceInput),
-	}
-
-	var resp NamespaceResponse
-
-	mutation := client.BuildMutationWithQuery("namespaceCreate", params, &resp)
-
-	err := client.Mutate(mutation)
-
-	var namespace Namespace
-	namespace.Name = resp.Name
-	namespace.Description = resp.Description
-
-	return namespace, err
+	return namespaceCreateResponse.GetNamespaceCreate(), nil
 }
 
-
-func DeleteNamespace(name string) error {
-	client := graphql.NewClient(config.GRAPHQL_URL, config.AccessToken)
-
-	deleteNamespaceInput := map[string]any{
-		"name" : name,
-	}
-
-	params := map[string]graphql.Parameter{
-		"namespace": graphql.NewComplexParameter("DeleteNamespaceInput", deleteNamespaceInput),
-	}
-
-	mutation := client.BuildMutation("namespaceDelete", params)
-
-	err := client.Mutate(mutation)
+func (client *Client) NamespaceDelete(name string) (bool, error) {
+	namespaceDeleteResponse, err := namespaceDelete(context.Background(), *client.client, name)
 	if err != nil {
-		return err
+		return false, err
 	}
 
-	return nil
+	return namespaceDeleteResponse.GetNamespaceDelete(), nil
 }

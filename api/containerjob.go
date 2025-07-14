@@ -43,3 +43,12 @@ func (client *Client) ContainerJobList(namespace string) ([]ContainerJobResult, 
 	}
 	return result, nil
 }
+
+func (client *Client) ContainerJobDelete(namespace string, containerJobName string) (bool, error) {
+	containerJobDeleteResponse, err := containerJobDelete(context.Background(), *client.client, namespace, containerJobName)
+	if err != nil {
+		return false, err
+	}
+
+	return containerJobDeleteResponse.GetContainerJobDelete(), nil
+}

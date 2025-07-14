@@ -1,0 +1,27 @@
+fragment NamespaceResult on Namespace {
+    name
+    description
+}
+
+query namespaceList {
+    namespaces {
+        ...NamespaceResult
+    }
+}
+
+query namespaceListByName($name: String!){
+    namespace(name: $name) {
+        ...NamespaceResult
+    }
+}
+
+mutation namespaceCreate($input: NamespaceCreateInput!) {
+# @genqlient(flatten: true)
+    namespaceCreate(namespaceInput: $input) {
+        ...NamespaceResult
+    }
+}
+
+mutation namespaceDelete($name: String!) {
+    namespaceDelete(namespace: {name: $name})
+}
