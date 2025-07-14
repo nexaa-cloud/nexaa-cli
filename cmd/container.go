@@ -55,16 +55,15 @@ var createContainerCmd = &cobra.Command{
 		resources, _ := cmd.Flags().GetString("resources")
 
 		input := api.ContainerCreateInput{
-			Name:			  name,
-			Namespace:        namespace,
-			Resources: 		  api.ContainerResources(resources),
-			Image:            image,
+			Name:                 name,
+			Namespace:            namespace,
+			Resources:            api.ContainerResources(resources),
+			Image:                image,
 			EnvironmentVariables: []api.EnvironmentVariableInput{},
-			Mounts: []api.MountInput{},
-			Ports: []string{},
-			Ingresses: []api.IngressInput{},
-			Scaling: &api.ScalingInput{},
-			HealthCheck: &api.HealthCheckInput{},
+			Mounts:               []api.MountInput{},
+			Ports:                []string{},
+			Ingresses:            []api.IngressInput{},
+			HealthCheck:          &api.HealthCheckInput{},
 		}
 
 		client := api.NewClient()
@@ -80,7 +79,6 @@ var createContainerCmd = &cobra.Command{
 	},
 }
 
-
 var modifyContainerCmd = &cobra.Command{
 	Use:   "modify",
 	Short: "Modify a container",
@@ -91,8 +89,8 @@ var modifyContainerCmd = &cobra.Command{
 		resources, _ := cmd.Flags().GetString("resources")
 
 		input := api.ContainerModifyInput{
-			Name:			  name,
-			Namespace:        namespace,
+			Name:      name,
+			Namespace: namespace,
 		}
 
 		if image != "" {
@@ -117,9 +115,9 @@ var modifyContainerCmd = &cobra.Command{
 }
 
 var deleteContainerCmd = &cobra.Command{
-	Use: "delete",
+	Use:   "delete",
 	Short: "Delete a container",
-	Run: func (cmd *cobra.Command, args []string)  {
+	Run: func(cmd *cobra.Command, args []string) {
 		namespace, _ := cmd.Flags().GetString("namespace")
 		name, _ := cmd.Flags().GetString("name")
 
@@ -139,7 +137,6 @@ var deleteContainerCmd = &cobra.Command{
 	},
 }
 
-
 func init() {
 	createContainerCmd.Flags().String("namespace", "", "Namespace")
 	createContainerCmd.Flags().String("name", "", "Name for the container")
@@ -157,7 +154,7 @@ func init() {
 	modifyContainerCmd.Flags().String("resources", "", "Container resources")
 	modifyContainerCmd.MarkFlagRequired("namespace")
 	modifyContainerCmd.MarkFlagRequired("name")
-	containerCmd.AddCommand(modifyContainerCmd)	
+	containerCmd.AddCommand(modifyContainerCmd)
 
 	listContainersCmd.Flags().String("namespace", "", "Namespace")
 	listContainersCmd.MarkFlagRequired("namespace")
