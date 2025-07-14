@@ -1,4 +1,5 @@
 auth.json
+auth-dev.json
 dist/
 pkg/
 build/
