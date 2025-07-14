@@ -19,7 +19,7 @@ var environments = map[string]EnvConfig{
 		KeycloakURL:      "https://staging-auth.tilaa.com",
 		KeycloakClientID: "cloud-tilaa",
 		KeycloakRealm:    "tilaa",
-		TokenFile:        "./auth.json",
+		TokenFile:        "./auth-dev.json",
 	},
 	"prod": {
 		GraphQLURL:       "https://graphql.tilaa.com/graphql/platform",
