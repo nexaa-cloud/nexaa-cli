@@ -2,7 +2,6 @@ package api
 
 import (
 	"encoding/json"
-	"errors"
 	"fmt"
 	"io"
 	"net/http"
@@ -45,7 +44,7 @@ func Login(username, password string) error {
 	defer resp.Body.Close()
 
 	if resp.StatusCode != http.StatusOK {
-		return errors.New("invalid credentials")
+		return fmt.Errorf("failed to read response: %v", err)
 	}
 
 	body, err := io.ReadAll(resp.Body)
