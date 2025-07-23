@@ -83,10 +83,12 @@ type CloudDatabase {
 type CloudDatabaseCluster {
   adminUser: DatabaseUser
   databases: [Database!]!
+  hostname: String!
   id: String!
   name: String!
   namespace: Namespace!
   plan: Plan!
+  port: Int!
   spec: Spec!
   state: String!
   users: [DatabaseUser!]!
@@ -106,10 +108,40 @@ input CloudDatabaseClusterCreateInput {
   plan: String!
 
   ""
-  databases: [DatabaseInput!]!
+  databases: [DatabaseInput!] = null
 
   ""
-  users: [DatabaseUserInput!]!
+  users: [DatabaseUserInput!] = null
+}
+
+input CloudDatabaseClusterDatabaseCreateInput {
+  ""
+  cluster: CloudDatabaseClusterResourceInput!
+
+  ""
+  database: DatabaseInput!
+}
+
+input CloudDatabaseClusterDatabaseResourceInput {
+  ""
+  cluster: CloudDatabaseClusterResourceInput!
+
+  ""
+  name: String!
+}
+
+input CloudDatabaseClusterModifyInput {
+  ""
+  name: String!
+
+  ""
+  namespace: String!
+
+  ""
+  databases: [DatabaseInput!]
+
+  ""
+  users: [DatabaseUserInput!]
 }
 
 input CloudDatabaseClusterResourceInput {
@@ -639,7 +671,9 @@ type Customer {
 }
 
 type Database {
+  description: String
   name: String!
+  status: String!
 }
 
 input DatabaseInput {
@@ -648,12 +682,23 @@ input DatabaseInput {
 
   ""
   state: State! = PRESENT
+
+  ""
+  description: String = null
+}
+
+enum DatabasePermission {
+  READ_ONLY
+  READ_WRITE
 }
 
 type DatabaseUser {
   dsn: String!
   name: String!
+  password: String!
+  permissions: [DatabaseUserPermission!]!
   role: String!
+  status: String!
 }
 
 input DatabaseUserInput {
@@ -662,6 +707,25 @@ input DatabaseUserInput {
 
   ""
   password: String = null
+
+  ""
+  state: State! = PRESENT
+
+  ""
+  permissions: [DatabaseUserPermissionInput!]!
+}
+
+type DatabaseUserPermission {
+  databaseName: String!
+  permission: DatabasePermission!
+}
+
+input DatabaseUserPermissionInput {
+  ""
+  databaseName: String!
+
+  ""
+  permission: DatabasePermission!
 
   ""
   state: State! = PRESENT
@@ -818,7 +882,10 @@ input MountVolumeInput {
 type Mutation {
   addPrivateRegistry(namespaceId: Int!, name: String!, source: String!, username: String!, password: String!, verify: Boolean = true): Boolean! @deprecated(reason: "use `registryCreate` mutation")
   cloudDatabaseClusterCreate(cloudDatabaseClusterInput: CloudDatabaseClusterCreateInput): CloudDatabaseCluster!
+  cloudDatabaseClusterDatabaseCreate(databaseInput: CloudDatabaseClusterDatabaseCreateInput): Database!
+  cloudDatabaseClusterDatabaseDelete(databaseInput: CloudDatabaseClusterDatabaseResourceInput!): Boolean!
   cloudDatabaseClusterDelete(cloudDatabase: CloudDatabaseClusterResourceInput!): Boolean!
+  cloudDatabaseClusterModify(cloudDatabaseClusterInput: CloudDatabaseClusterModifyInput): CloudDatabaseCluster!
   containerCreate(containerInput: ContainerCreateInput): Container!
   containerDelete(container: ContainerDeleteInput!): Boolean!
   containerJobCreate(scheduledJob: ContainerJobCreateInput!): ContainerJob!
@@ -851,7 +918,7 @@ type Mutation {
   namespaceDelete(namespace: DeleteNamespaceInput!): Boolean!
   registryConnectionCreate(registryInput: RegistryCreateInput!): PrivateRegistry!
   registryConnectionDelete(registryConnection: DeleteRegistryConnectionInput!): Boolean!
-  volumeCreate(volumeInput: VolumeCreateInput): Volume
+  volumeCreate(volumeInput: VolumeCreateInput): Volume!
   volumeDelete(volume: VolumeResourceInput!): Boolean!
   volumeIncrease(volumeInput: VolumeModifyInput): Volume!
 }
@@ -1021,6 +1088,7 @@ input ScalingInput {
 }
 
 type Spec {
+  patchLevelVersion: String!
   type: String!
   version: String!
 }

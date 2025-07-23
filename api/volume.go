@@ -16,10 +16,10 @@ func (client *Client) ListVolumes(namespace string) ([]VolumeResult, error) {
 	result := make([]VolumeResult, len(namespaceResult.Volumes))
 	for i, vol := range namespaceResult.Volumes {
 		result[i] = VolumeResult{
-			Name: vol.Name,
-			Size: vol.Size,
-			Usage: vol.Usage,
-			State: vol.State,
+			Name:   vol.Name,
+			Size:   vol.Size,
+			Usage:  vol.Usage,
+			State:  vol.State,
 			Locked: vol.Locked,
 		}
 	}
@@ -30,7 +30,7 @@ func (client *Client) ListVolumes(namespace string) ([]VolumeResult, error) {
 func (client *Client) ListVolumeByName(namespace string, volumeName string) (*VolumeResult, error) {
 	volumes, err := client.ListVolumes(namespace)
 	if err != nil {
-		return  nil, err
+		return nil, err
 	}
 
 	for _, vol := range volumes {
@@ -48,12 +48,12 @@ func (client *Client) VolumeCreate(input VolumeCreateInput) (VolumeResult, error
 		return VolumeResult{}, err
 	}
 
-	return *volumeCreateResponse.GetVolumeCreate(), nil
+	return volumeCreateResponse.GetVolumeCreate(), nil
 }
 
 func (client *Client) VolumeIncrease(input VolumeModifyInput) (VolumeResult, error) {
 	volumeIncreaseResponse, err := volumeIncrease(context.Background(), *client.client, input)
-	if err !=nil {
+	if err != nil {
 		return VolumeResult{}, nil
 	}
 

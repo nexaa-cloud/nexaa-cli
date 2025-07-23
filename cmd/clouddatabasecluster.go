@@ -1,0 +1,275 @@
+package cmd
+
+import (
+	"fmt"
+	"log"
+	"os"
+	"text/tabwriter"
+
+	"github.com/spf13/cobra"
+	"gitlab.com/tilaa/tilaa-cli/api"
+)
+
+var clouddatabaseclusterCmd = &cobra.Command{
+	Use:     "databasecluster",
+	Short:   "Manage cloud database clusters",
+	Aliases: []string{"dc"},
+}
+
+var createCloudDatabaseClusterCmd = &cobra.Command{
+	Use:   "create",
+	Short: "Create a new cloud database cluster",
+	Run: func(cmd *cobra.Command, args []string) {
+		namespace, _ := cmd.Flags().GetString("namespace")
+		name, _ := cmd.Flags().GetString("name")
+		planID, _ := cmd.Flags().GetString("plan")
+		version, _ := cmd.Flags().GetString("version")
+		dbType, _ := cmd.Flags().GetString("type")
+
+		input := api.CloudDatabaseClusterCreateInput{
+			Name:      name,
+			Namespace: namespace,
+			Plan:      planID,
+			Spec: api.CloudDatabaseClusterSpecInput{
+				Type:    dbType,
+				Version: version,
+			},
+		}
+
+		client := api.NewClient()
+		result, err := client.CloudDatabaseClusterCreate(input)
+		if err != nil {
+			log.Fatalf("Failed to create cloud database cluster: %v", err)
+			return
+		}
+		log.Println("Created cloud database cluster: ", result.Name)
+	},
+}
+
+var listCloudDatabaseClustersCmd = &cobra.Command{
+	Use:   "list",
+	Short: "List all cloud database clusters",
+	Run: func(cmd *cobra.Command, args []string) {
+		client := api.NewClient()
+		clusters, err := client.CloudDatabaseClusterList()
+		if err != nil {
+			log.Fatalf("Failed to list cloud database clusters: %v", err)
+		}
+		if len(clusters) == 0 {
+			fmt.Println("No cloud database clusters found.")
+			return
+		}
+		writer := tabwriter.NewWriter(os.Stdout, 0, 0, 3, ' ', tabwriter.Debug)
+		fmt.Fprintln(writer, "ID\tDATABASES\tNAME\tNAMESPACE\tUSERS\t")
+		for _, c := range clusters {
+			dbCount := 0
+			if c.Databases != nil {
+				dbCount = len(c.Databases)
+			}
+			nsName := c.Namespace.Name
+			userCount := 0
+			if c.Users != nil {
+				userCount = len(c.Users)
+			}
+			fmt.Fprintf(writer, "%s\t%d\t%s\t%s\t%d\t\n", c.Id, dbCount, c.Name, nsName, userCount)
+		}
+		writer.Flush()
+	},
+}
+
+var deleteCloudDatabaseClusterCmd = &cobra.Command{
+	Use:   "delete",
+	Short: "Delete a cloud database cluster",
+	Run: func(cmd *cobra.Command, args []string) {
+		namespace, _ := cmd.Flags().GetString("namespace")
+		name, _ := cmd.Flags().GetString("name")
+		client := api.NewClient()
+		input := api.CloudDatabaseClusterResourceInput{
+			Namespace: namespace,
+			Name:      name,
+		}
+		result, err := client.CloudDatabaseClusterDelete(input)
+		if err != nil {
+			log.Fatalf("Failed to delete cloud database cluster: %v", err)
+			return
+		}
+		if !result {
+			log.Fatalf("Could not delete cloud database cluster with name: %q", name)
+		}
+		log.Println("Deleted cloud database cluster with name: ", name)
+	},
+}
+
+var listCloudDatabaseClusterPlansCmd = &cobra.Command{
+	Use:   "list-plans",
+	Short: "List available plans for cloud database clusters",
+	Run: func(cmd *cobra.Command, args []string) {
+		client := api.NewClient()
+		plans, err := client.CloudDatabaseClusterListPlans()
+		if err != nil {
+			log.Fatalf("Failed to list cloud database cluster plans: %v", err)
+		}
+		if len(plans) == 0 {
+			fmt.Println("No cloud database cluster plans found.")
+			return
+		}
+		writer := tabwriter.NewWriter(os.Stdout, 0, 0, 3, ' ', tabwriter.Debug)
+		fmt.Fprintln(writer, "ID\tNAME\tCPU\tSTORAGE\tRAM\tCURRENCY\tPRICE\t")
+		for _, p := range plans {
+			fmt.Fprintf(writer, "%s\t%s\t%d\t%dGB\t%dGB\t%s\t%.2f\t\n", p.Id, p.Name, p.Cpu, p.Storage, int(p.Memory), *p.Price.Currency, float64(*p.Price.Amount)/100)
+		}
+		writer.Flush()
+	},
+}
+
+var listCloudDatabaseClusterSpecsCmd = &cobra.Command{
+	Use:   "list-specs",
+	Short: "List available specs for cloud database clusters",
+	Run: func(cmd *cobra.Command, args []string) {
+		client := api.NewClient()
+		specs, err := client.CloudDatabaseClusterListSpecs()
+		if err != nil {
+			log.Fatalf("Failed to list cloud database cluster specs: %v", err)
+		}
+		if len(specs) == 0 {
+			fmt.Println("No cloud database cluster specs found.")
+			return
+		}
+		writer := tabwriter.NewWriter(os.Stdout, 0, 0, 3, ' ', tabwriter.Debug)
+		fmt.Fprintln(writer, "TYPE\tVERSION\t")
+		for _, s := range specs {
+			fmt.Fprintf(writer, "%s\t%s\t\n", s.Type, s.Version)
+		}
+		writer.Flush()
+	},
+}
+
+var createClusterDatabaseCmd = &cobra.Command{
+	Use:   "create-db",
+	Short: "Create a database in a cloud database cluster",
+	Run: func(cmd *cobra.Command, args []string) {
+		clusterName, _ := cmd.Flags().GetString("cluster")
+		dbName, _ := cmd.Flags().GetString("name")
+		dbDescription, _ := cmd.Flags().GetString("description")
+		if dbDescription == "" {
+			dbDescription = "Created via CLI"
+		}
+		namespace, _ := cmd.Flags().GetString("namespace")
+		input := api.CloudDatabaseClusterDatabaseCreateInput{
+			Cluster: api.CloudDatabaseClusterResourceInput{
+				Name:      clusterName,
+				Namespace: namespace,
+			},
+			Database: api.DatabaseInput{
+				Name:        dbName,
+				Description: &dbDescription,
+			},
+		}
+		client := api.NewClient()
+		result, err := client.CloudDatabaseClusterDatabaseCreate(input)
+		if err != nil {
+			log.Fatalf("Failed to create database: %v", err)
+			return
+		}
+		fmt.Printf("Created database: %s\n", result.Name)
+	},
+}
+
+var deleteClusterDatabaseCmd = &cobra.Command{
+	Use:   "delete-db",
+	Short: "Delete a database from a cloud database cluster",
+	Run: func(cmd *cobra.Command, args []string) {
+		clusterName, _ := cmd.Flags().GetString("cluster")
+		dbName, _ := cmd.Flags().GetString("name")
+		namespace, _ := cmd.Flags().GetString("namespace")
+		input := api.CloudDatabaseClusterDatabaseResourceInput{
+			Cluster: api.CloudDatabaseClusterResourceInput{
+				Name:      clusterName,
+				Namespace: namespace,
+			},
+			Name: dbName,
+		}
+		client := api.NewClient()
+		result, err := client.CloudDatabaseClusterDatabaseDelete(input)
+		if err != nil {
+			log.Fatalf("Failed to delete database: %v", err)
+			return
+		}
+		if !result {
+			log.Fatalf("Could not delete database: %s", dbName)
+		}
+		fmt.Printf("Deleted database: %s\n", dbName)
+	},
+}
+
+var getClusterDatabaseUserCredentialsCmd = &cobra.Command{
+	Use:   "credentials",
+	Short: "Get user connection string for a database cluster",
+	Run: func(cmd *cobra.Command, args []string) {
+		clusterName, _ := cmd.Flags().GetString("cluster")
+		namespace, _ := cmd.Flags().GetString("namespace")
+		userName, _ := cmd.Flags().GetString("user")
+		input := api.CloudDatabaseClusterResourceInput{
+			Name:      clusterName,
+			Namespace: namespace,
+		}
+		client := api.NewClient()
+		dsn, err := client.CloudDatabaseClusterUserCredentials(input, userName)
+		if err != nil {
+			log.Fatalf("Failed to get user credentials: %v", err)
+			return
+		}
+		fmt.Printf("DSN for user %s: %s\n", userName, dsn)
+	},
+}
+
+func init() {
+	createCloudDatabaseClusterCmd.Flags().StringP("namespace", "n", "", "Namespace")
+	createCloudDatabaseClusterCmd.Flags().String("name", "", "Name for this cluster")
+	createCloudDatabaseClusterCmd.Flags().String("plan", "", "ID of the plan to use for this cluster")
+	createCloudDatabaseClusterCmd.Flags().String("type", "", "Type of the cluster (e.g., 'postgresql', 'mysql')")
+	createCloudDatabaseClusterCmd.Flags().String("version", "", "Version of the database engine (e.g., '14', '15')")
+	createCloudDatabaseClusterCmd.MarkFlagRequired("namespace")
+	createCloudDatabaseClusterCmd.MarkFlagRequired("name")
+	createCloudDatabaseClusterCmd.MarkFlagRequired("plan ID")
+	createCloudDatabaseClusterCmd.MarkFlagRequired("type")
+	createCloudDatabaseClusterCmd.MarkFlagRequired("version")
+	clouddatabaseclusterCmd.AddCommand(createCloudDatabaseClusterCmd)
+
+	clouddatabaseclusterCmd.AddCommand(listCloudDatabaseClustersCmd)
+
+	deleteCloudDatabaseClusterCmd.Flags().String("namespace", "", "Namespace")
+	deleteCloudDatabaseClusterCmd.Flags().String("name", "", "Name of the cluster")
+	deleteCloudDatabaseClusterCmd.MarkFlagRequired("namespace")
+	deleteCloudDatabaseClusterCmd.MarkFlagRequired("name")
+	clouddatabaseclusterCmd.AddCommand(deleteCloudDatabaseClusterCmd)
+
+	clouddatabaseclusterCmd.AddCommand(listCloudDatabaseClusterPlansCmd)
+	clouddatabaseclusterCmd.AddCommand(listCloudDatabaseClusterSpecsCmd)
+
+	// Don't uncomment until feature is released to prod
+	// createClusterDatabaseCmd.Flags().String("cluster", "", "Cluster name")
+	// createClusterDatabaseCmd.Flags().String("name", "", "Database name")
+	// createClusterDatabaseCmd.Flags().String("description", "", "Description for the database (optional)")
+	// createClusterDatabaseCmd.Flags().StringP("namespace", "n", "", "Namespace")
+	// createClusterDatabaseCmd.MarkFlagRequired("cluster")
+	// createClusterDatabaseCmd.MarkFlagRequired("name")
+	// createClusterDatabaseCmd.MarkFlagRequired("namespace")
+	// clouddatabaseclusterCmd.AddCommand(createClusterDatabaseCmd)
+
+	// deleteClusterDatabaseCmd.Flags().String("cluster", "", "Cluster name")
+	// deleteClusterDatabaseCmd.Flags().String("name", "", "Database name")
+	// deleteClusterDatabaseCmd.Flags().StringP("namespace", "n", "", "Namespace")
+	// deleteClusterDatabaseCmd.MarkFlagRequired("cluster")
+	// deleteClusterDatabaseCmd.MarkFlagRequired("name")
+	// deleteClusterDatabaseCmd.MarkFlagRequired("namespace")
+	// clouddatabaseclusterCmd.AddCommand(deleteClusterDatabaseCmd)
+
+	getClusterDatabaseUserCredentialsCmd.Flags().String("cluster", "", "Cluster name")
+	getClusterDatabaseUserCredentialsCmd.Flags().StringP("namespace", "n", "", "Namespace")
+	getClusterDatabaseUserCredentialsCmd.Flags().String("user", "", "User name")
+	getClusterDatabaseUserCredentialsCmd.MarkFlagRequired("cluster")
+	getClusterDatabaseUserCredentialsCmd.MarkFlagRequired("namespace")
+	getClusterDatabaseUserCredentialsCmd.MarkFlagRequired("user")
+	clouddatabaseclusterCmd.AddCommand(getClusterDatabaseUserCredentialsCmd)
+}
