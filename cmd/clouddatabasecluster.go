@@ -60,7 +60,7 @@ var listCloudDatabaseClustersCmd = &cobra.Command{
 			return
 		}
 		writer := tabwriter.NewWriter(os.Stdout, 0, 0, 3, ' ', tabwriter.Debug)
-		fmt.Fprintln(writer, "ID\tDATABASES\tNAME\tNAMESPACE\tUSERS\t")
+		fmt.Fprintln(writer, "NAME\tDATABASES\tNAMESPACE\tUSERS\t")
 		for _, c := range clusters {
 			dbCount := 0
 			if c.Databases != nil {
@@ -71,7 +71,7 @@ var listCloudDatabaseClustersCmd = &cobra.Command{
 			if c.Users != nil {
 				userCount = len(c.Users)
 			}
-			fmt.Fprintf(writer, "%s\t%d\t%s\t%s\t%d\t\n", c.Id, dbCount, c.Name, nsName, userCount)
+			fmt.Fprintf(writer, "%s\t%d\t%s\t%d\t\n", c.Name, dbCount, nsName, userCount)
 		}
 		writer.Flush()
 	},
