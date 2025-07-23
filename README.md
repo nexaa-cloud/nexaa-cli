@@ -21,3 +21,14 @@ This will ensure the code will talk to staging-auth and staging-graphql. Your
 access token, refresh token, and ExpiresAt will be stored in JSON in
 `./auth.json`. In the production version, this is stored at "~/.tilaa/auth.json"
 which is better.
+
+## Autocomplete
+To enable shell completion, run:
+
+For Bash:
+    `source <(tilaa-cli completion bash)`
+
+For Zsh:
+    `source <(tilaa-cli completion zsh)`
+
+Or to persist it, save the output to a file and source it in your shell config.

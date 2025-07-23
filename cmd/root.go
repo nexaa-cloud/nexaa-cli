@@ -11,6 +11,27 @@ import (
 
 var env string
 
+var completionCmd = &cobra.Command{
+	Use:   "completion",
+	Short: "Generate shell completion script",
+	Long: `To enable shell completion, run:
+
+For Bash:
+    source <(tilaa-cli completion bash)
+
+For Zsh:
+    source <(tilaa-cli completion zsh)
+
+Or to persist it, save the output to a file and source it in your shell config.`,
+	Run: func(cmd *cobra.Command, args []string) {
+		if len(args) > 0 && args[0] == "zsh" {
+			cmd.Root().GenZshCompletion(os.Stdout)
+		} else {
+			cmd.Root().GenBashCompletion(os.Stdout)
+		}
+	},
+}
+
 var rootCmd = &cobra.Command{
 	Use:   "tilaa",
 	Short: "A CLI tool to manage cloud resources on the Tilaa Serverless Platform.",
@@ -41,7 +62,8 @@ func Execute() {
 
 func init() {
 	rootCmd.PersistentFlags().StringVar(&env, "env", config.GetEnvironment(), "Environment (dev, prod)")
-
+	rootCmd.AddCommand(completionCmd)
+	rootCmd.AddCommand(clouddatabaseclusterCmd)
 	rootCmd.AddCommand(containerCmd)
 	rootCmd.AddCommand(containerjobCmd)
 	rootCmd.AddCommand(registryCmd)

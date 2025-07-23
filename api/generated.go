@@ -43,6 +43,336 @@ var AllAutoScalingType = []AutoScalingType{
 	AutoScalingTypeCpu,
 }
 
+type CloudDatabaseClusterCreateInput struct {
+	Name      string                        `json:"name"`
+	Namespace string                        `json:"namespace"`
+	Spec      CloudDatabaseClusterSpecInput `json:"spec"`
+	Plan      string                        `json:"plan"`
+	Databases []DatabaseInput               `json:"databases"`
+	Users     []DatabaseUserInput           `json:"users"`
+}
+
+// GetName returns CloudDatabaseClusterCreateInput.Name, and is useful for accessing the field via an interface.
+func (v *CloudDatabaseClusterCreateInput) GetName() string { return v.Name }
+
+// GetNamespace returns CloudDatabaseClusterCreateInput.Namespace, and is useful for accessing the field via an interface.
+func (v *CloudDatabaseClusterCreateInput) GetNamespace() string { return v.Namespace }
+
+// GetSpec returns CloudDatabaseClusterCreateInput.Spec, and is useful for accessing the field via an interface.
+func (v *CloudDatabaseClusterCreateInput) GetSpec() CloudDatabaseClusterSpecInput { return v.Spec }
+
+// GetPlan returns CloudDatabaseClusterCreateInput.Plan, and is useful for accessing the field via an interface.
+func (v *CloudDatabaseClusterCreateInput) GetPlan() string { return v.Plan }
+
+// GetDatabases returns CloudDatabaseClusterCreateInput.Databases, and is useful for accessing the field via an interface.
+func (v *CloudDatabaseClusterCreateInput) GetDatabases() []DatabaseInput { return v.Databases }
+
+// GetUsers returns CloudDatabaseClusterCreateInput.Users, and is useful for accessing the field via an interface.
+func (v *CloudDatabaseClusterCreateInput) GetUsers() []DatabaseUserInput { return v.Users }
+
+type CloudDatabaseClusterDatabaseCreateInput struct {
+	Cluster  CloudDatabaseClusterResourceInput `json:"cluster"`
+	Database DatabaseInput                     `json:"database"`
+}
+
+// GetCluster returns CloudDatabaseClusterDatabaseCreateInput.Cluster, and is useful for accessing the field via an interface.
+func (v *CloudDatabaseClusterDatabaseCreateInput) GetCluster() CloudDatabaseClusterResourceInput {
+	return v.Cluster
+}
+
+// GetDatabase returns CloudDatabaseClusterDatabaseCreateInput.Database, and is useful for accessing the field via an interface.
+func (v *CloudDatabaseClusterDatabaseCreateInput) GetDatabase() DatabaseInput { return v.Database }
+
+type CloudDatabaseClusterDatabaseResourceInput struct {
+	Cluster CloudDatabaseClusterResourceInput `json:"cluster"`
+	Name    string                            `json:"name"`
+}
+
+// GetCluster returns CloudDatabaseClusterDatabaseResourceInput.Cluster, and is useful for accessing the field via an interface.
+func (v *CloudDatabaseClusterDatabaseResourceInput) GetCluster() CloudDatabaseClusterResourceInput {
+	return v.Cluster
+}
+
+// GetName returns CloudDatabaseClusterDatabaseResourceInput.Name, and is useful for accessing the field via an interface.
+func (v *CloudDatabaseClusterDatabaseResourceInput) GetName() string { return v.Name }
+
+// CloudDatabaseClusterDatabaseResult includes the GraphQL fields of Database requested by the fragment CloudDatabaseClusterDatabaseResult.
+type CloudDatabaseClusterDatabaseResult struct {
+	Name        string  `json:"name"`
+	Description *string `json:"description"`
+	Status      string  `json:"status"`
+}
+
+// GetName returns CloudDatabaseClusterDatabaseResult.Name, and is useful for accessing the field via an interface.
+func (v *CloudDatabaseClusterDatabaseResult) GetName() string { return v.Name }
+
+// GetDescription returns CloudDatabaseClusterDatabaseResult.Description, and is useful for accessing the field via an interface.
+func (v *CloudDatabaseClusterDatabaseResult) GetDescription() *string { return v.Description }
+
+// GetStatus returns CloudDatabaseClusterDatabaseResult.Status, and is useful for accessing the field via an interface.
+func (v *CloudDatabaseClusterDatabaseResult) GetStatus() string { return v.Status }
+
+type CloudDatabaseClusterModifyInput struct {
+	Name      string              `json:"name"`
+	Namespace string              `json:"namespace"`
+	Databases []DatabaseInput     `json:"databases"`
+	Users     []DatabaseUserInput `json:"users"`
+}
+
+// GetName returns CloudDatabaseClusterModifyInput.Name, and is useful for accessing the field via an interface.
+func (v *CloudDatabaseClusterModifyInput) GetName() string { return v.Name }
+
+// GetNamespace returns CloudDatabaseClusterModifyInput.Namespace, and is useful for accessing the field via an interface.
+func (v *CloudDatabaseClusterModifyInput) GetNamespace() string { return v.Namespace }
+
+// GetDatabases returns CloudDatabaseClusterModifyInput.Databases, and is useful for accessing the field via an interface.
+func (v *CloudDatabaseClusterModifyInput) GetDatabases() []DatabaseInput { return v.Databases }
+
+// GetUsers returns CloudDatabaseClusterModifyInput.Users, and is useful for accessing the field via an interface.
+func (v *CloudDatabaseClusterModifyInput) GetUsers() []DatabaseUserInput { return v.Users }
+
+// CloudDatabaseClusterPlan includes the GraphQL fields of Plan requested by the fragment CloudDatabaseClusterPlan.
+type CloudDatabaseClusterPlan struct {
+	Cpu     int                           `json:"cpu"`
+	Group   string                        `json:"group"`
+	Id      string                        `json:"id"`
+	Memory  float64                       `json:"memory"`
+	Name    string                        `json:"name"`
+	Price   CloudDatabaseClusterPlanPrice `json:"price"`
+	Storage int                           `json:"storage"`
+}
+
+// GetCpu returns CloudDatabaseClusterPlan.Cpu, and is useful for accessing the field via an interface.
+func (v *CloudDatabaseClusterPlan) GetCpu() int { return v.Cpu }
+
+// GetGroup returns CloudDatabaseClusterPlan.Group, and is useful for accessing the field via an interface.
+func (v *CloudDatabaseClusterPlan) GetGroup() string { return v.Group }
+
+// GetId returns CloudDatabaseClusterPlan.Id, and is useful for accessing the field via an interface.
+func (v *CloudDatabaseClusterPlan) GetId() string { return v.Id }
+
+// GetMemory returns CloudDatabaseClusterPlan.Memory, and is useful for accessing the field via an interface.
+func (v *CloudDatabaseClusterPlan) GetMemory() float64 { return v.Memory }
+
+// GetName returns CloudDatabaseClusterPlan.Name, and is useful for accessing the field via an interface.
+func (v *CloudDatabaseClusterPlan) GetName() string { return v.Name }
+
+// GetPrice returns CloudDatabaseClusterPlan.Price, and is useful for accessing the field via an interface.
+func (v *CloudDatabaseClusterPlan) GetPrice() CloudDatabaseClusterPlanPrice { return v.Price }
+
+// GetStorage returns CloudDatabaseClusterPlan.Storage, and is useful for accessing the field via an interface.
+func (v *CloudDatabaseClusterPlan) GetStorage() int { return v.Storage }
+
+// CloudDatabaseClusterPlanPrice includes the requested fields of the GraphQL type Price.
+type CloudDatabaseClusterPlanPrice struct {
+	Amount   *int    `json:"amount"`
+	Currency *string `json:"currency"`
+}
+
+// GetAmount returns CloudDatabaseClusterPlanPrice.Amount, and is useful for accessing the field via an interface.
+func (v *CloudDatabaseClusterPlanPrice) GetAmount() *int { return v.Amount }
+
+// GetCurrency returns CloudDatabaseClusterPlanPrice.Currency, and is useful for accessing the field via an interface.
+func (v *CloudDatabaseClusterPlanPrice) GetCurrency() *string { return v.Currency }
+
+type CloudDatabaseClusterResourceInput struct {
+	Name      string `json:"name"`
+	Namespace string `json:"namespace"`
+}
+
+// GetName returns CloudDatabaseClusterResourceInput.Name, and is useful for accessing the field via an interface.
+func (v *CloudDatabaseClusterResourceInput) GetName() string { return v.Name }
+
+// GetNamespace returns CloudDatabaseClusterResourceInput.Namespace, and is useful for accessing the field via an interface.
+func (v *CloudDatabaseClusterResourceInput) GetNamespace() string { return v.Namespace }
+
+// CloudDatabaseClusterResult includes the GraphQL fields of CloudDatabaseCluster requested by the fragment CloudDatabaseClusterResult.
+type CloudDatabaseClusterResult struct {
+	Id        string                                           `json:"id"`
+	Databases []CloudDatabaseClusterResultDatabasesDatabase    `json:"databases"`
+	Name      string                                           `json:"name"`
+	Namespace CloudDatabaseClusterResultNamespace              `json:"namespace"`
+	Plan      CloudDatabaseClusterResultPlan                   `json:"plan"`
+	Spec      CloudDatabaseClusterResultSpec                   `json:"spec"`
+	Users     []CloudDatabaseClusterResultUsersDatabaseUser    `json:"users"`
+	AdminUser *CloudDatabaseClusterResultAdminUserDatabaseUser `json:"adminUser"`
+}
+
+// GetId returns CloudDatabaseClusterResult.Id, and is useful for accessing the field via an interface.
+func (v *CloudDatabaseClusterResult) GetId() string { return v.Id }
+
+// GetDatabases returns CloudDatabaseClusterResult.Databases, and is useful for accessing the field via an interface.
+func (v *CloudDatabaseClusterResult) GetDatabases() []CloudDatabaseClusterResultDatabasesDatabase {
+	return v.Databases
+}
+
+// GetName returns CloudDatabaseClusterResult.Name, and is useful for accessing the field via an interface.
+func (v *CloudDatabaseClusterResult) GetName() string { return v.Name }
+
+// GetNamespace returns CloudDatabaseClusterResult.Namespace, and is useful for accessing the field via an interface.
+func (v *CloudDatabaseClusterResult) GetNamespace() CloudDatabaseClusterResultNamespace {
+	return v.Namespace
+}
+
+// GetPlan returns CloudDatabaseClusterResult.Plan, and is useful for accessing the field via an interface.
+func (v *CloudDatabaseClusterResult) GetPlan() CloudDatabaseClusterResultPlan { return v.Plan }
+
+// GetSpec returns CloudDatabaseClusterResult.Spec, and is useful for accessing the field via an interface.
+func (v *CloudDatabaseClusterResult) GetSpec() CloudDatabaseClusterResultSpec { return v.Spec }
+
+// GetUsers returns CloudDatabaseClusterResult.Users, and is useful for accessing the field via an interface.
+func (v *CloudDatabaseClusterResult) GetUsers() []CloudDatabaseClusterResultUsersDatabaseUser {
+	return v.Users
+}
+
+// GetAdminUser returns CloudDatabaseClusterResult.AdminUser, and is useful for accessing the field via an interface.
+func (v *CloudDatabaseClusterResult) GetAdminUser() *CloudDatabaseClusterResultAdminUserDatabaseUser {
+	return v.AdminUser
+}
+
+// CloudDatabaseClusterResultAdminUserDatabaseUser includes the requested fields of the GraphQL type DatabaseUser.
+type CloudDatabaseClusterResultAdminUserDatabaseUser struct {
+	Name string `json:"name"`
+	Role string `json:"role"`
+}
+
+// GetName returns CloudDatabaseClusterResultAdminUserDatabaseUser.Name, and is useful for accessing the field via an interface.
+func (v *CloudDatabaseClusterResultAdminUserDatabaseUser) GetName() string { return v.Name }
+
+// GetRole returns CloudDatabaseClusterResultAdminUserDatabaseUser.Role, and is useful for accessing the field via an interface.
+func (v *CloudDatabaseClusterResultAdminUserDatabaseUser) GetRole() string { return v.Role }
+
+// CloudDatabaseClusterResultDatabasesDatabase includes the requested fields of the GraphQL type Database.
+type CloudDatabaseClusterResultDatabasesDatabase struct {
+	Name string `json:"name"`
+}
+
+// GetName returns CloudDatabaseClusterResultDatabasesDatabase.Name, and is useful for accessing the field via an interface.
+func (v *CloudDatabaseClusterResultDatabasesDatabase) GetName() string { return v.Name }
+
+// CloudDatabaseClusterResultNamespace includes the requested fields of the GraphQL type Namespace.
+type CloudDatabaseClusterResultNamespace struct {
+	Name string `json:"name"`
+}
+
+// GetName returns CloudDatabaseClusterResultNamespace.Name, and is useful for accessing the field via an interface.
+func (v *CloudDatabaseClusterResultNamespace) GetName() string { return v.Name }
+
+// CloudDatabaseClusterResultPlan includes the requested fields of the GraphQL type Plan.
+type CloudDatabaseClusterResultPlan struct {
+	Cpu     int                                 `json:"cpu"`
+	Group   string                              `json:"group"`
+	Id      string                              `json:"id"`
+	Memory  float64                             `json:"memory"`
+	Price   CloudDatabaseClusterResultPlanPrice `json:"price"`
+	Storage int                                 `json:"storage"`
+}
+
+// GetCpu returns CloudDatabaseClusterResultPlan.Cpu, and is useful for accessing the field via an interface.
+func (v *CloudDatabaseClusterResultPlan) GetCpu() int { return v.Cpu }
+
+// GetGroup returns CloudDatabaseClusterResultPlan.Group, and is useful for accessing the field via an interface.
+func (v *CloudDatabaseClusterResultPlan) GetGroup() string { return v.Group }
+
+// GetId returns CloudDatabaseClusterResultPlan.Id, and is useful for accessing the field via an interface.
+func (v *CloudDatabaseClusterResultPlan) GetId() string { return v.Id }
+
+// GetMemory returns CloudDatabaseClusterResultPlan.Memory, and is useful for accessing the field via an interface.
+func (v *CloudDatabaseClusterResultPlan) GetMemory() float64 { return v.Memory }
+
+// GetPrice returns CloudDatabaseClusterResultPlan.Price, and is useful for accessing the field via an interface.
+func (v *CloudDatabaseClusterResultPlan) GetPrice() CloudDatabaseClusterResultPlanPrice {
+	return v.Price
+}
+
+// GetStorage returns CloudDatabaseClusterResultPlan.Storage, and is useful for accessing the field via an interface.
+func (v *CloudDatabaseClusterResultPlan) GetStorage() int { return v.Storage }
+
+// CloudDatabaseClusterResultPlanPrice includes the requested fields of the GraphQL type Price.
+type CloudDatabaseClusterResultPlanPrice struct {
+	Amount   *int    `json:"amount"`
+	Currency *string `json:"currency"`
+}
+
+// GetAmount returns CloudDatabaseClusterResultPlanPrice.Amount, and is useful for accessing the field via an interface.
+func (v *CloudDatabaseClusterResultPlanPrice) GetAmount() *int { return v.Amount }
+
+// GetCurrency returns CloudDatabaseClusterResultPlanPrice.Currency, and is useful for accessing the field via an interface.
+func (v *CloudDatabaseClusterResultPlanPrice) GetCurrency() *string { return v.Currency }
+
+// CloudDatabaseClusterResultSpec includes the requested fields of the GraphQL type Spec.
+type CloudDatabaseClusterResultSpec struct {
+	Type    string `json:"type"`
+	Version string `json:"version"`
+}
+
+// GetType returns CloudDatabaseClusterResultSpec.Type, and is useful for accessing the field via an interface.
+func (v *CloudDatabaseClusterResultSpec) GetType() string { return v.Type }
+
+// GetVersion returns CloudDatabaseClusterResultSpec.Version, and is useful for accessing the field via an interface.
+func (v *CloudDatabaseClusterResultSpec) GetVersion() string { return v.Version }
+
+// CloudDatabaseClusterResultUsersDatabaseUser includes the requested fields of the GraphQL type DatabaseUser.
+type CloudDatabaseClusterResultUsersDatabaseUser struct {
+	Name        string                                                                         `json:"name"`
+	Role        string                                                                         `json:"role"`
+	Permissions []CloudDatabaseClusterResultUsersDatabaseUserPermissionsDatabaseUserPermission `json:"permissions"`
+	Status      string                                                                         `json:"status"`
+}
+
+// GetName returns CloudDatabaseClusterResultUsersDatabaseUser.Name, and is useful for accessing the field via an interface.
+func (v *CloudDatabaseClusterResultUsersDatabaseUser) GetName() string { return v.Name }
+
+// GetRole returns CloudDatabaseClusterResultUsersDatabaseUser.Role, and is useful for accessing the field via an interface.
+func (v *CloudDatabaseClusterResultUsersDatabaseUser) GetRole() string { return v.Role }
+
+// GetPermissions returns CloudDatabaseClusterResultUsersDatabaseUser.Permissions, and is useful for accessing the field via an interface.
+func (v *CloudDatabaseClusterResultUsersDatabaseUser) GetPermissions() []CloudDatabaseClusterResultUsersDatabaseUserPermissionsDatabaseUserPermission {
+	return v.Permissions
+}
+
+// GetStatus returns CloudDatabaseClusterResultUsersDatabaseUser.Status, and is useful for accessing the field via an interface.
+func (v *CloudDatabaseClusterResultUsersDatabaseUser) GetStatus() string { return v.Status }
+
+// CloudDatabaseClusterResultUsersDatabaseUserPermissionsDatabaseUserPermission includes the requested fields of the GraphQL type DatabaseUserPermission.
+type CloudDatabaseClusterResultUsersDatabaseUserPermissionsDatabaseUserPermission struct {
+	DatabaseName string             `json:"databaseName"`
+	Permission   DatabasePermission `json:"permission"`
+}
+
+// GetDatabaseName returns CloudDatabaseClusterResultUsersDatabaseUserPermissionsDatabaseUserPermission.DatabaseName, and is useful for accessing the field via an interface.
+func (v *CloudDatabaseClusterResultUsersDatabaseUserPermissionsDatabaseUserPermission) GetDatabaseName() string {
+	return v.DatabaseName
+}
+
+// GetPermission returns CloudDatabaseClusterResultUsersDatabaseUserPermissionsDatabaseUserPermission.Permission, and is useful for accessing the field via an interface.
+func (v *CloudDatabaseClusterResultUsersDatabaseUserPermissionsDatabaseUserPermission) GetPermission() DatabasePermission {
+	return v.Permission
+}
+
+// CloudDatabaseClusterSpec includes the GraphQL fields of Spec requested by the fragment CloudDatabaseClusterSpec.
+type CloudDatabaseClusterSpec struct {
+	Type    string `json:"type"`
+	Version string `json:"version"`
+}
+
+// GetType returns CloudDatabaseClusterSpec.Type, and is useful for accessing the field via an interface.
+func (v *CloudDatabaseClusterSpec) GetType() string { return v.Type }
+
+// GetVersion returns CloudDatabaseClusterSpec.Version, and is useful for accessing the field via an interface.
+func (v *CloudDatabaseClusterSpec) GetVersion() string { return v.Version }
+
+type CloudDatabaseClusterSpecInput struct {
+	Type    string `json:"type"`
+	Version string `json:"version"`
+}
+
+// GetType returns CloudDatabaseClusterSpecInput.Type, and is useful for accessing the field via an interface.
+func (v *CloudDatabaseClusterSpecInput) GetType() string { return v.Type }
+
+// GetVersion returns CloudDatabaseClusterSpecInput.Version, and is useful for accessing the field via an interface.
+func (v *CloudDatabaseClusterSpecInput) GetVersion() string { return v.Version }
+
 type ContainerCreateInput struct {
 	Name      string             `json:"name"`
 	Namespace string             `json:"namespace"`
@@ -755,6 +1085,67 @@ type ContainerResultPrivateRegistry struct {
 // GetName returns ContainerResultPrivateRegistry.Name, and is useful for accessing the field via an interface.
 func (v *ContainerResultPrivateRegistry) GetName() string { return v.Name }
 
+type DatabaseInput struct {
+	Name        string  `json:"name"`
+	State       State   `json:"state"`
+	Description *string `json:"description"`
+}
+
+// GetName returns DatabaseInput.Name, and is useful for accessing the field via an interface.
+func (v *DatabaseInput) GetName() string { return v.Name }
+
+// GetState returns DatabaseInput.State, and is useful for accessing the field via an interface.
+func (v *DatabaseInput) GetState() State { return v.State }
+
+// GetDescription returns DatabaseInput.Description, and is useful for accessing the field via an interface.
+func (v *DatabaseInput) GetDescription() *string { return v.Description }
+
+type DatabasePermission string
+
+const (
+	DatabasePermissionReadOnly  DatabasePermission = "READ_ONLY"
+	DatabasePermissionReadWrite DatabasePermission = "READ_WRITE"
+)
+
+var AllDatabasePermission = []DatabasePermission{
+	DatabasePermissionReadOnly,
+	DatabasePermissionReadWrite,
+}
+
+type DatabaseUserInput struct {
+	Name        string                        `json:"name"`
+	Password    *string                       `json:"password"`
+	State       State                         `json:"state"`
+	Permissions []DatabaseUserPermissionInput `json:"permissions"`
+}
+
+// GetName returns DatabaseUserInput.Name, and is useful for accessing the field via an interface.
+func (v *DatabaseUserInput) GetName() string { return v.Name }
+
+// GetPassword returns DatabaseUserInput.Password, and is useful for accessing the field via an interface.
+func (v *DatabaseUserInput) GetPassword() *string { return v.Password }
+
+// GetState returns DatabaseUserInput.State, and is useful for accessing the field via an interface.
+func (v *DatabaseUserInput) GetState() State { return v.State }
+
+// GetPermissions returns DatabaseUserInput.Permissions, and is useful for accessing the field via an interface.
+func (v *DatabaseUserInput) GetPermissions() []DatabaseUserPermissionInput { return v.Permissions }
+
+type DatabaseUserPermissionInput struct {
+	DatabaseName string             `json:"databaseName"`
+	Permission   DatabasePermission `json:"permission"`
+	State        State              `json:"state"`
+}
+
+// GetDatabaseName returns DatabaseUserPermissionInput.DatabaseName, and is useful for accessing the field via an interface.
+func (v *DatabaseUserPermissionInput) GetDatabaseName() string { return v.DatabaseName }
+
+// GetPermission returns DatabaseUserPermissionInput.Permission, and is useful for accessing the field via an interface.
+func (v *DatabaseUserPermissionInput) GetPermission() DatabasePermission { return v.Permission }
+
+// GetState returns DatabaseUserPermissionInput.State, and is useful for accessing the field via an interface.
+func (v *DatabaseUserPermissionInput) GetState() State { return v.State }
+
 type EnvironmentVariableInput struct {
 	Name   string `json:"name"`
 	Value  string `json:"value"`
@@ -1018,6 +1409,36 @@ func (v *VolumeResult) GetState() string { return v.State }
 // GetLocked returns VolumeResult.Locked, and is useful for accessing the field via an interface.
 func (v *VolumeResult) GetLocked() bool { return v.Locked }
 
+// __cloudDatabaseClusterCreateInput is used internally by genqlient
+type __cloudDatabaseClusterCreateInput struct {
+	CloudDatabaseClusterInput CloudDatabaseClusterCreateInput `json:"cloudDatabaseClusterInput"`
+}
+
+// GetCloudDatabaseClusterInput returns __cloudDatabaseClusterCreateInput.CloudDatabaseClusterInput, and is useful for accessing the field via an interface.
+func (v *__cloudDatabaseClusterCreateInput) GetCloudDatabaseClusterInput() CloudDatabaseClusterCreateInput {
+	return v.CloudDatabaseClusterInput
+}
+
+// __cloudDatabaseClusterDeleteInput is used internally by genqlient
+type __cloudDatabaseClusterDeleteInput struct {
+	CloudDatabaseClusterResourceInput CloudDatabaseClusterResourceInput `json:"cloudDatabaseClusterResourceInput"`
+}
+
+// GetCloudDatabaseClusterResourceInput returns __cloudDatabaseClusterDeleteInput.CloudDatabaseClusterResourceInput, and is useful for accessing the field via an interface.
+func (v *__cloudDatabaseClusterDeleteInput) GetCloudDatabaseClusterResourceInput() CloudDatabaseClusterResourceInput {
+	return v.CloudDatabaseClusterResourceInput
+}
+
+// __cloudDatabaseClusterModifyInput is used internally by genqlient
+type __cloudDatabaseClusterModifyInput struct {
+	CloudDatabaseClusterModifyInput CloudDatabaseClusterModifyInput `json:"cloudDatabaseClusterModifyInput"`
+}
+
+// GetCloudDatabaseClusterModifyInput returns __cloudDatabaseClusterModifyInput.CloudDatabaseClusterModifyInput, and is useful for accessing the field via an interface.
+func (v *__cloudDatabaseClusterModifyInput) GetCloudDatabaseClusterModifyInput() CloudDatabaseClusterModifyInput {
+	return v.CloudDatabaseClusterModifyInput
+}
+
 // __containerCreateInput is used internally by genqlient
 type __containerCreateInput struct {
 	Input ContainerCreateInput `json:"input"`
@@ -1089,6 +1510,40 @@ type __containerModifyInput struct {
 
 // GetInput returns __containerModifyInput.Input, and is useful for accessing the field via an interface.
 func (v *__containerModifyInput) GetInput() ContainerModifyInput { return v.Input }
+
+// __createCloudDatabaseClusterDatabaseInput is used internally by genqlient
+type __createCloudDatabaseClusterDatabaseInput struct {
+	CloudDatabaseClusterDatabaseInput CloudDatabaseClusterDatabaseCreateInput `json:"cloudDatabaseClusterDatabaseInput"`
+}
+
+// GetCloudDatabaseClusterDatabaseInput returns __createCloudDatabaseClusterDatabaseInput.CloudDatabaseClusterDatabaseInput, and is useful for accessing the field via an interface.
+func (v *__createCloudDatabaseClusterDatabaseInput) GetCloudDatabaseClusterDatabaseInput() CloudDatabaseClusterDatabaseCreateInput {
+	return v.CloudDatabaseClusterDatabaseInput
+}
+
+// __deleteCloudDatabaseClusterDatabaseInput is used internally by genqlient
+type __deleteCloudDatabaseClusterDatabaseInput struct {
+	CloudDatabaseClusterDatabaseInput CloudDatabaseClusterDatabaseResourceInput `json:"cloudDatabaseClusterDatabaseInput"`
+}
+
+// GetCloudDatabaseClusterDatabaseInput returns __deleteCloudDatabaseClusterDatabaseInput.CloudDatabaseClusterDatabaseInput, and is useful for accessing the field via an interface.
+func (v *__deleteCloudDatabaseClusterDatabaseInput) GetCloudDatabaseClusterDatabaseInput() CloudDatabaseClusterDatabaseResourceInput {
+	return v.CloudDatabaseClusterDatabaseInput
+}
+
+// __getCloudDatabaseClusterUserCredentialsInput is used internally by genqlient
+type __getCloudDatabaseClusterUserCredentialsInput struct {
+	CloudDatabase CloudDatabaseClusterResourceInput `json:"cloudDatabase"`
+	UserName      string                            `json:"userName"`
+}
+
+// GetCloudDatabase returns __getCloudDatabaseClusterUserCredentialsInput.CloudDatabase, and is useful for accessing the field via an interface.
+func (v *__getCloudDatabaseClusterUserCredentialsInput) GetCloudDatabase() CloudDatabaseClusterResourceInput {
+	return v.CloudDatabase
+}
+
+// GetUserName returns __getCloudDatabaseClusterUserCredentialsInput.UserName, and is useful for accessing the field via an interface.
+func (v *__getCloudDatabaseClusterUserCredentialsInput) GetUserName() string { return v.UserName }
 
 // __namespaceCreateInput is used internally by genqlient
 type __namespaceCreateInput struct {
@@ -1177,6 +1632,56 @@ type __volumeListInput struct {
 
 // GetNamespaceName returns __volumeListInput.NamespaceName, and is useful for accessing the field via an interface.
 func (v *__volumeListInput) GetNamespaceName() string { return v.NamespaceName }
+
+// cloudDatabaseClusterCreateResponse is returned by cloudDatabaseClusterCreate on success.
+type cloudDatabaseClusterCreateResponse struct {
+	CloudDatabaseClusterCreate CloudDatabaseClusterResult `json:"cloudDatabaseClusterCreate"`
+}
+
+// GetCloudDatabaseClusterCreate returns cloudDatabaseClusterCreateResponse.CloudDatabaseClusterCreate, and is useful for accessing the field via an interface.
+func (v *cloudDatabaseClusterCreateResponse) GetCloudDatabaseClusterCreate() CloudDatabaseClusterResult {
+	return v.CloudDatabaseClusterCreate
+}
+
+// cloudDatabaseClusterDeleteResponse is returned by cloudDatabaseClusterDelete on success.
+type cloudDatabaseClusterDeleteResponse struct {
+	CloudDatabaseClusterDelete bool `json:"cloudDatabaseClusterDelete"`
+}
+
+// GetCloudDatabaseClusterDelete returns cloudDatabaseClusterDeleteResponse.CloudDatabaseClusterDelete, and is useful for accessing the field via an interface.
+func (v *cloudDatabaseClusterDeleteResponse) GetCloudDatabaseClusterDelete() bool {
+	return v.CloudDatabaseClusterDelete
+}
+
+// cloudDatabaseClusterModifyResponse is returned by cloudDatabaseClusterModify on success.
+type cloudDatabaseClusterModifyResponse struct {
+	CloudDatabaseClusterModify CloudDatabaseClusterResult `json:"cloudDatabaseClusterModify"`
+}
+
+// GetCloudDatabaseClusterModify returns cloudDatabaseClusterModifyResponse.CloudDatabaseClusterModify, and is useful for accessing the field via an interface.
+func (v *cloudDatabaseClusterModifyResponse) GetCloudDatabaseClusterModify() CloudDatabaseClusterResult {
+	return v.CloudDatabaseClusterModify
+}
+
+// clusterPlansResponse is returned by clusterPlans on success.
+type clusterPlansResponse struct {
+	CloudDatabaseClusterPlans []CloudDatabaseClusterPlan `json:"cloudDatabaseClusterPlans"`
+}
+
+// GetCloudDatabaseClusterPlans returns clusterPlansResponse.CloudDatabaseClusterPlans, and is useful for accessing the field via an interface.
+func (v *clusterPlansResponse) GetCloudDatabaseClusterPlans() []CloudDatabaseClusterPlan {
+	return v.CloudDatabaseClusterPlans
+}
+
+// clusterVersionsResponse is returned by clusterVersions on success.
+type clusterVersionsResponse struct {
+	CloudDatabaseClusterVersions []CloudDatabaseClusterSpec `json:"cloudDatabaseClusterVersions"`
+}
+
+// GetCloudDatabaseClusterVersions returns clusterVersionsResponse.CloudDatabaseClusterVersions, and is useful for accessing the field via an interface.
+func (v *clusterVersionsResponse) GetCloudDatabaseClusterVersions() []CloudDatabaseClusterSpec {
+	return v.CloudDatabaseClusterVersions
+}
 
 // containerCreateResponse is returned by containerCreate on success.
 type containerCreateResponse struct {
@@ -1494,6 +1999,56 @@ type containerModifyResponse struct {
 // GetContainerModify returns containerModifyResponse.ContainerModify, and is useful for accessing the field via an interface.
 func (v *containerModifyResponse) GetContainerModify() ContainerResult { return v.ContainerModify }
 
+// createCloudDatabaseClusterDatabaseResponse is returned by createCloudDatabaseClusterDatabase on success.
+type createCloudDatabaseClusterDatabaseResponse struct {
+	CloudDatabaseClusterDatabaseCreate CloudDatabaseClusterDatabaseResult `json:"cloudDatabaseClusterDatabaseCreate"`
+}
+
+// GetCloudDatabaseClusterDatabaseCreate returns createCloudDatabaseClusterDatabaseResponse.CloudDatabaseClusterDatabaseCreate, and is useful for accessing the field via an interface.
+func (v *createCloudDatabaseClusterDatabaseResponse) GetCloudDatabaseClusterDatabaseCreate() CloudDatabaseClusterDatabaseResult {
+	return v.CloudDatabaseClusterDatabaseCreate
+}
+
+// deleteCloudDatabaseClusterDatabaseResponse is returned by deleteCloudDatabaseClusterDatabase on success.
+type deleteCloudDatabaseClusterDatabaseResponse struct {
+	CloudDatabaseClusterDatabaseDelete bool `json:"cloudDatabaseClusterDatabaseDelete"`
+}
+
+// GetCloudDatabaseClusterDatabaseDelete returns deleteCloudDatabaseClusterDatabaseResponse.CloudDatabaseClusterDatabaseDelete, and is useful for accessing the field via an interface.
+func (v *deleteCloudDatabaseClusterDatabaseResponse) GetCloudDatabaseClusterDatabaseDelete() bool {
+	return v.CloudDatabaseClusterDatabaseDelete
+}
+
+// getCloudDatabaseClusterUserCredentialsCloudDatabaseClusterUserCredentialsDatabaseUser includes the requested fields of the GraphQL type DatabaseUser.
+type getCloudDatabaseClusterUserCredentialsCloudDatabaseClusterUserCredentialsDatabaseUser struct {
+	Dsn string `json:"dsn"`
+}
+
+// GetDsn returns getCloudDatabaseClusterUserCredentialsCloudDatabaseClusterUserCredentialsDatabaseUser.Dsn, and is useful for accessing the field via an interface.
+func (v *getCloudDatabaseClusterUserCredentialsCloudDatabaseClusterUserCredentialsDatabaseUser) GetDsn() string {
+	return v.Dsn
+}
+
+// getCloudDatabaseClusterUserCredentialsResponse is returned by getCloudDatabaseClusterUserCredentials on success.
+type getCloudDatabaseClusterUserCredentialsResponse struct {
+	CloudDatabaseClusterUserCredentials getCloudDatabaseClusterUserCredentialsCloudDatabaseClusterUserCredentialsDatabaseUser `json:"cloudDatabaseClusterUserCredentials"`
+}
+
+// GetCloudDatabaseClusterUserCredentials returns getCloudDatabaseClusterUserCredentialsResponse.CloudDatabaseClusterUserCredentials, and is useful for accessing the field via an interface.
+func (v *getCloudDatabaseClusterUserCredentialsResponse) GetCloudDatabaseClusterUserCredentials() getCloudDatabaseClusterUserCredentialsCloudDatabaseClusterUserCredentialsDatabaseUser {
+	return v.CloudDatabaseClusterUserCredentials
+}
+
+// getCloudDatabaseClustersResponse is returned by getCloudDatabaseClusters on success.
+type getCloudDatabaseClustersResponse struct {
+	CloudDatabaseClusters []CloudDatabaseClusterResult `json:"cloudDatabaseClusters"`
+}
+
+// GetCloudDatabaseClusters returns getCloudDatabaseClustersResponse.CloudDatabaseClusters, and is useful for accessing the field via an interface.
+func (v *getCloudDatabaseClustersResponse) GetCloudDatabaseClusters() []CloudDatabaseClusterResult {
+	return v.CloudDatabaseClusters
+}
+
 // namespaceCreateResponse is returned by namespaceCreate on success.
 type namespaceCreateResponse struct {
 	NamespaceCreate NamespaceResult `json:"namespaceCreate"`
@@ -1772,11 +2327,11 @@ func (v *registryListResponse) GetNamespace() registryListNamespace { return v.N
 
 // volumeCreateResponse is returned by volumeCreate on success.
 type volumeCreateResponse struct {
-	VolumeCreate *VolumeResult `json:"volumeCreate"`
+	VolumeCreate VolumeResult `json:"volumeCreate"`
 }
 
 // GetVolumeCreate returns volumeCreateResponse.VolumeCreate, and is useful for accessing the field via an interface.
-func (v *volumeCreateResponse) GetVolumeCreate() *VolumeResult { return v.VolumeCreate }
+func (v *volumeCreateResponse) GetVolumeCreate() VolumeResult { return v.VolumeCreate }
 
 // volumeDeleteResponse is returned by volumeDelete on success.
 type volumeDeleteResponse struct {
@@ -1885,6 +2440,258 @@ type volumeListResponse struct {
 
 // GetNamespace returns volumeListResponse.Namespace, and is useful for accessing the field via an interface.
 func (v *volumeListResponse) GetNamespace() volumeListNamespace { return v.Namespace }
+
+// The mutation executed by cloudDatabaseClusterCreate.
+const cloudDatabaseClusterCreate_Operation = `
+mutation cloudDatabaseClusterCreate ($cloudDatabaseClusterInput: CloudDatabaseClusterCreateInput!) {
+	cloudDatabaseClusterCreate(cloudDatabaseClusterInput: $cloudDatabaseClusterInput) {
+		... CloudDatabaseClusterResult
+	}
+}
+fragment CloudDatabaseClusterResult on CloudDatabaseCluster {
+	id
+	databases {
+		name
+	}
+	name
+	namespace {
+		name
+	}
+	plan {
+		cpu
+		group
+		id
+		memory
+		price {
+			amount
+			currency
+		}
+		storage
+	}
+	spec {
+		type
+		version
+	}
+	users {
+		name
+		role
+		permissions {
+			databaseName
+			permission
+		}
+		status
+	}
+	adminUser {
+		name
+		role
+	}
+}
+`
+
+func cloudDatabaseClusterCreate(
+	ctx_ context.Context,
+	client_ graphql.Client,
+	cloudDatabaseClusterInput CloudDatabaseClusterCreateInput,
+) (data_ *cloudDatabaseClusterCreateResponse, err_ error) {
+	req_ := &graphql.Request{
+		OpName: "cloudDatabaseClusterCreate",
+		Query:  cloudDatabaseClusterCreate_Operation,
+		Variables: &__cloudDatabaseClusterCreateInput{
+			CloudDatabaseClusterInput: cloudDatabaseClusterInput,
+		},
+	}
+
+	data_ = &cloudDatabaseClusterCreateResponse{}
+	resp_ := &graphql.Response{Data: data_}
+
+	err_ = client_.MakeRequest(
+		ctx_,
+		req_,
+		resp_,
+	)
+
+	return data_, err_
+}
+
+// The mutation executed by cloudDatabaseClusterDelete.
+const cloudDatabaseClusterDelete_Operation = `
+mutation cloudDatabaseClusterDelete ($cloudDatabaseClusterResourceInput: CloudDatabaseClusterResourceInput!) {
+	cloudDatabaseClusterDelete(cloudDatabase: $cloudDatabaseClusterResourceInput)
+}
+`
+
+func cloudDatabaseClusterDelete(
+	ctx_ context.Context,
+	client_ graphql.Client,
+	cloudDatabaseClusterResourceInput CloudDatabaseClusterResourceInput,
+) (data_ *cloudDatabaseClusterDeleteResponse, err_ error) {
+	req_ := &graphql.Request{
+		OpName: "cloudDatabaseClusterDelete",
+		Query:  cloudDatabaseClusterDelete_Operation,
+		Variables: &__cloudDatabaseClusterDeleteInput{
+			CloudDatabaseClusterResourceInput: cloudDatabaseClusterResourceInput,
+		},
+	}
+
+	data_ = &cloudDatabaseClusterDeleteResponse{}
+	resp_ := &graphql.Response{Data: data_}
+
+	err_ = client_.MakeRequest(
+		ctx_,
+		req_,
+		resp_,
+	)
+
+	return data_, err_
+}
+
+// The mutation executed by cloudDatabaseClusterModify.
+const cloudDatabaseClusterModify_Operation = `
+mutation cloudDatabaseClusterModify ($cloudDatabaseClusterModifyInput: CloudDatabaseClusterModifyInput!) {
+	cloudDatabaseClusterModify(cloudDatabaseClusterInput: $cloudDatabaseClusterModifyInput) {
+		... CloudDatabaseClusterResult
+	}
+}
+fragment CloudDatabaseClusterResult on CloudDatabaseCluster {
+	id
+	databases {
+		name
+	}
+	name
+	namespace {
+		name
+	}
+	plan {
+		cpu
+		group
+		id
+		memory
+		price {
+			amount
+			currency
+		}
+		storage
+	}
+	spec {
+		type
+		version
+	}
+	users {
+		name
+		role
+		permissions {
+			databaseName
+			permission
+		}
+		status
+	}
+	adminUser {
+		name
+		role
+	}
+}
+`
+
+func cloudDatabaseClusterModify(
+	ctx_ context.Context,
+	client_ graphql.Client,
+	cloudDatabaseClusterModifyInput CloudDatabaseClusterModifyInput,
+) (data_ *cloudDatabaseClusterModifyResponse, err_ error) {
+	req_ := &graphql.Request{
+		OpName: "cloudDatabaseClusterModify",
+		Query:  cloudDatabaseClusterModify_Operation,
+		Variables: &__cloudDatabaseClusterModifyInput{
+			CloudDatabaseClusterModifyInput: cloudDatabaseClusterModifyInput,
+		},
+	}
+
+	data_ = &cloudDatabaseClusterModifyResponse{}
+	resp_ := &graphql.Response{Data: data_}
+
+	err_ = client_.MakeRequest(
+		ctx_,
+		req_,
+		resp_,
+	)
+
+	return data_, err_
+}
+
+// The query executed by clusterPlans.
+const clusterPlans_Operation = `
+query clusterPlans {
+	cloudDatabaseClusterPlans {
+		... CloudDatabaseClusterPlan
+	}
+}
+fragment CloudDatabaseClusterPlan on Plan {
+	cpu
+	group
+	id
+	memory
+	name
+	price {
+		amount
+		currency
+	}
+	storage
+}
+`
+
+func clusterPlans(
+	ctx_ context.Context,
+	client_ graphql.Client,
+) (data_ *clusterPlansResponse, err_ error) {
+	req_ := &graphql.Request{
+		OpName: "clusterPlans",
+		Query:  clusterPlans_Operation,
+	}
+
+	data_ = &clusterPlansResponse{}
+	resp_ := &graphql.Response{Data: data_}
+
+	err_ = client_.MakeRequest(
+		ctx_,
+		req_,
+		resp_,
+	)
+
+	return data_, err_
+}
+
+// The query executed by clusterVersions.
+const clusterVersions_Operation = `
+query clusterVersions {
+	cloudDatabaseClusterVersions {
+		... CloudDatabaseClusterSpec
+	}
+}
+fragment CloudDatabaseClusterSpec on Spec {
+	type
+	version
+}
+`
+
+func clusterVersions(
+	ctx_ context.Context,
+	client_ graphql.Client,
+) (data_ *clusterVersionsResponse, err_ error) {
+	req_ := &graphql.Request{
+		OpName: "clusterVersions",
+		Query:  clusterVersions_Operation,
+	}
+
+	data_ = &clusterVersionsResponse{}
+	resp_ := &graphql.Response{Data: data_}
+
+	err_ = client_.MakeRequest(
+		ctx_,
+		req_,
+		resp_,
+	)
+
+	return data_, err_
+}
 
 // The mutation executed by containerCreate.
 const containerCreate_Operation = `
@@ -2301,6 +3108,181 @@ func containerModify(
 	}
 
 	data_ = &containerModifyResponse{}
+	resp_ := &graphql.Response{Data: data_}
+
+	err_ = client_.MakeRequest(
+		ctx_,
+		req_,
+		resp_,
+	)
+
+	return data_, err_
+}
+
+// The mutation executed by createCloudDatabaseClusterDatabase.
+const createCloudDatabaseClusterDatabase_Operation = `
+mutation createCloudDatabaseClusterDatabase ($cloudDatabaseClusterDatabaseInput: CloudDatabaseClusterDatabaseCreateInput!) {
+	cloudDatabaseClusterDatabaseCreate(databaseInput: $cloudDatabaseClusterDatabaseInput) {
+		... CloudDatabaseClusterDatabaseResult
+	}
+}
+fragment CloudDatabaseClusterDatabaseResult on Database {
+	name
+	description
+	status
+}
+`
+
+func createCloudDatabaseClusterDatabase(
+	ctx_ context.Context,
+	client_ graphql.Client,
+	cloudDatabaseClusterDatabaseInput CloudDatabaseClusterDatabaseCreateInput,
+) (data_ *createCloudDatabaseClusterDatabaseResponse, err_ error) {
+	req_ := &graphql.Request{
+		OpName: "createCloudDatabaseClusterDatabase",
+		Query:  createCloudDatabaseClusterDatabase_Operation,
+		Variables: &__createCloudDatabaseClusterDatabaseInput{
+			CloudDatabaseClusterDatabaseInput: cloudDatabaseClusterDatabaseInput,
+		},
+	}
+
+	data_ = &createCloudDatabaseClusterDatabaseResponse{}
+	resp_ := &graphql.Response{Data: data_}
+
+	err_ = client_.MakeRequest(
+		ctx_,
+		req_,
+		resp_,
+	)
+
+	return data_, err_
+}
+
+// The mutation executed by deleteCloudDatabaseClusterDatabase.
+const deleteCloudDatabaseClusterDatabase_Operation = `
+mutation deleteCloudDatabaseClusterDatabase ($cloudDatabaseClusterDatabaseInput: CloudDatabaseClusterDatabaseResourceInput!) {
+	cloudDatabaseClusterDatabaseDelete(databaseInput: $cloudDatabaseClusterDatabaseInput)
+}
+`
+
+func deleteCloudDatabaseClusterDatabase(
+	ctx_ context.Context,
+	client_ graphql.Client,
+	cloudDatabaseClusterDatabaseInput CloudDatabaseClusterDatabaseResourceInput,
+) (data_ *deleteCloudDatabaseClusterDatabaseResponse, err_ error) {
+	req_ := &graphql.Request{
+		OpName: "deleteCloudDatabaseClusterDatabase",
+		Query:  deleteCloudDatabaseClusterDatabase_Operation,
+		Variables: &__deleteCloudDatabaseClusterDatabaseInput{
+			CloudDatabaseClusterDatabaseInput: cloudDatabaseClusterDatabaseInput,
+		},
+	}
+
+	data_ = &deleteCloudDatabaseClusterDatabaseResponse{}
+	resp_ := &graphql.Response{Data: data_}
+
+	err_ = client_.MakeRequest(
+		ctx_,
+		req_,
+		resp_,
+	)
+
+	return data_, err_
+}
+
+// The query executed by getCloudDatabaseClusterUserCredentials.
+const getCloudDatabaseClusterUserCredentials_Operation = `
+query getCloudDatabaseClusterUserCredentials ($cloudDatabase: CloudDatabaseClusterResourceInput!, $userName: String!) {
+	cloudDatabaseClusterUserCredentials(cloudDatabase: $cloudDatabase, username: $userName) {
+		dsn
+	}
+}
+`
+
+func getCloudDatabaseClusterUserCredentials(
+	ctx_ context.Context,
+	client_ graphql.Client,
+	cloudDatabase CloudDatabaseClusterResourceInput,
+	userName string,
+) (data_ *getCloudDatabaseClusterUserCredentialsResponse, err_ error) {
+	req_ := &graphql.Request{
+		OpName: "getCloudDatabaseClusterUserCredentials",
+		Query:  getCloudDatabaseClusterUserCredentials_Operation,
+		Variables: &__getCloudDatabaseClusterUserCredentialsInput{
+			CloudDatabase: cloudDatabase,
+			UserName:      userName,
+		},
+	}
+
+	data_ = &getCloudDatabaseClusterUserCredentialsResponse{}
+	resp_ := &graphql.Response{Data: data_}
+
+	err_ = client_.MakeRequest(
+		ctx_,
+		req_,
+		resp_,
+	)
+
+	return data_, err_
+}
+
+// The query executed by getCloudDatabaseClusters.
+const getCloudDatabaseClusters_Operation = `
+query getCloudDatabaseClusters {
+	cloudDatabaseClusters {
+		... CloudDatabaseClusterResult
+	}
+}
+fragment CloudDatabaseClusterResult on CloudDatabaseCluster {
+	id
+	databases {
+		name
+	}
+	name
+	namespace {
+		name
+	}
+	plan {
+		cpu
+		group
+		id
+		memory
+		price {
+			amount
+			currency
+		}
+		storage
+	}
+	spec {
+		type
+		version
+	}
+	users {
+		name
+		role
+		permissions {
+			databaseName
+			permission
+		}
+		status
+	}
+	adminUser {
+		name
+		role
+	}
+}
+`
+
+func getCloudDatabaseClusters(
+	ctx_ context.Context,
+	client_ graphql.Client,
+) (data_ *getCloudDatabaseClustersResponse, err_ error) {
+	req_ := &graphql.Request{
+		OpName: "getCloudDatabaseClusters",
+		Query:  getCloudDatabaseClusters_Operation,
+	}
+
+	data_ = &getCloudDatabaseClustersResponse{}
 	resp_ := &graphql.Response{Data: data_}
 
 	err_ = client_.MakeRequest(

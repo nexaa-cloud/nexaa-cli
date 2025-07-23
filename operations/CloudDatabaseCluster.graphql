@@ -1,0 +1,141 @@
+fragment CloudDatabaseClusterResult on CloudDatabaseCluster {
+  id
+  databases {
+    name
+  }
+  name
+  namespace {
+    name
+  }
+  plan {
+    cpu
+    group
+    id
+    memory
+    price {
+      amount
+      currency
+    }
+    storage
+  }
+  spec {
+    type
+    version
+  }
+  users {
+    name
+    role
+    permissions {
+      databaseName
+      permission
+    }
+    status
+  }
+  adminUser {
+    name
+    role
+  }
+}
+
+fragment CloudDatabaseClusterDatabaseResult on Database {
+  name
+  description
+  status
+}
+
+fragment CloudDatabaseClusterPlan on Plan {
+  cpu
+  group
+  id
+  memory
+  name
+  price {
+    amount
+    currency
+  }
+  storage
+}
+
+fragment CloudDatabaseClusterSpec on Spec {
+  type
+  version
+}
+
+mutation cloudDatabaseClusterCreate(
+  $cloudDatabaseClusterInput: CloudDatabaseClusterCreateInput!
+) {
+  # @genqlient(flatten: true)
+  cloudDatabaseClusterCreate(
+    cloudDatabaseClusterInput: $cloudDatabaseClusterInput
+  ) {
+    ...CloudDatabaseClusterResult
+  }
+}
+mutation cloudDatabaseClusterDelete(
+  $cloudDatabaseClusterResourceInput: CloudDatabaseClusterResourceInput!
+) {
+  cloudDatabaseClusterDelete(cloudDatabase: $cloudDatabaseClusterResourceInput)
+}
+
+query getCloudDatabaseClusters {
+  # @genqlient(flatten: true)
+  cloudDatabaseClusters {
+    ...CloudDatabaseClusterResult
+  }
+}
+
+mutation cloudDatabaseClusterModify(
+  $cloudDatabaseClusterModifyInput: CloudDatabaseClusterModifyInput!
+) {
+  # @genqlient(flatten: true)
+  cloudDatabaseClusterModify(
+    cloudDatabaseClusterInput: $cloudDatabaseClusterModifyInput
+  ) {
+    ...CloudDatabaseClusterResult
+  }
+}
+
+query getCloudDatabaseClusterUserCredentials(
+  $cloudDatabase: CloudDatabaseClusterResourceInput!
+  $userName: String!
+) {
+  cloudDatabaseClusterUserCredentials(
+    cloudDatabase: $cloudDatabase
+    username: $userName
+  ) {
+    dsn
+  }
+}
+
+mutation createCloudDatabaseClusterDatabase(
+  $cloudDatabaseClusterDatabaseInput: CloudDatabaseClusterDatabaseCreateInput!
+) {
+  # @genqlient(flatten: true)
+  cloudDatabaseClusterDatabaseCreate(
+    databaseInput: $cloudDatabaseClusterDatabaseInput
+  ) {
+    ...CloudDatabaseClusterDatabaseResult
+  }
+}
+
+mutation deleteCloudDatabaseClusterDatabase(
+  $cloudDatabaseClusterDatabaseInput: CloudDatabaseClusterDatabaseResourceInput!
+) {
+  cloudDatabaseClusterDatabaseDelete(
+    databaseInput: $cloudDatabaseClusterDatabaseInput
+  )
+}
+
+query clusterPlans {
+  # @genqlient(flatten: true)
+  cloudDatabaseClusterPlans {
+    ...CloudDatabaseClusterPlan
+  }
+}
+
+query clusterVersions {
+  # @genqlient(flatten: true)
+  cloudDatabaseClusterVersions {
+    ...CloudDatabaseClusterSpec
+  }
+}

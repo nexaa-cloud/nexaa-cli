@@ -1,33 +1,33 @@
 fragment VolumeResult on Volume {
-    name
-    size
-    usage
-    state
-    locked
+  name
+  size
+  usage
+  state
+  locked
 }
 
 query volumeList($namespaceName: String!) {
-    namespace(name: $namespaceName) {
-        volumes {
-            ...VolumeResult
-        }
+  namespace(name: $namespaceName) {
+    volumes {
+      ...VolumeResult
     }
+  }
 }
 
 mutation volumeCreate($input: VolumeCreateInput!) {
-    # @genqlient(flatten: true)
-    volumeCreate(volumeInput: $input) {
-        ...VolumeResult
-    }
+  # @genqlient(flatten: true)
+  volumeCreate(volumeInput: $input) {
+    ...VolumeResult
+  }
 }
 
 mutation volumeIncrease($input: VolumeModifyInput!) {
-    # @genqlient(flatten: true)
-    volumeIncrease(volumeInput: $input) {
-        ...VolumeResult
-    }
+  # @genqlient(flatten: true)
+  volumeIncrease(volumeInput: $input) {
+    ...VolumeResult
+  }
 }
 
 mutation volumeDelete($namespaceName: String!, $volumeName: String!) {
-    volumeDelete( volume: {name: $volumeName, namespace: $namespaceName})
+  volumeDelete(volume: { name: $volumeName, namespace: $namespaceName })
 }
