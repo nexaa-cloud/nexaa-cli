@@ -17,10 +17,10 @@ var completionCmd = &cobra.Command{
 	Long: `To enable shell completion, run:
 
 For Bash:
-    source <(tilaa-cli completion bash)
+    source <(nexaa completion bash)
 
 For Zsh:
-    source <(tilaa-cli completion zsh)
+    source <(nexaa completion zsh)
 
 Or to persist it, save the output to a file and source it in your shell config.`,
 	Run: func(cmd *cobra.Command, args []string) {
@@ -33,8 +33,8 @@ Or to persist it, save the output to a file and source it in your shell config.`
 }
 
 var rootCmd = &cobra.Command{
-	Use:   "tilaa",
-	Short: "A CLI tool to manage cloud resources on the Tilaa Serverless Platform.",
+	Use:   "nexaa",
+	Short: "A CLI tool to manage cloud resources on the Nexaa Serverless Platform.",
 	PersistentPreRun: func(cmd *cobra.Command, args []string) {
 		if err := config.Initialize(env); err != nil {
 			fmt.Printf("Error initializing environment: %v\n", err)
@@ -47,7 +47,7 @@ var rootCmd = &cobra.Command{
 
 		if config.AccessToken == "" && cmd.Name() != "login" {
 			fmt.Println("ERROR: No access token found, please login first.")
-			fmt.Println("Run 'tilaa login' to authenticate.")
+			fmt.Println("Run 'nexaa login' to authenticate.")
 			os.Exit(1)
 		}
 	},

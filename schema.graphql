@@ -122,6 +122,14 @@ input CloudDatabaseClusterDatabaseCreateInput {
   database: DatabaseInput!
 }
 
+input CloudDatabaseClusterDatabaseModifyInput {
+  ""
+  cluster: CloudDatabaseClusterResourceInput!
+
+  ""
+  user: DatabaseUserInput!
+}
+
 input CloudDatabaseClusterDatabaseResourceInput {
   ""
   cluster: CloudDatabaseClusterResourceInput!
@@ -663,9 +671,10 @@ input CreateContainerInput {
 type Customer {
   address: Address @deprecated(reason: "this field will be removed in the future")
   billingPeriod: Int! @deprecated(reason: "this field will be removed in the future")
+  hasPaymentDetails: Boolean!
   id: ID!
   name: String! @deprecated(reason: "this field will be removed in the future")
-  recurringPayment: Boolean!
+  recurringPayment: Boolean! @deprecated(reason: "this field will be removed in the future")
   suspendedReason: SuspendedReason
   termOfPayment: Int! @deprecated(reason: "this field will be removed in the future")
 }
@@ -886,6 +895,7 @@ type Mutation {
   cloudDatabaseClusterDatabaseDelete(databaseInput: CloudDatabaseClusterDatabaseResourceInput!): Boolean!
   cloudDatabaseClusterDelete(cloudDatabase: CloudDatabaseClusterResourceInput!): Boolean!
   cloudDatabaseClusterModify(cloudDatabaseClusterInput: CloudDatabaseClusterModifyInput): CloudDatabaseCluster!
+  cloudDatabaseClusterUserModify(userInput: CloudDatabaseClusterDatabaseModifyInput): DatabaseUser!
   containerCreate(containerInput: ContainerCreateInput): Container!
   containerDelete(container: ContainerDeleteInput!): Boolean!
   containerJobCreate(scheduledJob: ContainerJobCreateInput!): ContainerJob!

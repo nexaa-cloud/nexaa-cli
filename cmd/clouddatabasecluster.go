@@ -163,6 +163,7 @@ var createClusterDatabaseCmd = &cobra.Command{
 			Database: api.DatabaseInput{
 				Name:        dbName,
 				Description: &dbDescription,
+				State:       api.StatePresent,
 			},
 		}
 		client := api.NewClient()
@@ -203,7 +204,7 @@ var deleteClusterDatabaseCmd = &cobra.Command{
 }
 
 var getClusterDatabaseUserCredentialsCmd = &cobra.Command{
-	Use:   "credentials",
+	Use:   "get-credentials",
 	Short: "Get user connection string for a database cluster",
 	Run: func(cmd *cobra.Command, args []string) {
 		clusterName, _ := cmd.Flags().GetString("cluster")
@@ -247,23 +248,22 @@ func init() {
 	clouddatabaseclusterCmd.AddCommand(listCloudDatabaseClusterPlansCmd)
 	clouddatabaseclusterCmd.AddCommand(listCloudDatabaseClusterSpecsCmd)
 
-	// Don't uncomment until feature is released to prod
-	// createClusterDatabaseCmd.Flags().String("cluster", "", "Cluster name")
-	// createClusterDatabaseCmd.Flags().String("name", "", "Database name")
-	// createClusterDatabaseCmd.Flags().String("description", "", "Description for the database (optional)")
-	// createClusterDatabaseCmd.Flags().StringP("namespace", "n", "", "Namespace")
-	// createClusterDatabaseCmd.MarkFlagRequired("cluster")
-	// createClusterDatabaseCmd.MarkFlagRequired("name")
-	// createClusterDatabaseCmd.MarkFlagRequired("namespace")
-	// clouddatabaseclusterCmd.AddCommand(createClusterDatabaseCmd)
+	createClusterDatabaseCmd.Flags().String("cluster", "", "Cluster name")
+	createClusterDatabaseCmd.Flags().String("name", "", "Database name")
+	createClusterDatabaseCmd.Flags().String("description", "", "Description for the database (optional)")
+	createClusterDatabaseCmd.Flags().StringP("namespace", "n", "", "Namespace")
+	createClusterDatabaseCmd.MarkFlagRequired("cluster")
+	createClusterDatabaseCmd.MarkFlagRequired("name")
+	createClusterDatabaseCmd.MarkFlagRequired("namespace")
+	clouddatabaseclusterCmd.AddCommand(createClusterDatabaseCmd)
 
-	// deleteClusterDatabaseCmd.Flags().String("cluster", "", "Cluster name")
-	// deleteClusterDatabaseCmd.Flags().String("name", "", "Database name")
-	// deleteClusterDatabaseCmd.Flags().StringP("namespace", "n", "", "Namespace")
-	// deleteClusterDatabaseCmd.MarkFlagRequired("cluster")
-	// deleteClusterDatabaseCmd.MarkFlagRequired("name")
-	// deleteClusterDatabaseCmd.MarkFlagRequired("namespace")
-	// clouddatabaseclusterCmd.AddCommand(deleteClusterDatabaseCmd)
+	deleteClusterDatabaseCmd.Flags().String("cluster", "", "Cluster name")
+	deleteClusterDatabaseCmd.Flags().String("name", "", "Database name")
+	deleteClusterDatabaseCmd.Flags().StringP("namespace", "n", "", "Namespace")
+	deleteClusterDatabaseCmd.MarkFlagRequired("cluster")
+	deleteClusterDatabaseCmd.MarkFlagRequired("name")
+	deleteClusterDatabaseCmd.MarkFlagRequired("namespace")
+	clouddatabaseclusterCmd.AddCommand(deleteClusterDatabaseCmd)
 
 	getClusterDatabaseUserCredentialsCmd.Flags().String("cluster", "", "Cluster name")
 	getClusterDatabaseUserCredentialsCmd.Flags().StringP("namespace", "n", "", "Namespace")

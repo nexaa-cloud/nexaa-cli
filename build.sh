@@ -15,7 +15,7 @@ TARGETS=(
     "windows/amd64/.exe"
 )
 
-product_name="tilaa"
+product_name="nexaa"
 start_dir="${PWD}"
 
 go generate
