@@ -54,7 +54,7 @@ jobs:
           GOARCH: ${{ matrix.goarch }}
         run: |
           # Set binary name
-          binary_name="nexaa"
+          binary_name="nexaa-cli"
           if [ "$GOOS" = "windows" ]; then
             binary_name="${binary_name}.exe"
           fi
@@ -125,26 +125,26 @@ jobs:
             ```bash
             # AMD64
             curl -L https://github.com/${{ github.repository }}/releases/download/${{ env.VERSION }}/nexaa-${{ env.VERSION }}-linux-amd64.tar.gz | tar xz
-            chmod +x nexaa-${{ env.VERSION }}-linux-amd64/nexaa
-            sudo mv nexaa-${{ env.VERSION }}-linux-amd64/nexaa /usr/local/bin/
+            chmod +x nexaa-${{ env.VERSION }}-linux-amd64/nexaa-cli
+            sudo mv nexaa-${{ env.VERSION }}-linux-amd64/nexaa-cli /usr/local/bin/
             
             # ARM64
             curl -L https://github.com/${{ github.repository }}/releases/download/${{ env.VERSION }}/nexaa-${{ env.VERSION }}-linux-arm64.tar.gz | tar xz
-            chmod +x nexaa-${{ env.VERSION }}-linux-arm64/nexaa
-            sudo mv nexaa-${{ env.VERSION }}-linux-arm64/nexaa /usr/local/bin/
+            chmod +x nexaa-${{ env.VERSION }}-linux-arm64/nexaa-cli
+            sudo mv nexaa-${{ env.VERSION }}-linux-arm64/nexaa-cli /usr/local/bin/
             ```
             
             ### macOS
             ```bash
             # Intel Macs (amd64)
             curl -L https://github.com/${{ github.repository }}/releases/download/${{ env.VERSION }}/nexaa-${{ env.VERSION }}-darwin-amd64.tar.gz | tar xz
-            chmod +x nexaa-${{ env.VERSION }}-darwin-amd64/nexaa
-            sudo mv nexaa-${{ env.VERSION }}-darwin-amd64/nexaa /usr/local/bin/
+            chmod +x nexaa-${{ env.VERSION }}-darwin-amd64/nexaa-cli
+            sudo mv nexaa-${{ env.VERSION }}-darwin-amd64/nexaa-cli /usr/local/bin/
             
             # Apple Silicon Macs (arm64)
             curl -L https://github.com/${{ github.repository }}/releases/download/${{ env.VERSION }}/nexaa-${{ env.VERSION }}-darwin-arm64.tar.gz | tar xz
-            chmod +x nexaa-${{ env.VERSION }}-darwin-arm64/nexaa
-            sudo mv nexaa-${{ env.VERSION }}-darwin-arm64/nexaa /usr/local/bin/
+            chmod +x nexaa-${{ env.VERSION }}-darwin-arm64/nexaa-cli
+            sudo mv nexaa-${{ env.VERSION }}-darwin-arm64/nexaa-cli /usr/local/bin/
             ```
             
             ### Windows
@@ -156,7 +156,7 @@ jobs:
             
             ### Verify installation
             ```bash
-            nexaa version
+            nexaa-cli version
             ```
             
             ## Checksums
