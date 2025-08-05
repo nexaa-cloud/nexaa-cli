@@ -59,9 +59,9 @@ jobs:
             # Auto-increment logic based on commit messages
             commit_message="${{ github.event.head_commit.message }}"
             
-            if [[ "$commit_message" =~ \[major\]|\[MAJOR\]|BREAKING\ CHANGE ]]; then
+            if [[ "$commit_message" =~ (\[major\]|\[MAJOR\]|BREAKING\ CHANGE) ]]; then
               echo "bump_type=major" >> $GITHUB_OUTPUT
-            elif [[ "$commit_message" =~ \[minor\]|\[MINOR\]|feat:|feature: ]]; then
+            elif [[ "$commit_message" =~ (\[minor\]|\[MINOR\]|feat:|feature:) ]]; then
               echo "bump_type=minor" >> $GITHUB_OUTPUT
             else
               echo "bump_type=patch" >> $GITHUB_OUTPUT
