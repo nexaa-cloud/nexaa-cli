@@ -74,4 +74,5 @@ func init() {
 	rootCmd.AddCommand(registryCmd)
 	rootCmd.AddCommand(namespaceCmd)
 	rootCmd.AddCommand(loginCmd)
+	rootCmd.AddCommand(volumeCmd)
 }
