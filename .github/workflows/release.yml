@@ -1,0 +1,142 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: write
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: '1.23.0'
+
+      - name: Run tests
+        run: go test -race ./...
+
+  build:
+    needs: test
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        goos: [linux, darwin, windows]
+        goarch: [amd64, arm64]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: '1.23.0'
+
+      - name: Set up build variables
+        run: |
+          echo "VERSION=${GITHUB_REF#refs/tags/}" >> $GITHUB_ENV
+          echo "BUILD_DATE=$(date -u +'%Y-%m-%dT%H:%M:%SZ')" >> $GITHUB_ENV
+          echo "COMMIT_SHA=${GITHUB_SHA::8}" >> $GITHUB_ENV
+
+      - name: Build binary
+        env:
+          GOOS: ${{ matrix.goos }}
+          GOARCH: ${{ matrix.goarch }}
+        run: |
+          # Set binary name
+          binary_name="nexaa"
+          if [ "$GOOS" = "windows" ]; then
+            binary_name="${binary_name}.exe"
+          fi
+          
+          # Create output directory
+          output_dir="nexaa-${VERSION}-${GOOS}-${GOARCH}"
+          mkdir -p "$output_dir"
+          
+          echo "Building for $GOOS/$GOARCH..."
+          
+          # Build binary with version info
+          CGO_ENABLED=0 go build \
+            -ldflags="-s -w -X main.version=${VERSION} -X main.buildDate=${BUILD_DATE} -X main.commitSHA=${COMMIT_SHA}" \
+            -o "${output_dir}/${binary_name}" \
+            .
+          
+          # Copy additional files
+          cp README.md "${output_dir}/"
+          
+          # Create archive
+          if [ "$GOOS" = "windows" ]; then
+            zip -r "nexaa-${VERSION}-${GOOS}-${GOARCH}.zip" "${output_dir}/"
+          else
+            tar -czf "nexaa-${VERSION}-${GOOS}-${GOARCH}.tar.gz" "${output_dir}/"
+          fi
+
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: nexaa-${{ env.VERSION }}-${{ matrix.goos }}-${{ matrix.goarch }}
+          path: nexaa-${{ env.VERSION }}-${{ matrix.goos }}-${{ matrix.goarch }}.*
+
+  release:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Set up build variables
+        run: |
+          echo "VERSION=${GITHUB_REF#refs/tags/}" >> $GITHUB_ENV
+
+      - name: Download all artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: dist
+          merge-multiple: true
+
+      - name: Generate checksums
+        run: |
+          cd dist
+          sha256sum * > checksums.txt
+          cd ..
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            dist/*
+          draft: false
+          prerelease: ${{ contains(github.ref, '-') }}
+          generate_release_notes: true
+          body: |
+            ## Installation
+            
+            Download the appropriate binary for your platform from the assets below.
+            
+            ### Linux/macOS
+            ```bash
+            # Download and extract (replace with your platform)
+            curl -L https://github.com/${{ github.repository }}/releases/download/${{ env.VERSION }}/nexaa-${{ env.VERSION }}-linux-amd64.tar.gz | tar xz
+            
+            # Make executable and move to PATH
+            chmod +x nexaa-${{ env.VERSION }}-linux-amd64/nexaa
+            sudo mv nexaa-${{ env.VERSION }}-linux-amd64/nexaa /usr/local/bin/
+            ```
+            
+            ### Windows
+            Download the `.zip` file for your architecture, extract it, and add the executable to your PATH.
+            
+            ### Verify installation
+            ```bash
+            nexaa --version
+            ```
+            
+            ## Checksums
+            
+            Verify your download using the checksums in `checksums.txt`.
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
