@@ -99,25 +99,23 @@ func (client *Client) ListContainers(namespace string) ([]ContainerResult, error
 		}
 
 		result[i] = ContainerResult{
-			Name:            		container.Name,
-			Image:           		container.Image,
-			PrivateRegistry: 		&ContainerResultPrivateRegistry{Name: registryName},
-			Resources:       	  	container.Resources,
-			EnvironmentVariables: 	envVars,
-			Ports:                	container.Ports,
-			Ingresses:            	ingresses,
-			Mounts:               	mounts,
-			HealthCheck:          	healthCheck,
-			NumberOfReplicas:     	container.NumberOfReplicas,
-			AutoScaling:          	autoScaling,
-			Locked:               	container.Locked,
+			Name:                 container.Name,
+			Image:                container.Image,
+			PrivateRegistry:      &ContainerResultPrivateRegistry{Name: registryName},
+			Resources:            container.Resources,
+			EnvironmentVariables: envVars,
+			Ports:                container.Ports,
+			Ingresses:            ingresses,
+			Mounts:               mounts,
+			HealthCheck:          healthCheck,
+			NumberOfReplicas:     container.NumberOfReplicas,
+			AutoScaling:          autoScaling,
+			Locked:               container.Locked,
 		}
 	}
 
 	return result, nil
 }
-
-
 
 func (client *Client) ListContainerByName(namespace string, containerName string) (*ContainerResult, error) {
 	containers, err := client.ListContainers(namespace)
@@ -134,7 +132,6 @@ func (client *Client) ListContainerByName(namespace string, containerName string
 	return nil, fmt.Errorf("container %q not found in namespace %q", containerName, namespace)
 }
 
-
 func (client *Client) ContainerCreate(input ContainerCreateInput) (ContainerResult, error) {
 	containerCreateResponse, err := containerCreate(context.Background(), *client.client, input)
 	if err != nil {
@@ -143,7 +140,6 @@ func (client *Client) ContainerCreate(input ContainerCreateInput) (ContainerResu
 
 	return containerCreateResponse.GetContainerCreate(), nil
 }
-
 
 func (client *Client) ContainerModify(input ContainerModifyInput) (ContainerResult, error) {
 	containerModifyResponse, err := containerModify(context.Background(), *client.client, input)
@@ -154,7 +150,6 @@ func (client *Client) ContainerModify(input ContainerModifyInput) (ContainerResu
 	return containerModifyResponse.GetContainerModify(), nil
 }
 
-
 func (client *Client) ContainerDelete(namespace string, containerName string) (bool, error) {
 	containerDeleteResponse, err := containerDelete(context.Background(), *client.client, namespace, containerName)
 	if err != nil {
@@ -163,4 +158,3 @@ func (client *Client) ContainerDelete(namespace string, containerName string) (b
 
 	return containerDeleteResponse.GetContainerDelete(), nil
 }
-

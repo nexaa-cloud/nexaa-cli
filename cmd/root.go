@@ -5,8 +5,8 @@ import (
 	"log"
 	"os"
 
-	"github.com/spf13/cobra"
 	"github.com/nexaa-cloud/nexaa-cli/config"
+	"github.com/spf13/cobra"
 )
 
 var env string
@@ -24,10 +24,15 @@ For Zsh:
 
 Or to persist it, save the output to a file and source it in your shell config.`,
 	Run: func(cmd *cobra.Command, args []string) {
+		var err error
 		if len(args) > 0 && args[0] == "zsh" {
-			cmd.Root().GenZshCompletion(os.Stdout)
+			err = cmd.Root().GenZshCompletion(os.Stdout)
 		} else {
-			cmd.Root().GenBashCompletion(os.Stdout)
+			err = cmd.Root().GenBashCompletion(os.Stdout)
+		}
+		if err != nil {
+			fmt.Printf("Error generating completion: %v\n", err)
+			os.Exit(1)
 		}
 	},
 }

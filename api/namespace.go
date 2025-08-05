@@ -13,12 +13,12 @@ func (client *Client) NamespacesList() ([]NamespaceResult, error) {
 	result := make([]NamespaceResult, len(namespaceResult))
 	for i, namespace := range namespaceResult {
 		result[i] = NamespaceResult{
-			Name: namespace.Name,
+			Name:        namespace.Name,
 			Description: namespace.Description,
 		}
 	}
-	
-	return  result, nil
+
+	return result, nil
 }
 
 func (client *Client) NamespaceListByName(name string) (NamespaceResult, error) {
@@ -30,7 +30,7 @@ func (client *Client) NamespaceListByName(name string) (NamespaceResult, error) 
 	namespaceResult := namespaceResponse.GetNamespace()
 
 	result := NamespaceResult{
-		Name: namespaceResult.Name,
+		Name:        namespaceResult.Name,
 		Description: namespaceResult.Description,
 	}
 

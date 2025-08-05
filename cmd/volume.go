@@ -6,17 +6,17 @@ import (
 	"os"
 	"text/tabwriter"
 
-	"github.com/spf13/cobra"
 	"github.com/nexaa-cloud/nexaa-cli/api"
+	"github.com/spf13/cobra"
 )
 
 var volumeCmd = &cobra.Command{
-	Use: "volume",
+	Use:   "volume",
 	Short: "Manage persistent volumes",
 }
 
 var listVolumesCmd = &cobra.Command{
-	Use: "list",
+	Use:   "list",
 	Short: "List all persistent volumes",
 	Run: func(cmd *cobra.Command, args []string) {
 		namespace, _ := cmd.Flags().GetString("namespace")
@@ -46,17 +46,17 @@ var listVolumesCmd = &cobra.Command{
 }
 
 var createVolumeCmd = &cobra.Command{
-	Use: "create",
+	Use:   "create",
 	Short: "Create a new persistent volume",
-	Run: func (cmd *cobra.Command, args []string)  {
+	Run: func(cmd *cobra.Command, args []string) {
 		namespace, _ := cmd.Flags().GetString("namespace")
 		name, _ := cmd.Flags().GetString("name")
 		size, _ := cmd.Flags().GetInt("size")
-		
+
 		input := api.VolumeCreateInput{
 			Namespace: namespace,
-			Name: name,
-			Size: size,
+			Name:      name,
+			Size:      size,
 		}
 
 		client := api.NewClient()
@@ -71,7 +71,7 @@ var createVolumeCmd = &cobra.Command{
 }
 
 var increaseVolumeCmd = &cobra.Command{
-	Use: "increase",
+	Use:   "increase",
 	Short: "Increase the size of the volume",
 	Run: func(cmd *cobra.Command, args []string) {
 		namespace, _ := cmd.Flags().GetString("namespace")
@@ -80,8 +80,8 @@ var increaseVolumeCmd = &cobra.Command{
 
 		input := api.VolumeModifyInput{
 			Namespace: namespace,
-			Name: name,
-			Size: size,
+			Name:      name,
+			Size:      size,
 		}
 
 		client := api.NewClient()
@@ -97,7 +97,7 @@ var increaseVolumeCmd = &cobra.Command{
 }
 
 var deleteVolumeCmd = &cobra.Command{
-	Use: "delete",
+	Use:   "delete",
 	Short: "Delete a persistent volume",
 	Run: func(cmd *cobra.Command, args []string) {
 		namespace, _ := cmd.Flags().GetString("namespace")
@@ -118,7 +118,6 @@ var deleteVolumeCmd = &cobra.Command{
 		log.Println("deleted volume with name: ", name)
 	},
 }
-
 
 func init() {
 	listVolumesCmd.Flags().String("namespace", "", "Namespace")

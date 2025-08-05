@@ -53,7 +53,7 @@ var createNamespaceCmd = &cobra.Command{
 		description, _ := cmd.Flags().GetString("description")
 
 		input := api.NamespaceCreateInput{
-			Name: name,
+			Name:        name,
 			Description: &description,
 		}
 

@@ -2,8 +2,8 @@ package cmd
 
 import (
 	"fmt"
-	"github.com/spf13/cobra"
 	"github.com/nexaa-cloud/nexaa-cli/api"
+	"github.com/spf13/cobra"
 	"log"
 	"os"
 	"text/tabwriter"
@@ -130,7 +130,7 @@ var listContainerJobsCmd = &cobra.Command{
 }
 
 var deleteContainerJobCmd = &cobra.Command{
-	Use: "delete",
+	Use:   "delete",
 	Short: "Delete a container job",
 	Run: func(cmd *cobra.Command, args []string) {
 		namespace, _ := cmd.Flags().GetString("namespace")

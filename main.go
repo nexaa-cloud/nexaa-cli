@@ -11,13 +11,6 @@ import (
 	"github.com/nexaa-cloud/nexaa-cli/config"
 )
 
-// Version information (set via ldflags during build)
-var (
-	version   = "dev"
-	buildDate = "unknown"
-	commitSHA = "unknown"
-)
-
 func main() {
 	env := flag.String("env", config.GetEnvironment(), "Environment (dev, prod)")
 	flag.Parse()

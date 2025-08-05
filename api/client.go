@@ -32,4 +32,3 @@ func NewClient() *Client {
 
 	return &Client{client: &client}
 }
-

@@ -6,8 +6,8 @@ import (
 	"os"
 	"text/tabwriter"
 
-	"github.com/spf13/cobra"
 	"github.com/nexaa-cloud/nexaa-cli/api"
+	"github.com/spf13/cobra"
 )
 
 var containerCmd = &cobra.Command{
