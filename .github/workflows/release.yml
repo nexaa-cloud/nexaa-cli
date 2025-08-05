@@ -121,22 +121,42 @@ jobs:
             
             Download the appropriate binary for your platform from the assets below.
             
-            ### Linux/macOS
+            ### Linux
             ```bash
-            # Download and extract (replace with your platform)
+            # AMD64
             curl -L https://github.com/${{ github.repository }}/releases/download/${{ env.VERSION }}/nexaa-${{ env.VERSION }}-linux-amd64.tar.gz | tar xz
-            
-            # Make executable and move to PATH
             chmod +x nexaa-${{ env.VERSION }}-linux-amd64/nexaa
             sudo mv nexaa-${{ env.VERSION }}-linux-amd64/nexaa /usr/local/bin/
+            
+            # ARM64
+            curl -L https://github.com/${{ github.repository }}/releases/download/${{ env.VERSION }}/nexaa-${{ env.VERSION }}-linux-arm64.tar.gz | tar xz
+            chmod +x nexaa-${{ env.VERSION }}-linux-arm64/nexaa
+            sudo mv nexaa-${{ env.VERSION }}-linux-arm64/nexaa /usr/local/bin/
+            ```
+            
+            ### macOS
+            ```bash
+            # Intel Macs (amd64)
+            curl -L https://github.com/${{ github.repository }}/releases/download/${{ env.VERSION }}/nexaa-${{ env.VERSION }}-darwin-amd64.tar.gz | tar xz
+            chmod +x nexaa-${{ env.VERSION }}-darwin-amd64/nexaa
+            sudo mv nexaa-${{ env.VERSION }}-darwin-amd64/nexaa /usr/local/bin/
+            
+            # Apple Silicon Macs (arm64)
+            curl -L https://github.com/${{ github.repository }}/releases/download/${{ env.VERSION }}/nexaa-${{ env.VERSION }}-darwin-arm64.tar.gz | tar xz
+            chmod +x nexaa-${{ env.VERSION }}-darwin-arm64/nexaa
+            sudo mv nexaa-${{ env.VERSION }}-darwin-arm64/nexaa /usr/local/bin/
             ```
             
             ### Windows
-            Download the `.zip` file for your architecture, extract it, and add the executable to your PATH.
+            Download the appropriate `.zip` file for your architecture:
+            - **AMD64**: `nexaa-${{ env.VERSION }}-windows-amd64.zip`
+            - **ARM64**: `nexaa-${{ env.VERSION }}-windows-arm64.zip`
+            
+            Extract the zip file and add the executable to your PATH.
             
             ### Verify installation
             ```bash
-            nexaa --version
+            nexaa version
             ```
             
             ## Checksums
