@@ -37,8 +37,11 @@ jobs:
       - name: Get latest version
         id: get_version
         run: |
-          # Get the latest tag, default to v0.0.0 if no tags exist
-          latest_tag=$(git describe --tags --abbrev=0 2>/dev/null || echo "v0.0.0")
+          # Get the latest version tag (sorted properly)
+          latest_tag=$(git tag -l "v*" | sort -V | tail -1)
+          if [ -z "$latest_tag" ]; then
+            latest_tag="v0.0.0"
+          fi
           echo "latest_tag=$latest_tag" >> $GITHUB_OUTPUT
           
           # Remove 'v' prefix and split version
