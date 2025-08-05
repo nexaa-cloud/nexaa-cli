@@ -3,7 +3,7 @@ package cmd
 import (
 	"fmt"
 	"github.com/spf13/cobra"
-	"gitlab.com/tilaa/tilaa-cli/api"
+	"github.com/nexaa-cloud/nexaa-cli/api"
 	"log"
 	"os"
 	"text/tabwriter"

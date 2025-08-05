@@ -1,4 +1,4 @@
-module gitlab.com/tilaa/tilaa-cli
+module github.com/nexaa-cloud/nexaa-cli
 
 go 1.23.0
 

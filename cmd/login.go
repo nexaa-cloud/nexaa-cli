@@ -6,8 +6,8 @@ import (
 	"os"
 	"syscall"
 
-	"gitlab.com/tilaa/tilaa-cli/api"
-	"gitlab.com/tilaa/tilaa-cli/config"
+	"github.com/nexaa-cloud/nexaa-cli/api"
+	"github.com/nexaa-cloud/nexaa-cli/config"
 
 	"github.com/spf13/cobra"
 	"golang.org/x/term"

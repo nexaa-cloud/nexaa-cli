@@ -9,7 +9,7 @@ import (
 	"strings"
 	"time"
 
-	"gitlab.com/tilaa/tilaa-cli/config"
+	"github.com/nexaa-cloud/nexaa-cli/config"
 )
 
 type OAuthResponse struct {

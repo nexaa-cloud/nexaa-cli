@@ -7,7 +7,7 @@ import (
 	"text/tabwriter"
 
 	"github.com/spf13/cobra"
-	"gitlab.com/tilaa/tilaa-cli/api"
+	"github.com/nexaa-cloud/nexaa-cli/api"
 )
 
 var clouddatabaseclusterCmd = &cobra.Command{

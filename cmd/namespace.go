@@ -6,7 +6,7 @@ import (
 	"os"
 	"text/tabwriter"
 
-	"gitlab.com/tilaa/tilaa-cli/api"
+	"github.com/nexaa-cloud/nexaa-cli/api"
 
 	"github.com/spf13/cobra"
 )

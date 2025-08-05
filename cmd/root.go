@@ -6,7 +6,7 @@ import (
 	"os"
 
 	"github.com/spf13/cobra"
-	"gitlab.com/tilaa/tilaa-cli/config"
+	"github.com/nexaa-cloud/nexaa-cli/config"
 )
 
 var env string

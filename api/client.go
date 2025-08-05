@@ -2,7 +2,7 @@ package api
 
 import (
 	"github.com/Khan/genqlient/graphql"
-	"gitlab.com/tilaa/tilaa-cli/config"
+	"github.com/nexaa-cloud/nexaa-cli/config"
 	"net/http"
 )
 

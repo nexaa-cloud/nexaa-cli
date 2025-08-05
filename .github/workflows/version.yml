@@ -1,0 +1,132 @@
+name: Version Management
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+    inputs:
+      version_type:
+        description: 'Version bump type'
+        required: true
+        default: 'patch'
+        type: choice
+        options:
+          - patch
+          - minor
+          - major
+
+permissions:
+  contents: write
+
+jobs:
+  version:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Configure Git
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+
+      - name: Get latest version
+        id: get_version
+        run: |
+          # Get the latest tag, default to v0.0.0 if no tags exist
+          latest_tag=$(git describe --tags --abbrev=0 2>/dev/null || echo "v0.0.0")
+          echo "latest_tag=$latest_tag" >> $GITHUB_OUTPUT
+          
+          # Remove 'v' prefix and split version
+          version=${latest_tag#v}
+          IFS='.' read -r major minor patch <<< "$version"
+          
+          echo "current_major=$major" >> $GITHUB_OUTPUT
+          echo "current_minor=$minor" >> $GITHUB_OUTPUT
+          echo "current_patch=$patch" >> $GITHUB_OUTPUT
+
+      - name: Determine version bump type
+        id: bump_type
+        run: |
+          # Check if manually triggered with version_type input
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            echo "bump_type=${{ github.event.inputs.version_type }}" >> $GITHUB_OUTPUT
+          else
+            # Auto-increment logic based on commit messages
+            commit_message="${{ github.event.head_commit.message }}"
+            
+            if [[ "$commit_message" =~ \[major\]|\[MAJOR\]|BREAKING\ CHANGE ]]; then
+              echo "bump_type=major" >> $GITHUB_OUTPUT
+            elif [[ "$commit_message" =~ \[minor\]|\[MINOR\]|feat:|feature: ]]; then
+              echo "bump_type=minor" >> $GITHUB_OUTPUT
+            else
+              echo "bump_type=patch" >> $GITHUB_OUTPUT
+            fi
+          fi
+
+      - name: Calculate new version
+        id: new_version
+        run: |
+          major=${{ steps.get_version.outputs.current_major }}
+          minor=${{ steps.get_version.outputs.current_minor }}
+          patch=${{ steps.get_version.outputs.current_patch }}
+          bump_type=${{ steps.bump_type.outputs.bump_type }}
+          
+          # If this is the first version (v0.0.0), start with v1.0.0
+          if [ "$major" = "0" ] && [ "$minor" = "0" ] && [ "$patch" = "0" ]; then
+            new_version="v1.0.0"
+          else
+            case $bump_type in
+              major)
+                major=$((major + 1))
+                minor=0
+                patch=0
+                ;;
+              minor)
+                minor=$((minor + 1))
+                patch=0
+                ;;
+              patch)
+                patch=$((patch + 1))
+                ;;
+            esac
+            new_version="v${major}.${minor}.${patch}"
+          fi
+          
+          echo "new_version=$new_version" >> $GITHUB_OUTPUT
+          echo "New version will be: $new_version"
+
+      - name: Check if version already exists
+        id: check_version
+        run: |
+          new_version=${{ steps.new_version.outputs.new_version }}
+          if git tag -l | grep -q "^${new_version}$"; then
+            echo "Version $new_version already exists, skipping..."
+            echo "skip=true" >> $GITHUB_OUTPUT
+          else
+            echo "skip=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Create and push tag
+        if: steps.check_version.outputs.skip == 'false'
+        run: |
+          new_version=${{ steps.new_version.outputs.new_version }}
+          
+          echo "Creating tag: $new_version"
+          git tag -a "$new_version" -m "Release $new_version"
+          git push origin "$new_version"
+          
+          echo "✅ Tagged and pushed $new_version"
+
+      - name: Summary
+        run: |
+          if [ "${{ steps.check_version.outputs.skip }}" = "true" ]; then
+            echo "⚠️ Version ${{ steps.new_version.outputs.new_version }} already exists - no tag created"
+          else
+            echo "🎉 Successfully created and pushed tag ${{ steps.new_version.outputs.new_version }}"
+            echo "This will trigger the release workflow to build and publish the release."
+          fi

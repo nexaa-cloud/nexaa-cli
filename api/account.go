@@ -3,8 +3,8 @@ package api
 import (
 	"strconv"
 
-	"gitlab.com/tilaa/tilaa-cli/config"
-	"gitlab.com/tilaa/tilaa-cli/graphql"
+	"github.com/nexaa-cloud/nexaa-cli/config"
+	"github.com/nexaa-cloud/nexaa-cli/graphql"
 )
 
 func GetAccountId() (int, error) {
