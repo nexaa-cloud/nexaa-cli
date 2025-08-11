@@ -1,6 +1,23 @@
 fragment ContainerJobResult on ContainerJob {
     name
     image
+    privateRegistry {
+        name
+    }
+    resources
+    environmentVariables {
+        name
+        value
+        secret
+    }
+    command
+    mounts {
+        path
+        volume {
+            name
+        }
+    }
+    schedule
     enabled
     state
 }

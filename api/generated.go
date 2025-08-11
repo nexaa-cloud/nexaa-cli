@@ -585,10 +585,16 @@ func (v *ContainerJobModifyInput) GetMounts() []MountInput { return v.Mounts }
 
 // ContainerJobResult includes the GraphQL fields of ContainerJob requested by the fragment ContainerJobResult.
 type ContainerJobResult struct {
-	Name    string `json:"name"`
-	Image   string `json:"image"`
-	Enabled bool   `json:"enabled"`
-	State   string `json:"state"`
+	Name                 string                                                      `json:"name"`
+	Image                string                                                      `json:"image"`
+	PrivateRegistry      *ContainerJobResultPrivateRegistry                          `json:"privateRegistry"`
+	Resources            ContainerResources                                          `json:"resources"`
+	EnvironmentVariables []ContainerJobResultEnvironmentVariablesEnvironmentVariable `json:"environmentVariables"`
+	Command              []string                                                    `json:"command"`
+	Mounts               []ContainerJobResultMountsMount                             `json:"mounts"`
+	Schedule             string                                                      `json:"schedule"`
+	Enabled              bool                                                        `json:"enabled"`
+	State                string                                                      `json:"state"`
 }
 
 // GetName returns ContainerJobResult.Name, and is useful for accessing the field via an interface.
@@ -597,11 +603,81 @@ func (v *ContainerJobResult) GetName() string { return v.Name }
 // GetImage returns ContainerJobResult.Image, and is useful for accessing the field via an interface.
 func (v *ContainerJobResult) GetImage() string { return v.Image }
 
+// GetPrivateRegistry returns ContainerJobResult.PrivateRegistry, and is useful for accessing the field via an interface.
+func (v *ContainerJobResult) GetPrivateRegistry() *ContainerJobResultPrivateRegistry {
+	return v.PrivateRegistry
+}
+
+// GetResources returns ContainerJobResult.Resources, and is useful for accessing the field via an interface.
+func (v *ContainerJobResult) GetResources() ContainerResources { return v.Resources }
+
+// GetEnvironmentVariables returns ContainerJobResult.EnvironmentVariables, and is useful for accessing the field via an interface.
+func (v *ContainerJobResult) GetEnvironmentVariables() []ContainerJobResultEnvironmentVariablesEnvironmentVariable {
+	return v.EnvironmentVariables
+}
+
+// GetCommand returns ContainerJobResult.Command, and is useful for accessing the field via an interface.
+func (v *ContainerJobResult) GetCommand() []string { return v.Command }
+
+// GetMounts returns ContainerJobResult.Mounts, and is useful for accessing the field via an interface.
+func (v *ContainerJobResult) GetMounts() []ContainerJobResultMountsMount { return v.Mounts }
+
+// GetSchedule returns ContainerJobResult.Schedule, and is useful for accessing the field via an interface.
+func (v *ContainerJobResult) GetSchedule() string { return v.Schedule }
+
 // GetEnabled returns ContainerJobResult.Enabled, and is useful for accessing the field via an interface.
 func (v *ContainerJobResult) GetEnabled() bool { return v.Enabled }
 
 // GetState returns ContainerJobResult.State, and is useful for accessing the field via an interface.
 func (v *ContainerJobResult) GetState() string { return v.State }
+
+// ContainerJobResultEnvironmentVariablesEnvironmentVariable includes the requested fields of the GraphQL type EnvironmentVariable.
+type ContainerJobResultEnvironmentVariablesEnvironmentVariable struct {
+	Name   string  `json:"name"`
+	Value  *string `json:"value"`
+	Secret bool    `json:"secret"`
+}
+
+// GetName returns ContainerJobResultEnvironmentVariablesEnvironmentVariable.Name, and is useful for accessing the field via an interface.
+func (v *ContainerJobResultEnvironmentVariablesEnvironmentVariable) GetName() string { return v.Name }
+
+// GetValue returns ContainerJobResultEnvironmentVariablesEnvironmentVariable.Value, and is useful for accessing the field via an interface.
+func (v *ContainerJobResultEnvironmentVariablesEnvironmentVariable) GetValue() *string {
+	return v.Value
+}
+
+// GetSecret returns ContainerJobResultEnvironmentVariablesEnvironmentVariable.Secret, and is useful for accessing the field via an interface.
+func (v *ContainerJobResultEnvironmentVariablesEnvironmentVariable) GetSecret() bool { return v.Secret }
+
+// ContainerJobResultMountsMount includes the requested fields of the GraphQL type Mount.
+type ContainerJobResultMountsMount struct {
+	Path   string                              `json:"path"`
+	Volume ContainerJobResultMountsMountVolume `json:"volume"`
+}
+
+// GetPath returns ContainerJobResultMountsMount.Path, and is useful for accessing the field via an interface.
+func (v *ContainerJobResultMountsMount) GetPath() string { return v.Path }
+
+// GetVolume returns ContainerJobResultMountsMount.Volume, and is useful for accessing the field via an interface.
+func (v *ContainerJobResultMountsMount) GetVolume() ContainerJobResultMountsMountVolume {
+	return v.Volume
+}
+
+// ContainerJobResultMountsMountVolume includes the requested fields of the GraphQL type Volume.
+type ContainerJobResultMountsMountVolume struct {
+	Name string `json:"name"`
+}
+
+// GetName returns ContainerJobResultMountsMountVolume.Name, and is useful for accessing the field via an interface.
+func (v *ContainerJobResultMountsMountVolume) GetName() string { return v.Name }
+
+// ContainerJobResultPrivateRegistry includes the requested fields of the GraphQL type PrivateRegistry.
+type ContainerJobResultPrivateRegistry struct {
+	Name string `json:"name"`
+}
+
+// GetName returns ContainerJobResultPrivateRegistry.Name, and is useful for accessing the field via an interface.
+func (v *ContainerJobResultPrivateRegistry) GetName() string { return v.Name }
 
 type ContainerModifyInput struct {
 	Name      string              `json:"name"`
@@ -1746,6 +1822,36 @@ func (v *containerJobListNamespaceContainerJobsContainerJob) GetImage() string {
 	return v.ContainerJobResult.Image
 }
 
+// GetPrivateRegistry returns containerJobListNamespaceContainerJobsContainerJob.PrivateRegistry, and is useful for accessing the field via an interface.
+func (v *containerJobListNamespaceContainerJobsContainerJob) GetPrivateRegistry() *ContainerJobResultPrivateRegistry {
+	return v.ContainerJobResult.PrivateRegistry
+}
+
+// GetResources returns containerJobListNamespaceContainerJobsContainerJob.Resources, and is useful for accessing the field via an interface.
+func (v *containerJobListNamespaceContainerJobsContainerJob) GetResources() ContainerResources {
+	return v.ContainerJobResult.Resources
+}
+
+// GetEnvironmentVariables returns containerJobListNamespaceContainerJobsContainerJob.EnvironmentVariables, and is useful for accessing the field via an interface.
+func (v *containerJobListNamespaceContainerJobsContainerJob) GetEnvironmentVariables() []ContainerJobResultEnvironmentVariablesEnvironmentVariable {
+	return v.ContainerJobResult.EnvironmentVariables
+}
+
+// GetCommand returns containerJobListNamespaceContainerJobsContainerJob.Command, and is useful for accessing the field via an interface.
+func (v *containerJobListNamespaceContainerJobsContainerJob) GetCommand() []string {
+	return v.ContainerJobResult.Command
+}
+
+// GetMounts returns containerJobListNamespaceContainerJobsContainerJob.Mounts, and is useful for accessing the field via an interface.
+func (v *containerJobListNamespaceContainerJobsContainerJob) GetMounts() []ContainerJobResultMountsMount {
+	return v.ContainerJobResult.Mounts
+}
+
+// GetSchedule returns containerJobListNamespaceContainerJobsContainerJob.Schedule, and is useful for accessing the field via an interface.
+func (v *containerJobListNamespaceContainerJobsContainerJob) GetSchedule() string {
+	return v.ContainerJobResult.Schedule
+}
+
 // GetEnabled returns containerJobListNamespaceContainerJobsContainerJob.Enabled, and is useful for accessing the field via an interface.
 func (v *containerJobListNamespaceContainerJobsContainerJob) GetEnabled() bool {
 	return v.ContainerJobResult.Enabled
@@ -1786,6 +1892,18 @@ type __premarshalcontainerJobListNamespaceContainerJobsContainerJob struct {
 
 	Image string `json:"image"`
 
+	PrivateRegistry *ContainerJobResultPrivateRegistry `json:"privateRegistry"`
+
+	Resources ContainerResources `json:"resources"`
+
+	EnvironmentVariables []ContainerJobResultEnvironmentVariablesEnvironmentVariable `json:"environmentVariables"`
+
+	Command []string `json:"command"`
+
+	Mounts []ContainerJobResultMountsMount `json:"mounts"`
+
+	Schedule string `json:"schedule"`
+
 	Enabled bool `json:"enabled"`
 
 	State string `json:"state"`
@@ -1804,6 +1922,12 @@ func (v *containerJobListNamespaceContainerJobsContainerJob) __premarshalJSON() 
 
 	retval.Name = v.ContainerJobResult.Name
 	retval.Image = v.ContainerJobResult.Image
+	retval.PrivateRegistry = v.ContainerJobResult.PrivateRegistry
+	retval.Resources = v.ContainerJobResult.Resources
+	retval.EnvironmentVariables = v.ContainerJobResult.EnvironmentVariables
+	retval.Command = v.ContainerJobResult.Command
+	retval.Mounts = v.ContainerJobResult.Mounts
+	retval.Schedule = v.ContainerJobResult.Schedule
 	retval.Enabled = v.ContainerJobResult.Enabled
 	retval.State = v.ContainerJobResult.State
 	return &retval, nil
@@ -2820,6 +2944,23 @@ mutation containerJobCreate ($scheduledJob: ContainerJobCreateInput!) {
 fragment ContainerJobResult on ContainerJob {
 	name
 	image
+	privateRegistry {
+		name
+	}
+	resources
+	environmentVariables {
+		name
+		value
+		secret
+	}
+	command
+	mounts {
+		path
+		volume {
+			name
+		}
+	}
+	schedule
 	enabled
 	state
 }
@@ -2896,6 +3037,23 @@ query containerJobList ($namespaceName: String!) {
 fragment ContainerJobResult on ContainerJob {
 	name
 	image
+	privateRegistry {
+		name
+	}
+	resources
+	environmentVariables {
+		name
+		value
+		secret
+	}
+	command
+	mounts {
+		path
+		volume {
+			name
+		}
+	}
+	schedule
 	enabled
 	state
 }
@@ -2936,6 +3094,23 @@ mutation containerJobModify ($scheduledJob: ContainerJobModifyInput!) {
 fragment ContainerJobResult on ContainerJob {
 	name
 	image
+	privateRegistry {
+		name
+	}
+	resources
+	environmentVariables {
+		name
+		value
+		secret
+	}
+	command
+	mounts {
+		path
+		volume {
+			name
+		}
+	}
+	schedule
 	enabled
 	state
 }
