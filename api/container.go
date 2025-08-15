@@ -45,6 +45,7 @@ func (client *Client) ListContainers(namespace string) ([]ContainerResult, error
 					Port:       v.Port,
 					EnableTLS:  v.EnableTLS,
 					Allowlist:  v.Allowlist,
+					State:      v.State,
 				}
 			}
 		}

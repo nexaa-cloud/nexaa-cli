@@ -1043,6 +1043,7 @@ type ContainerResultIngressesIngress struct {
 	Port       int      `json:"port"`
 	EnableTLS  bool     `json:"enableTLS"`
 	Allowlist  []string `json:"allowlist"`
+	State      string   `json:"state"`
 }
 
 // GetDomainName returns ContainerResultIngressesIngress.DomainName, and is useful for accessing the field via an interface.
@@ -1056,6 +1057,9 @@ func (v *ContainerResultIngressesIngress) GetEnableTLS() bool { return v.EnableT
 
 // GetAllowlist returns ContainerResultIngressesIngress.Allowlist, and is useful for accessing the field via an interface.
 func (v *ContainerResultIngressesIngress) GetAllowlist() []string { return v.Allowlist }
+
+// GetState returns ContainerResultIngressesIngress.State, and is useful for accessing the field via an interface.
+func (v *ContainerResultIngressesIngress) GetState() string { return v.State }
 
 // ContainerResultMountsMount includes the requested fields of the GraphQL type Mount.
 type ContainerResultMountsMount struct {
@@ -2718,6 +2722,7 @@ fragment ContainerResult on Container {
 		port
 		enableTLS
 		allowlist
+		state
 	}
 	mounts {
 		path
@@ -2988,6 +2993,7 @@ fragment ContainerResult on Container {
 		port
 		enableTLS
 		allowlist
+		state
 	}
 	mounts {
 		path
@@ -3066,6 +3072,7 @@ fragment ContainerResult on Container {
 		port
 		enableTLS
 		allowlist
+		state
 	}
 	mounts {
 		path

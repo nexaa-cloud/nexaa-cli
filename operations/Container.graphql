@@ -16,6 +16,7 @@ fragment ContainerResult on Container {
     port
     enableTLS
     allowlist
+    state
   }
   mounts {
     path
