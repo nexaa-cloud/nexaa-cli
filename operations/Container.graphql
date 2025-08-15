@@ -5,10 +5,9 @@ fragment ContainerResult on Container {
     name
   }
   resources
+  # @genqlient(flatten: true)
   environmentVariables {
-    name
-    value
-    secret
+      ... EnvironmentVariableResult
   }
   ports
   ingresses {
@@ -18,11 +17,9 @@ fragment ContainerResult on Container {
     allowlist
     state
   }
+  # @genqlient(flatten: true)
   mounts {
-    path
-    volume {
-      name
-    }
+      ... ContainerMounts
   }
   healthCheck {
     port
@@ -50,6 +47,13 @@ query containerList($namespaceName: String!) {
       ...ContainerResult
     }
   }
+}
+
+query containerByName($namespaceName: String!, $containerName: String!) {
+    # @genqlient(flatten: true)
+    container(containerResourceInput: {name: $containerName, namespace: $namespaceName}) {
+        ...ContainerResult
+    }
 }
 
 mutation containerCreate($input: ContainerCreateInput!) {

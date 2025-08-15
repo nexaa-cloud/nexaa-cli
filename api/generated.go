@@ -585,16 +585,16 @@ func (v *ContainerJobModifyInput) GetMounts() []MountInput { return v.Mounts }
 
 // ContainerJobResult includes the GraphQL fields of ContainerJob requested by the fragment ContainerJobResult.
 type ContainerJobResult struct {
-	Name                 string                                                      `json:"name"`
-	Image                string                                                      `json:"image"`
-	PrivateRegistry      *ContainerJobResultPrivateRegistry                          `json:"privateRegistry"`
-	Resources            ContainerResources                                          `json:"resources"`
-	EnvironmentVariables []ContainerJobResultEnvironmentVariablesEnvironmentVariable `json:"environmentVariables"`
-	Command              []string                                                    `json:"command"`
-	Mounts               []ContainerJobResultMountsMount                             `json:"mounts"`
-	Schedule             string                                                      `json:"schedule"`
-	Enabled              bool                                                        `json:"enabled"`
-	State                string                                                      `json:"state"`
+	Name                 string                             `json:"name"`
+	Image                string                             `json:"image"`
+	PrivateRegistry      *ContainerJobResultPrivateRegistry `json:"privateRegistry"`
+	Resources            ContainerResources                 `json:"resources"`
+	EnvironmentVariables []EnvironmentVariableResult        `json:"environmentVariables"`
+	Command              []string                           `json:"command"`
+	Mounts               []ContainerMounts                  `json:"mounts"`
+	Schedule             string                             `json:"schedule"`
+	Enabled              bool                               `json:"enabled"`
+	State                string                             `json:"state"`
 }
 
 // GetName returns ContainerJobResult.Name, and is useful for accessing the field via an interface.
@@ -612,7 +612,7 @@ func (v *ContainerJobResult) GetPrivateRegistry() *ContainerJobResultPrivateRegi
 func (v *ContainerJobResult) GetResources() ContainerResources { return v.Resources }
 
 // GetEnvironmentVariables returns ContainerJobResult.EnvironmentVariables, and is useful for accessing the field via an interface.
-func (v *ContainerJobResult) GetEnvironmentVariables() []ContainerJobResultEnvironmentVariablesEnvironmentVariable {
+func (v *ContainerJobResult) GetEnvironmentVariables() []EnvironmentVariableResult {
 	return v.EnvironmentVariables
 }
 
@@ -620,7 +620,7 @@ func (v *ContainerJobResult) GetEnvironmentVariables() []ContainerJobResultEnvir
 func (v *ContainerJobResult) GetCommand() []string { return v.Command }
 
 // GetMounts returns ContainerJobResult.Mounts, and is useful for accessing the field via an interface.
-func (v *ContainerJobResult) GetMounts() []ContainerJobResultMountsMount { return v.Mounts }
+func (v *ContainerJobResult) GetMounts() []ContainerMounts { return v.Mounts }
 
 // GetSchedule returns ContainerJobResult.Schedule, and is useful for accessing the field via an interface.
 func (v *ContainerJobResult) GetSchedule() string { return v.Schedule }
@@ -630,46 +630,6 @@ func (v *ContainerJobResult) GetEnabled() bool { return v.Enabled }
 
 // GetState returns ContainerJobResult.State, and is useful for accessing the field via an interface.
 func (v *ContainerJobResult) GetState() string { return v.State }
-
-// ContainerJobResultEnvironmentVariablesEnvironmentVariable includes the requested fields of the GraphQL type EnvironmentVariable.
-type ContainerJobResultEnvironmentVariablesEnvironmentVariable struct {
-	Name   string  `json:"name"`
-	Value  *string `json:"value"`
-	Secret bool    `json:"secret"`
-}
-
-// GetName returns ContainerJobResultEnvironmentVariablesEnvironmentVariable.Name, and is useful for accessing the field via an interface.
-func (v *ContainerJobResultEnvironmentVariablesEnvironmentVariable) GetName() string { return v.Name }
-
-// GetValue returns ContainerJobResultEnvironmentVariablesEnvironmentVariable.Value, and is useful for accessing the field via an interface.
-func (v *ContainerJobResultEnvironmentVariablesEnvironmentVariable) GetValue() *string {
-	return v.Value
-}
-
-// GetSecret returns ContainerJobResultEnvironmentVariablesEnvironmentVariable.Secret, and is useful for accessing the field via an interface.
-func (v *ContainerJobResultEnvironmentVariablesEnvironmentVariable) GetSecret() bool { return v.Secret }
-
-// ContainerJobResultMountsMount includes the requested fields of the GraphQL type Mount.
-type ContainerJobResultMountsMount struct {
-	Path   string                              `json:"path"`
-	Volume ContainerJobResultMountsMountVolume `json:"volume"`
-}
-
-// GetPath returns ContainerJobResultMountsMount.Path, and is useful for accessing the field via an interface.
-func (v *ContainerJobResultMountsMount) GetPath() string { return v.Path }
-
-// GetVolume returns ContainerJobResultMountsMount.Volume, and is useful for accessing the field via an interface.
-func (v *ContainerJobResultMountsMount) GetVolume() ContainerJobResultMountsMountVolume {
-	return v.Volume
-}
-
-// ContainerJobResultMountsMountVolume includes the requested fields of the GraphQL type Volume.
-type ContainerJobResultMountsMountVolume struct {
-	Name string `json:"name"`
-}
-
-// GetName returns ContainerJobResultMountsMountVolume.Name, and is useful for accessing the field via an interface.
-func (v *ContainerJobResultMountsMountVolume) GetName() string { return v.Name }
 
 // ContainerJobResultPrivateRegistry includes the requested fields of the GraphQL type PrivateRegistry.
 type ContainerJobResultPrivateRegistry struct {
@@ -734,6 +694,30 @@ func (v *ContainerModifyInput) GetScaling() *ScalingInput { return v.Scaling }
 
 // GetHealthCheck returns ContainerModifyInput.HealthCheck, and is useful for accessing the field via an interface.
 func (v *ContainerModifyInput) GetHealthCheck() *HealthCheckInput { return v.HealthCheck }
+
+// ContainerMounts includes the GraphQL fields of Mount requested by the fragment ContainerMounts.
+type ContainerMounts struct {
+	Path   string                `json:"path"`
+	Volume ContainerMountsVolume `json:"volume"`
+}
+
+// GetPath returns ContainerMounts.Path, and is useful for accessing the field via an interface.
+func (v *ContainerMounts) GetPath() string { return v.Path }
+
+// GetVolume returns ContainerMounts.Volume, and is useful for accessing the field via an interface.
+func (v *ContainerMounts) GetVolume() ContainerMountsVolume { return v.Volume }
+
+// ContainerMountsVolume includes the requested fields of the GraphQL type Volume.
+type ContainerMountsVolume struct {
+	Name string  `json:"name"`
+	Size float64 `json:"size"`
+}
+
+// GetName returns ContainerMountsVolume.Name, and is useful for accessing the field via an interface.
+func (v *ContainerMountsVolume) GetName() string { return v.Name }
+
+// GetSize returns ContainerMountsVolume.Size, and is useful for accessing the field via an interface.
+func (v *ContainerMountsVolume) GetSize() float64 { return v.Size }
 
 type ContainerResources string
 
@@ -983,20 +967,20 @@ var AllContainerResources = []ContainerResources{
 
 // ContainerResult includes the GraphQL fields of Container requested by the fragment ContainerResult.
 type ContainerResult struct {
-	Name                 string                                                   `json:"name"`
-	Image                string                                                   `json:"image"`
-	PrivateRegistry      *ContainerResultPrivateRegistry                          `json:"privateRegistry"`
-	Resources            ContainerResources                                       `json:"resources"`
-	EnvironmentVariables []ContainerResultEnvironmentVariablesEnvironmentVariable `json:"environmentVariables"`
-	Ports                []string                                                 `json:"ports"`
-	Ingresses            []ContainerResultIngressesIngress                        `json:"ingresses"`
-	Mounts               []ContainerResultMountsMount                             `json:"mounts"`
-	HealthCheck          *ContainerResultHealthCheck                              `json:"healthCheck"`
-	AvailableReplicas    int                                                      `json:"availableReplicas"`
-	NumberOfReplicas     int                                                      `json:"numberOfReplicas"`
-	AutoScaling          *ContainerResultAutoScaling                              `json:"autoScaling"`
-	State                string                                                   `json:"state"`
-	Locked               bool                                                     `json:"locked"`
+	Name                 string                            `json:"name"`
+	Image                string                            `json:"image"`
+	PrivateRegistry      *ContainerResultPrivateRegistry   `json:"privateRegistry"`
+	Resources            ContainerResources                `json:"resources"`
+	EnvironmentVariables []EnvironmentVariableResult       `json:"environmentVariables"`
+	Ports                []string                          `json:"ports"`
+	Ingresses            []ContainerResultIngressesIngress `json:"ingresses"`
+	Mounts               []ContainerMounts                 `json:"mounts"`
+	HealthCheck          *ContainerResultHealthCheck       `json:"healthCheck"`
+	AvailableReplicas    int                               `json:"availableReplicas"`
+	NumberOfReplicas     int                               `json:"numberOfReplicas"`
+	AutoScaling          *ContainerResultAutoScaling       `json:"autoScaling"`
+	State                string                            `json:"state"`
+	Locked               bool                              `json:"locked"`
 }
 
 // GetName returns ContainerResult.Name, and is useful for accessing the field via an interface.
@@ -1014,7 +998,7 @@ func (v *ContainerResult) GetPrivateRegistry() *ContainerResultPrivateRegistry {
 func (v *ContainerResult) GetResources() ContainerResources { return v.Resources }
 
 // GetEnvironmentVariables returns ContainerResult.EnvironmentVariables, and is useful for accessing the field via an interface.
-func (v *ContainerResult) GetEnvironmentVariables() []ContainerResultEnvironmentVariablesEnvironmentVariable {
+func (v *ContainerResult) GetEnvironmentVariables() []EnvironmentVariableResult {
 	return v.EnvironmentVariables
 }
 
@@ -1025,7 +1009,7 @@ func (v *ContainerResult) GetPorts() []string { return v.Ports }
 func (v *ContainerResult) GetIngresses() []ContainerResultIngressesIngress { return v.Ingresses }
 
 // GetMounts returns ContainerResult.Mounts, and is useful for accessing the field via an interface.
-func (v *ContainerResult) GetMounts() []ContainerResultMountsMount { return v.Mounts }
+func (v *ContainerResult) GetMounts() []ContainerMounts { return v.Mounts }
 
 // GetHealthCheck returns ContainerResult.HealthCheck, and is useful for accessing the field via an interface.
 func (v *ContainerResult) GetHealthCheck() *ContainerResultHealthCheck { return v.HealthCheck }
@@ -1085,22 +1069,6 @@ func (v *ContainerResultAutoScalingTriggersAutoScalingTrigger) GetType() string 
 // GetThreshold returns ContainerResultAutoScalingTriggersAutoScalingTrigger.Threshold, and is useful for accessing the field via an interface.
 func (v *ContainerResultAutoScalingTriggersAutoScalingTrigger) GetThreshold() int { return v.Threshold }
 
-// ContainerResultEnvironmentVariablesEnvironmentVariable includes the requested fields of the GraphQL type EnvironmentVariable.
-type ContainerResultEnvironmentVariablesEnvironmentVariable struct {
-	Name   string  `json:"name"`
-	Value  *string `json:"value"`
-	Secret bool    `json:"secret"`
-}
-
-// GetName returns ContainerResultEnvironmentVariablesEnvironmentVariable.Name, and is useful for accessing the field via an interface.
-func (v *ContainerResultEnvironmentVariablesEnvironmentVariable) GetName() string { return v.Name }
-
-// GetValue returns ContainerResultEnvironmentVariablesEnvironmentVariable.Value, and is useful for accessing the field via an interface.
-func (v *ContainerResultEnvironmentVariablesEnvironmentVariable) GetValue() *string { return v.Value }
-
-// GetSecret returns ContainerResultEnvironmentVariablesEnvironmentVariable.Secret, and is useful for accessing the field via an interface.
-func (v *ContainerResultEnvironmentVariablesEnvironmentVariable) GetSecret() bool { return v.Secret }
-
 // ContainerResultHealthCheck includes the requested fields of the GraphQL type HealthCheck.
 type ContainerResultHealthCheck struct {
 	Port int    `json:"port"`
@@ -1136,26 +1104,6 @@ func (v *ContainerResultIngressesIngress) GetAllowlist() []string { return v.All
 
 // GetState returns ContainerResultIngressesIngress.State, and is useful for accessing the field via an interface.
 func (v *ContainerResultIngressesIngress) GetState() string { return v.State }
-
-// ContainerResultMountsMount includes the requested fields of the GraphQL type Mount.
-type ContainerResultMountsMount struct {
-	Path   string                           `json:"path"`
-	Volume ContainerResultMountsMountVolume `json:"volume"`
-}
-
-// GetPath returns ContainerResultMountsMount.Path, and is useful for accessing the field via an interface.
-func (v *ContainerResultMountsMount) GetPath() string { return v.Path }
-
-// GetVolume returns ContainerResultMountsMount.Volume, and is useful for accessing the field via an interface.
-func (v *ContainerResultMountsMount) GetVolume() ContainerResultMountsMountVolume { return v.Volume }
-
-// ContainerResultMountsMountVolume includes the requested fields of the GraphQL type Volume.
-type ContainerResultMountsMountVolume struct {
-	Name string `json:"name"`
-}
-
-// GetName returns ContainerResultMountsMountVolume.Name, and is useful for accessing the field via an interface.
-func (v *ContainerResultMountsMountVolume) GetName() string { return v.Name }
 
 // ContainerResultPrivateRegistry includes the requested fields of the GraphQL type PrivateRegistry.
 type ContainerResultPrivateRegistry struct {
@@ -1244,6 +1192,22 @@ func (v *EnvironmentVariableInput) GetSecret() bool { return v.Secret }
 
 // GetState returns EnvironmentVariableInput.State, and is useful for accessing the field via an interface.
 func (v *EnvironmentVariableInput) GetState() State { return v.State }
+
+// EnvironmentVariableResult includes the GraphQL fields of EnvironmentVariable requested by the fragment EnvironmentVariableResult.
+type EnvironmentVariableResult struct {
+	Name   string  `json:"name"`
+	Value  *string `json:"value"`
+	Secret bool    `json:"secret"`
+}
+
+// GetName returns EnvironmentVariableResult.Name, and is useful for accessing the field via an interface.
+func (v *EnvironmentVariableResult) GetName() string { return v.Name }
+
+// GetValue returns EnvironmentVariableResult.Value, and is useful for accessing the field via an interface.
+func (v *EnvironmentVariableResult) GetValue() *string { return v.Value }
+
+// GetSecret returns EnvironmentVariableResult.Secret, and is useful for accessing the field via an interface.
+func (v *EnvironmentVariableResult) GetSecret() bool { return v.Secret }
 
 type HealthCheckInput struct {
 	Port int    `json:"port"`
@@ -1519,6 +1483,18 @@ func (v *__cloudDatabaseClusterModifyInput) GetCloudDatabaseClusterModifyInput()
 	return v.CloudDatabaseClusterModifyInput
 }
 
+// __containerByNameInput is used internally by genqlient
+type __containerByNameInput struct {
+	NamespaceName string `json:"namespaceName"`
+	ContainerName string `json:"containerName"`
+}
+
+// GetNamespaceName returns __containerByNameInput.NamespaceName, and is useful for accessing the field via an interface.
+func (v *__containerByNameInput) GetNamespaceName() string { return v.NamespaceName }
+
+// GetContainerName returns __containerByNameInput.ContainerName, and is useful for accessing the field via an interface.
+func (v *__containerByNameInput) GetContainerName() string { return v.ContainerName }
+
 // __containerCreateInput is used internally by genqlient
 type __containerCreateInput struct {
 	Input ContainerCreateInput `json:"input"`
@@ -1538,6 +1514,18 @@ func (v *__containerDeleteInput) GetNamespace() string { return v.Namespace }
 
 // GetContainer returns __containerDeleteInput.Container, and is useful for accessing the field via an interface.
 func (v *__containerDeleteInput) GetContainer() string { return v.Container }
+
+// __containerJobByNameInput is used internally by genqlient
+type __containerJobByNameInput struct {
+	NamespaceName string `json:"namespaceName"`
+	ContainerName string `json:"containerName"`
+}
+
+// GetNamespaceName returns __containerJobByNameInput.NamespaceName, and is useful for accessing the field via an interface.
+func (v *__containerJobByNameInput) GetNamespaceName() string { return v.NamespaceName }
+
+// GetContainerName returns __containerJobByNameInput.ContainerName, and is useful for accessing the field via an interface.
+func (v *__containerJobByNameInput) GetContainerName() string { return v.ContainerName }
 
 // __containerJobCreateInput is used internally by genqlient
 type __containerJobCreateInput struct {
@@ -1763,6 +1751,14 @@ func (v *clusterVersionsResponse) GetCloudDatabaseClusterVersions() []CloudDatab
 	return v.CloudDatabaseClusterVersions
 }
 
+// containerByNameResponse is returned by containerByName on success.
+type containerByNameResponse struct {
+	Container ContainerResult `json:"container"`
+}
+
+// GetContainer returns containerByNameResponse.Container, and is useful for accessing the field via an interface.
+func (v *containerByNameResponse) GetContainer() ContainerResult { return v.Container }
+
 // containerCreateResponse is returned by containerCreate on success.
 type containerCreateResponse struct {
 	ContainerCreate ContainerResult `json:"containerCreate"`
@@ -1778,6 +1774,14 @@ type containerDeleteResponse struct {
 
 // GetContainerDelete returns containerDeleteResponse.ContainerDelete, and is useful for accessing the field via an interface.
 func (v *containerDeleteResponse) GetContainerDelete() bool { return v.ContainerDelete }
+
+// containerJobByNameResponse is returned by containerJobByName on success.
+type containerJobByNameResponse struct {
+	ContainerJob ContainerJobResult `json:"containerJob"`
+}
+
+// GetContainerJob returns containerJobByNameResponse.ContainerJob, and is useful for accessing the field via an interface.
+func (v *containerJobByNameResponse) GetContainerJob() ContainerJobResult { return v.ContainerJob }
 
 // containerJobCreateResponse is returned by containerJobCreate on success.
 type containerJobCreateResponse struct {
@@ -1833,7 +1837,7 @@ func (v *containerJobListNamespaceContainerJobsContainerJob) GetResources() Cont
 }
 
 // GetEnvironmentVariables returns containerJobListNamespaceContainerJobsContainerJob.EnvironmentVariables, and is useful for accessing the field via an interface.
-func (v *containerJobListNamespaceContainerJobsContainerJob) GetEnvironmentVariables() []ContainerJobResultEnvironmentVariablesEnvironmentVariable {
+func (v *containerJobListNamespaceContainerJobsContainerJob) GetEnvironmentVariables() []EnvironmentVariableResult {
 	return v.ContainerJobResult.EnvironmentVariables
 }
 
@@ -1843,7 +1847,7 @@ func (v *containerJobListNamespaceContainerJobsContainerJob) GetCommand() []stri
 }
 
 // GetMounts returns containerJobListNamespaceContainerJobsContainerJob.Mounts, and is useful for accessing the field via an interface.
-func (v *containerJobListNamespaceContainerJobsContainerJob) GetMounts() []ContainerJobResultMountsMount {
+func (v *containerJobListNamespaceContainerJobsContainerJob) GetMounts() []ContainerMounts {
 	return v.ContainerJobResult.Mounts
 }
 
@@ -1896,11 +1900,11 @@ type __premarshalcontainerJobListNamespaceContainerJobsContainerJob struct {
 
 	Resources ContainerResources `json:"resources"`
 
-	EnvironmentVariables []ContainerJobResultEnvironmentVariablesEnvironmentVariable `json:"environmentVariables"`
+	EnvironmentVariables []EnvironmentVariableResult `json:"environmentVariables"`
 
 	Command []string `json:"command"`
 
-	Mounts []ContainerJobResultMountsMount `json:"mounts"`
+	Mounts []ContainerMounts `json:"mounts"`
 
 	Schedule string `json:"schedule"`
 
@@ -1983,7 +1987,7 @@ func (v *containerListNamespaceContainersContainer) GetResources() ContainerReso
 }
 
 // GetEnvironmentVariables returns containerListNamespaceContainersContainer.EnvironmentVariables, and is useful for accessing the field via an interface.
-func (v *containerListNamespaceContainersContainer) GetEnvironmentVariables() []ContainerResultEnvironmentVariablesEnvironmentVariable {
+func (v *containerListNamespaceContainersContainer) GetEnvironmentVariables() []EnvironmentVariableResult {
 	return v.ContainerResult.EnvironmentVariables
 }
 
@@ -1998,7 +2002,7 @@ func (v *containerListNamespaceContainersContainer) GetIngresses() []ContainerRe
 }
 
 // GetMounts returns containerListNamespaceContainersContainer.Mounts, and is useful for accessing the field via an interface.
-func (v *containerListNamespaceContainersContainer) GetMounts() []ContainerResultMountsMount {
+func (v *containerListNamespaceContainersContainer) GetMounts() []ContainerMounts {
 	return v.ContainerResult.Mounts
 }
 
@@ -2062,13 +2066,13 @@ type __premarshalcontainerListNamespaceContainersContainer struct {
 
 	Resources ContainerResources `json:"resources"`
 
-	EnvironmentVariables []ContainerResultEnvironmentVariablesEnvironmentVariable `json:"environmentVariables"`
+	EnvironmentVariables []EnvironmentVariableResult `json:"environmentVariables"`
 
 	Ports []string `json:"ports"`
 
 	Ingresses []ContainerResultIngressesIngress `json:"ingresses"`
 
-	Mounts []ContainerResultMountsMount `json:"mounts"`
+	Mounts []ContainerMounts `json:"mounts"`
 
 	HealthCheck *ContainerResultHealthCheck `json:"healthCheck"`
 
@@ -2821,10 +2825,10 @@ func clusterVersions(
 	return data_, err_
 }
 
-// The mutation executed by containerCreate.
-const containerCreate_Operation = `
-mutation containerCreate ($input: ContainerCreateInput!) {
-	containerCreate(containerInput: $input) {
+// The query executed by containerByName.
+const containerByName_Operation = `
+query containerByName ($namespaceName: String!, $containerName: String!) {
+	container(containerResourceInput: {name:$containerName,namespace:$namespaceName}) {
 		... ContainerResult
 	}
 }
@@ -2836,9 +2840,7 @@ fragment ContainerResult on Container {
 	}
 	resources
 	environmentVariables {
-		name
-		value
-		secret
+		... EnvironmentVariableResult
 	}
 	ports
 	ingresses {
@@ -2849,10 +2851,7 @@ fragment ContainerResult on Container {
 		state
 	}
 	mounts {
-		path
-		volume {
-			name
-		}
+		... ContainerMounts
 	}
 	healthCheck {
 		port
@@ -2872,6 +2871,106 @@ fragment ContainerResult on Container {
 	}
 	state
 	locked
+}
+fragment EnvironmentVariableResult on EnvironmentVariable {
+	name
+	value
+	secret
+}
+fragment ContainerMounts on Mount {
+	path
+	volume {
+		name
+		size
+	}
+}
+`
+
+func containerByName(
+	ctx_ context.Context,
+	client_ graphql.Client,
+	namespaceName string,
+	containerName string,
+) (data_ *containerByNameResponse, err_ error) {
+	req_ := &graphql.Request{
+		OpName: "containerByName",
+		Query:  containerByName_Operation,
+		Variables: &__containerByNameInput{
+			NamespaceName: namespaceName,
+			ContainerName: containerName,
+		},
+	}
+
+	data_ = &containerByNameResponse{}
+	resp_ := &graphql.Response{Data: data_}
+
+	err_ = client_.MakeRequest(
+		ctx_,
+		req_,
+		resp_,
+	)
+
+	return data_, err_
+}
+
+// The mutation executed by containerCreate.
+const containerCreate_Operation = `
+mutation containerCreate ($input: ContainerCreateInput!) {
+	containerCreate(containerInput: $input) {
+		... ContainerResult
+	}
+}
+fragment ContainerResult on Container {
+	name
+	image
+	privateRegistry {
+		name
+	}
+	resources
+	environmentVariables {
+		... EnvironmentVariableResult
+	}
+	ports
+	ingresses {
+		domainName
+		port
+		enableTLS
+		allowlist
+		state
+	}
+	mounts {
+		... ContainerMounts
+	}
+	healthCheck {
+		port
+		path
+	}
+	availableReplicas
+	numberOfReplicas
+	autoScaling {
+		replicas {
+			minimum
+			maximum
+		}
+		triggers {
+			type
+			threshold
+		}
+	}
+	state
+	locked
+}
+fragment EnvironmentVariableResult on EnvironmentVariable {
+	name
+	value
+	secret
+}
+fragment ContainerMounts on Mount {
+	path
+	volume {
+		name
+		size
+	}
 }
 `
 
@@ -2934,6 +3033,72 @@ func containerDelete(
 	return data_, err_
 }
 
+// The query executed by containerJobByName.
+const containerJobByName_Operation = `
+query containerJobByName ($namespaceName: String!, $containerName: String!) {
+	containerJob(name: $containerName, namespace: $namespaceName) {
+		... ContainerJobResult
+	}
+}
+fragment ContainerJobResult on ContainerJob {
+	name
+	image
+	privateRegistry {
+		name
+	}
+	resources
+	environmentVariables {
+		... EnvironmentVariableResult
+	}
+	command
+	mounts {
+		... ContainerMounts
+	}
+	schedule
+	enabled
+	state
+}
+fragment EnvironmentVariableResult on EnvironmentVariable {
+	name
+	value
+	secret
+}
+fragment ContainerMounts on Mount {
+	path
+	volume {
+		name
+		size
+	}
+}
+`
+
+func containerJobByName(
+	ctx_ context.Context,
+	client_ graphql.Client,
+	namespaceName string,
+	containerName string,
+) (data_ *containerJobByNameResponse, err_ error) {
+	req_ := &graphql.Request{
+		OpName: "containerJobByName",
+		Query:  containerJobByName_Operation,
+		Variables: &__containerJobByNameInput{
+			NamespaceName: namespaceName,
+			ContainerName: containerName,
+		},
+	}
+
+	data_ = &containerJobByNameResponse{}
+	resp_ := &graphql.Response{Data: data_}
+
+	err_ = client_.MakeRequest(
+		ctx_,
+		req_,
+		resp_,
+	)
+
+	return data_, err_
+}
+
 // The mutation executed by containerJobCreate.
 const containerJobCreate_Operation = `
 mutation containerJobCreate ($scheduledJob: ContainerJobCreateInput!) {
@@ -2949,20 +3114,27 @@ fragment ContainerJobResult on ContainerJob {
 	}
 	resources
 	environmentVariables {
-		name
-		value
-		secret
+		... EnvironmentVariableResult
 	}
 	command
 	mounts {
-		path
-		volume {
-			name
-		}
+		... ContainerMounts
 	}
 	schedule
 	enabled
 	state
+}
+fragment EnvironmentVariableResult on EnvironmentVariable {
+	name
+	value
+	secret
+}
+fragment ContainerMounts on Mount {
+	path
+	volume {
+		name
+		size
+	}
 }
 `
 
@@ -3042,20 +3214,27 @@ fragment ContainerJobResult on ContainerJob {
 	}
 	resources
 	environmentVariables {
-		name
-		value
-		secret
+		... EnvironmentVariableResult
 	}
 	command
 	mounts {
-		path
-		volume {
-			name
-		}
+		... ContainerMounts
 	}
 	schedule
 	enabled
 	state
+}
+fragment EnvironmentVariableResult on EnvironmentVariable {
+	name
+	value
+	secret
+}
+fragment ContainerMounts on Mount {
+	path
+	volume {
+		name
+		size
+	}
 }
 `
 
@@ -3099,20 +3278,27 @@ fragment ContainerJobResult on ContainerJob {
 	}
 	resources
 	environmentVariables {
-		name
-		value
-		secret
+		... EnvironmentVariableResult
 	}
 	command
 	mounts {
-		path
-		volume {
-			name
-		}
+		... ContainerMounts
 	}
 	schedule
 	enabled
 	state
+}
+fragment EnvironmentVariableResult on EnvironmentVariable {
+	name
+	value
+	secret
+}
+fragment ContainerMounts on Mount {
+	path
+	volume {
+		name
+		size
+	}
 }
 `
 
@@ -3158,9 +3344,7 @@ fragment ContainerResult on Container {
 	}
 	resources
 	environmentVariables {
-		name
-		value
-		secret
+		... EnvironmentVariableResult
 	}
 	ports
 	ingresses {
@@ -3171,10 +3355,7 @@ fragment ContainerResult on Container {
 		state
 	}
 	mounts {
-		path
-		volume {
-			name
-		}
+		... ContainerMounts
 	}
 	healthCheck {
 		port
@@ -3194,6 +3375,18 @@ fragment ContainerResult on Container {
 	}
 	state
 	locked
+}
+fragment EnvironmentVariableResult on EnvironmentVariable {
+	name
+	value
+	secret
+}
+fragment ContainerMounts on Mount {
+	path
+	volume {
+		name
+		size
+	}
 }
 `
 
@@ -3237,9 +3430,7 @@ fragment ContainerResult on Container {
 	}
 	resources
 	environmentVariables {
-		name
-		value
-		secret
+		... EnvironmentVariableResult
 	}
 	ports
 	ingresses {
@@ -3250,10 +3441,7 @@ fragment ContainerResult on Container {
 		state
 	}
 	mounts {
-		path
-		volume {
-			name
-		}
+		... ContainerMounts
 	}
 	healthCheck {
 		port
@@ -3273,6 +3461,18 @@ fragment ContainerResult on Container {
 	}
 	state
 	locked
+}
+fragment EnvironmentVariableResult on EnvironmentVariable {
+	name
+	value
+	secret
+}
+fragment ContainerMounts on Mount {
+	path
+	volume {
+		name
+		size
+	}
 }
 `
 

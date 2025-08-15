@@ -5,17 +5,14 @@ fragment ContainerJobResult on ContainerJob {
         name
     }
     resources
+    # @genqlient(flatten: true)
     environmentVariables {
-        name
-        value
-        secret
+        ... EnvironmentVariableResult
     }
     command
+    # @genqlient(flatten: true)
     mounts {
-        path
-        volume {
-            name
-        }
+        ... ContainerMounts
     }
     schedule
     enabled
@@ -45,5 +42,12 @@ query containerJobList($namespaceName: String!) {
         containerJobs {
              ... ContainerJobResult
         }
+    }
+}
+
+query containerJobByName($namespaceName: String!, $containerName: String!) {
+    # @genqlient(flatten: true)
+    containerJob(name: $containerName, namespace: $namespaceName) {
+        ... ContainerJobResult
     }
 }

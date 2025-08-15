@@ -1,0 +1,13 @@
+fragment EnvironmentVariableResult on EnvironmentVariable {
+  name
+  value
+  secret
+}
+
+fragment ContainerMounts on Mount {
+    path
+    volume {
+        name
+        size
+    }
+}
