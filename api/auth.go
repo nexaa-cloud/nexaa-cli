@@ -27,8 +27,6 @@ func Login(username, password string) error {
 	data.Set("grant_type", "password")
 	data.Set("client_id", "cloud-tilaa")
 
-	fmt.Println(config.KEYCLOAK_URL)
-
 	req, err := http.NewRequest("POST", config.KEYCLOAK_URL+"/realms/tilaa/protocol/openid-connect/token", strings.NewReader(data.Encode()))
 	if err != nil {
 		return err
