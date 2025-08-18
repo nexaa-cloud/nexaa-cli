@@ -244,11 +244,15 @@ func (v *CloudDatabaseClusterResultAdminUserDatabaseUser) GetRole() string { ret
 
 // CloudDatabaseClusterResultDatabasesDatabase includes the requested fields of the GraphQL type Database.
 type CloudDatabaseClusterResultDatabasesDatabase struct {
-	Name string `json:"name"`
+	Name        string  `json:"name"`
+	Description *string `json:"description"`
 }
 
 // GetName returns CloudDatabaseClusterResultDatabasesDatabase.Name, and is useful for accessing the field via an interface.
 func (v *CloudDatabaseClusterResultDatabasesDatabase) GetName() string { return v.Name }
+
+// GetDescription returns CloudDatabaseClusterResultDatabasesDatabase.Description, and is useful for accessing the field via an interface.
+func (v *CloudDatabaseClusterResultDatabasesDatabase) GetDescription() *string { return v.Description }
 
 // CloudDatabaseClusterResultNamespace includes the requested fields of the GraphQL type Namespace.
 type CloudDatabaseClusterResultNamespace struct {
@@ -1599,6 +1603,16 @@ func (v *__deleteCloudDatabaseClusterDatabaseInput) GetCloudDatabaseClusterDatab
 	return v.CloudDatabaseClusterDatabaseInput
 }
 
+// __getCloudDatabaseClusterInput is used internally by genqlient
+type __getCloudDatabaseClusterInput struct {
+	CloudDatabaseClusterInput CloudDatabaseClusterResourceInput `json:"cloudDatabaseClusterInput"`
+}
+
+// GetCloudDatabaseClusterInput returns __getCloudDatabaseClusterInput.CloudDatabaseClusterInput, and is useful for accessing the field via an interface.
+func (v *__getCloudDatabaseClusterInput) GetCloudDatabaseClusterInput() CloudDatabaseClusterResourceInput {
+	return v.CloudDatabaseClusterInput
+}
+
 // __getCloudDatabaseClusterUserCredentialsInput is used internally by genqlient
 type __getCloudDatabaseClusterUserCredentialsInput struct {
 	CloudDatabase CloudDatabaseClusterResourceInput `json:"cloudDatabase"`
@@ -2151,6 +2165,16 @@ func (v *deleteCloudDatabaseClusterDatabaseResponse) GetCloudDatabaseClusterData
 	return v.CloudDatabaseClusterDatabaseDelete
 }
 
+// getCloudDatabaseClusterResponse is returned by getCloudDatabaseCluster on success.
+type getCloudDatabaseClusterResponse struct {
+	CloudDatabaseCluster CloudDatabaseClusterResult `json:"cloudDatabaseCluster"`
+}
+
+// GetCloudDatabaseCluster returns getCloudDatabaseClusterResponse.CloudDatabaseCluster, and is useful for accessing the field via an interface.
+func (v *getCloudDatabaseClusterResponse) GetCloudDatabaseCluster() CloudDatabaseClusterResult {
+	return v.CloudDatabaseCluster
+}
+
 // getCloudDatabaseClusterUserCredentialsCloudDatabaseClusterUserCredentialsDatabaseUser includes the requested fields of the GraphQL type DatabaseUser.
 type getCloudDatabaseClusterUserCredentialsCloudDatabaseClusterUserCredentialsDatabaseUser struct {
 	Dsn string `json:"dsn"`
@@ -2584,6 +2608,7 @@ fragment CloudDatabaseClusterResult on CloudDatabaseCluster {
 	id
 	databases {
 		name
+		description
 	}
 	name
 	namespace {
@@ -2688,6 +2713,7 @@ fragment CloudDatabaseClusterResult on CloudDatabaseCluster {
 	id
 	databases {
 		name
+		description
 	}
 	name
 	namespace {
@@ -3572,6 +3598,79 @@ func deleteCloudDatabaseClusterDatabase(
 	return data_, err_
 }
 
+// The query executed by getCloudDatabaseCluster.
+const getCloudDatabaseCluster_Operation = `
+query getCloudDatabaseCluster ($cloudDatabaseClusterInput: CloudDatabaseClusterResourceInput!) {
+	cloudDatabaseCluster(cloudDatabase: $cloudDatabaseClusterInput) {
+		... CloudDatabaseClusterResult
+	}
+}
+fragment CloudDatabaseClusterResult on CloudDatabaseCluster {
+	id
+	databases {
+		name
+		description
+	}
+	name
+	namespace {
+		name
+	}
+	plan {
+		cpu
+		group
+		id
+		memory
+		price {
+			amount
+			currency
+		}
+		storage
+	}
+	spec {
+		type
+		version
+	}
+	users {
+		name
+		role
+		permissions {
+			databaseName
+			permission
+		}
+		status
+	}
+	adminUser {
+		name
+		role
+	}
+}
+`
+
+func getCloudDatabaseCluster(
+	ctx_ context.Context,
+	client_ graphql.Client,
+	cloudDatabaseClusterInput CloudDatabaseClusterResourceInput,
+) (data_ *getCloudDatabaseClusterResponse, err_ error) {
+	req_ := &graphql.Request{
+		OpName: "getCloudDatabaseCluster",
+		Query:  getCloudDatabaseCluster_Operation,
+		Variables: &__getCloudDatabaseClusterInput{
+			CloudDatabaseClusterInput: cloudDatabaseClusterInput,
+		},
+	}
+
+	data_ = &getCloudDatabaseClusterResponse{}
+	resp_ := &graphql.Response{Data: data_}
+
+	err_ = client_.MakeRequest(
+		ctx_,
+		req_,
+		resp_,
+	)
+
+	return data_, err_
+}
+
 // The query executed by getCloudDatabaseClusterUserCredentials.
 const getCloudDatabaseClusterUserCredentials_Operation = `
 query getCloudDatabaseClusterUserCredentials ($cloudDatabase: CloudDatabaseClusterResourceInput!, $userName: String!) {
@@ -3619,6 +3718,7 @@ fragment CloudDatabaseClusterResult on CloudDatabaseCluster {
 	id
 	databases {
 		name
+		description
 	}
 	name
 	namespace {

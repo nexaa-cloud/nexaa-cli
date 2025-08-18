@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"strings"
 	"text/tabwriter"
 
 	"github.com/nexaa-cloud/nexaa-cli/api"
@@ -73,6 +74,52 @@ var listCloudDatabaseClustersCmd = &cobra.Command{
 			}
 			fmt.Fprintf(writer, "%s\t%d\t%s\t%d\t\n", c.Name, dbCount, nsName, userCount)
 		}
+		writer.Flush()
+	},
+}
+
+func getDatabaseNames(databases []api.CloudDatabaseClusterResultDatabasesDatabase) string {
+	names := make([]string, len(databases))
+	for i, db := range databases {
+		names[i] = db.Name
+	}
+	return strings.Join(names, ", ")
+}
+
+func getUsernames(users []api.CloudDatabaseClusterResultUsersDatabaseUser) string {
+	usernames := make([]string, len(users))
+	for i, user := range users {
+		usernames[i] = user.Name
+	}
+	return strings.Join(usernames, ", ")
+}
+
+var listCloudDatabaseClusterCmd = &cobra.Command{
+	Use:   "get",
+	Short: "Get details of a specific cloud database cluster",
+	Run: func(cmd *cobra.Command, args []string) {
+		namespace, _ := cmd.Flags().GetString("namespace")
+		name, _ := cmd.Flags().GetString("name")
+		if namespace == "" || name == "" {
+			log.Fatal("Namespace and name are required to get a cloud database cluster.")
+			return
+		}
+		client := api.NewClient()
+		input := api.CloudDatabaseClusterResourceInput{
+			Namespace: namespace,
+			Name:      name,
+		}
+		cluster, err := client.CloudDatabaseClusterGet(input)
+		if err != nil {
+			log.Fatalf("Failed to get cloud database cluster: %v", err)
+			return
+		}
+		writer := tabwriter.NewWriter(os.Stdout, 0, 0, 3, ' ', tabwriter.Debug)
+		DatabaseNames := getDatabaseNames(cluster.Databases)
+		Usernames := getUsernames(cluster.Users)
+		fmt.Fprintln(writer, "NAME\tNAMESPACE\tPLAN\tTYPE\tVERSION\tDATABASES\tUSERS\t")
+		fmt.Fprintf(writer, "%s\t%s\t%s\t%s\t%s\t%s\t%s\t\n",
+			cluster.Name, cluster.Namespace.Name, cluster.Plan.Id, cluster.Spec.Type, cluster.Spec.Version, DatabaseNames, Usernames)
 		writer.Flush()
 	},
 }
@@ -247,6 +294,12 @@ func init() {
 
 	clouddatabaseclusterCmd.AddCommand(listCloudDatabaseClusterPlansCmd)
 	clouddatabaseclusterCmd.AddCommand(listCloudDatabaseClusterSpecsCmd)
+
+	listCloudDatabaseClusterCmd.Flags().StringP("namespace", "n", "", "Namespace name")
+	listCloudDatabaseClusterCmd.Flags().String("name", "", "Name of the cluster")
+	listCloudDatabaseClusterCmd.MarkFlagRequired("namespace")
+	listCloudDatabaseClusterCmd.MarkFlagRequired("name")
+	clouddatabaseclusterCmd.AddCommand(listCloudDatabaseClusterCmd)
 
 	createClusterDatabaseCmd.Flags().String("cluster", "", "Cluster name")
 	createClusterDatabaseCmd.Flags().String("name", "", "Database name")

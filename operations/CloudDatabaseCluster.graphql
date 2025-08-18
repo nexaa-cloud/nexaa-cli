@@ -2,6 +2,7 @@ fragment CloudDatabaseClusterResult on CloudDatabaseCluster {
   id
   databases {
     name
+    description
   }
   name
   namespace {
@@ -80,6 +81,15 @@ mutation cloudDatabaseClusterDelete(
 query getCloudDatabaseClusters {
   # @genqlient(flatten: true)
   cloudDatabaseClusters {
+    ...CloudDatabaseClusterResult
+  }
+}
+
+query getCloudDatabaseCluster(
+  $cloudDatabaseClusterInput: CloudDatabaseClusterResourceInput!
+) {
+  # @genqlient(flatten: true)
+  cloudDatabaseCluster(cloudDatabase: $cloudDatabaseClusterInput) {
     ...CloudDatabaseClusterResult
   }
 }

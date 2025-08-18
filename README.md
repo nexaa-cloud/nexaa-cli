@@ -22,6 +22,10 @@ access token, refresh token, and ExpiresAt will be stored in JSON in
 `./auth.json`. In the production version, this is stored at "~/.nexaa/auth.json"
 which is better.
 
+## GraphQL Code Generation
+
+To run the GraphQL code generation after making changes to the `operations` directory, you can run `GO111MODULE=on go run -mod=mod github.com/Khan/genqlient` to generate the `generated.go` file in the api directory.
+
 ## Autocomplete
 To enable shell completion, run:
 

@@ -31,6 +31,14 @@ func (client *Client) CloudDatabaseClusterList() ([]CloudDatabaseClusterResult, 
 	return result, nil
 }
 
+func (client *Client) CloudDatabaseClusterGet(input CloudDatabaseClusterResourceInput) (CloudDatabaseClusterResult, error) {
+	resp, err := getCloudDatabaseCluster(context.Background(), *client.client, input)
+	if err != nil {
+		return CloudDatabaseClusterResult{}, err
+	}
+	return resp.GetCloudDatabaseCluster(), nil
+}
+
 func (client *Client) CloudDatabaseClusterDelete(input CloudDatabaseClusterResourceInput) (bool, error) {
 	resp, err := cloudDatabaseClusterDelete(context.Background(), *client.client, input)
 	if err != nil {
