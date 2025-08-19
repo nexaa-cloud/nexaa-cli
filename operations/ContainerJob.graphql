@@ -10,6 +10,7 @@ fragment ContainerJobResult on ContainerJob {
         ... EnvironmentVariableResult
     }
     command
+    entrypoint
     # @genqlient(flatten: true)
     mounts {
         ... ContainerMounts

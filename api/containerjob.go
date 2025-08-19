@@ -49,6 +49,7 @@ func toContainerJobResult(job ContainerJobResult) (ContainerJobResult, error) {
 		Resources:            job.Resources,
 		EnvironmentVariables: envVars,
 		Command:              job.Command,
+		Entrypoint:           job.Entrypoint,
 		Mounts:               mounts,
 		Schedule:             job.Schedule,
 		Enabled:              job.Enabled,

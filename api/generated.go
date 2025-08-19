@@ -595,6 +595,7 @@ type ContainerJobResult struct {
 	Resources            ContainerResources                 `json:"resources"`
 	EnvironmentVariables []EnvironmentVariableResult        `json:"environmentVariables"`
 	Command              []string                           `json:"command"`
+	Entrypoint           []string                           `json:"entrypoint"`
 	Mounts               []ContainerMounts                  `json:"mounts"`
 	Schedule             string                             `json:"schedule"`
 	Enabled              bool                               `json:"enabled"`
@@ -622,6 +623,9 @@ func (v *ContainerJobResult) GetEnvironmentVariables() []EnvironmentVariableResu
 
 // GetCommand returns ContainerJobResult.Command, and is useful for accessing the field via an interface.
 func (v *ContainerJobResult) GetCommand() []string { return v.Command }
+
+// GetEntrypoint returns ContainerJobResult.Entrypoint, and is useful for accessing the field via an interface.
+func (v *ContainerJobResult) GetEntrypoint() []string { return v.Entrypoint }
 
 // GetMounts returns ContainerJobResult.Mounts, and is useful for accessing the field via an interface.
 func (v *ContainerJobResult) GetMounts() []ContainerMounts { return v.Mounts }
@@ -1860,6 +1864,11 @@ func (v *containerJobListNamespaceContainerJobsContainerJob) GetCommand() []stri
 	return v.ContainerJobResult.Command
 }
 
+// GetEntrypoint returns containerJobListNamespaceContainerJobsContainerJob.Entrypoint, and is useful for accessing the field via an interface.
+func (v *containerJobListNamespaceContainerJobsContainerJob) GetEntrypoint() []string {
+	return v.ContainerJobResult.Entrypoint
+}
+
 // GetMounts returns containerJobListNamespaceContainerJobsContainerJob.Mounts, and is useful for accessing the field via an interface.
 func (v *containerJobListNamespaceContainerJobsContainerJob) GetMounts() []ContainerMounts {
 	return v.ContainerJobResult.Mounts
@@ -1918,6 +1927,8 @@ type __premarshalcontainerJobListNamespaceContainerJobsContainerJob struct {
 
 	Command []string `json:"command"`
 
+	Entrypoint []string `json:"entrypoint"`
+
 	Mounts []ContainerMounts `json:"mounts"`
 
 	Schedule string `json:"schedule"`
@@ -1944,6 +1955,7 @@ func (v *containerJobListNamespaceContainerJobsContainerJob) __premarshalJSON() 
 	retval.Resources = v.ContainerJobResult.Resources
 	retval.EnvironmentVariables = v.ContainerJobResult.EnvironmentVariables
 	retval.Command = v.ContainerJobResult.Command
+	retval.Entrypoint = v.ContainerJobResult.Entrypoint
 	retval.Mounts = v.ContainerJobResult.Mounts
 	retval.Schedule = v.ContainerJobResult.Schedule
 	retval.Enabled = v.ContainerJobResult.Enabled
@@ -3077,6 +3089,7 @@ fragment ContainerJobResult on ContainerJob {
 		... EnvironmentVariableResult
 	}
 	command
+	entrypoint
 	mounts {
 		... ContainerMounts
 	}
@@ -3143,6 +3156,7 @@ fragment ContainerJobResult on ContainerJob {
 		... EnvironmentVariableResult
 	}
 	command
+	entrypoint
 	mounts {
 		... ContainerMounts
 	}
@@ -3243,6 +3257,7 @@ fragment ContainerJobResult on ContainerJob {
 		... EnvironmentVariableResult
 	}
 	command
+	entrypoint
 	mounts {
 		... ContainerMounts
 	}
@@ -3307,6 +3322,7 @@ fragment ContainerJobResult on ContainerJob {
 		... EnvironmentVariableResult
 	}
 	command
+	entrypoint
 	mounts {
 		... ContainerMounts
 	}
