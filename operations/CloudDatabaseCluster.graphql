@@ -13,6 +13,7 @@ fragment CloudDatabaseClusterResult on CloudDatabaseCluster {
     group
     id
     memory
+    name
     price {
       amount
       currency

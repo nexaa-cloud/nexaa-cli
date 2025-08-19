@@ -8,3 +8,6 @@ lint:
 
 test:
 	go test -race ./...
+
+generate-graphql:
+	GO111MODULE=on go run -mod=mod github.com/Khan/genqlient

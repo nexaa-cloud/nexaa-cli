@@ -268,6 +268,7 @@ type CloudDatabaseClusterResultPlan struct {
 	Group   string                              `json:"group"`
 	Id      string                              `json:"id"`
 	Memory  float64                             `json:"memory"`
+	Name    string                              `json:"name"`
 	Price   CloudDatabaseClusterResultPlanPrice `json:"price"`
 	Storage int                                 `json:"storage"`
 }
@@ -283,6 +284,9 @@ func (v *CloudDatabaseClusterResultPlan) GetId() string { return v.Id }
 
 // GetMemory returns CloudDatabaseClusterResultPlan.Memory, and is useful for accessing the field via an interface.
 func (v *CloudDatabaseClusterResultPlan) GetMemory() float64 { return v.Memory }
+
+// GetName returns CloudDatabaseClusterResultPlan.Name, and is useful for accessing the field via an interface.
+func (v *CloudDatabaseClusterResultPlan) GetName() string { return v.Name }
 
 // GetPrice returns CloudDatabaseClusterResultPlan.Price, and is useful for accessing the field via an interface.
 func (v *CloudDatabaseClusterResultPlan) GetPrice() CloudDatabaseClusterResultPlanPrice {
@@ -2631,6 +2635,7 @@ fragment CloudDatabaseClusterResult on CloudDatabaseCluster {
 		group
 		id
 		memory
+		name
 		price {
 			amount
 			currency
@@ -2736,6 +2741,7 @@ fragment CloudDatabaseClusterResult on CloudDatabaseCluster {
 		group
 		id
 		memory
+		name
 		price {
 			amount
 			currency
@@ -3636,6 +3642,7 @@ fragment CloudDatabaseClusterResult on CloudDatabaseCluster {
 		group
 		id
 		memory
+		name
 		price {
 			amount
 			currency
@@ -3745,6 +3752,7 @@ fragment CloudDatabaseClusterResult on CloudDatabaseCluster {
 		group
 		id
 		memory
+		name
 		price {
 			amount
 			currency
