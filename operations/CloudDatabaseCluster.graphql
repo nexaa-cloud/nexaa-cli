@@ -12,7 +12,7 @@ fragment CloudDatabaseClusterResult on CloudDatabaseCluster {
     cpu
     group
     id
-    memory
+    memory(unit: GB)
     name
     price {
       amount
@@ -37,6 +37,7 @@ fragment CloudDatabaseClusterResult on CloudDatabaseCluster {
     name
     role
   }
+  state
 }
 
 fragment CloudDatabaseClusterDatabaseResult on Database {

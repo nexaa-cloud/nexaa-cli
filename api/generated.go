@@ -196,6 +196,7 @@ type CloudDatabaseClusterResult struct {
 	Spec      CloudDatabaseClusterResultSpec                   `json:"spec"`
 	Users     []CloudDatabaseClusterResultUsersDatabaseUser    `json:"users"`
 	AdminUser *CloudDatabaseClusterResultAdminUserDatabaseUser `json:"adminUser"`
+	State     string                                           `json:"state"`
 }
 
 // GetId returns CloudDatabaseClusterResult.Id, and is useful for accessing the field via an interface.
@@ -229,6 +230,9 @@ func (v *CloudDatabaseClusterResult) GetUsers() []CloudDatabaseClusterResultUser
 func (v *CloudDatabaseClusterResult) GetAdminUser() *CloudDatabaseClusterResultAdminUserDatabaseUser {
 	return v.AdminUser
 }
+
+// GetState returns CloudDatabaseClusterResult.State, and is useful for accessing the field via an interface.
+func (v *CloudDatabaseClusterResult) GetState() string { return v.State }
 
 // CloudDatabaseClusterResultAdminUserDatabaseUser includes the requested fields of the GraphQL type DatabaseUser.
 type CloudDatabaseClusterResultAdminUserDatabaseUser struct {
@@ -2634,7 +2638,7 @@ fragment CloudDatabaseClusterResult on CloudDatabaseCluster {
 		cpu
 		group
 		id
-		memory
+		memory(unit: GB)
 		name
 		price {
 			amount
@@ -2659,6 +2663,7 @@ fragment CloudDatabaseClusterResult on CloudDatabaseCluster {
 		name
 		role
 	}
+	state
 }
 `
 
@@ -2740,7 +2745,7 @@ fragment CloudDatabaseClusterResult on CloudDatabaseCluster {
 		cpu
 		group
 		id
-		memory
+		memory(unit: GB)
 		name
 		price {
 			amount
@@ -2765,6 +2770,7 @@ fragment CloudDatabaseClusterResult on CloudDatabaseCluster {
 		name
 		role
 	}
+	state
 }
 `
 
@@ -3641,7 +3647,7 @@ fragment CloudDatabaseClusterResult on CloudDatabaseCluster {
 		cpu
 		group
 		id
-		memory
+		memory(unit: GB)
 		name
 		price {
 			amount
@@ -3666,6 +3672,7 @@ fragment CloudDatabaseClusterResult on CloudDatabaseCluster {
 		name
 		role
 	}
+	state
 }
 `
 
@@ -3751,7 +3758,7 @@ fragment CloudDatabaseClusterResult on CloudDatabaseCluster {
 		cpu
 		group
 		id
-		memory
+		memory(unit: GB)
 		name
 		price {
 			amount
@@ -3776,6 +3783,7 @@ fragment CloudDatabaseClusterResult on CloudDatabaseCluster {
 		name
 		role
 	}
+	state
 }
 `
 
