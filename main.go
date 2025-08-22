@@ -1,10 +1,8 @@
 package main
 
 import (
-	"log"
-
-	"flag"
 	"fmt"
+	"log"
 	"os"
 
 	"github.com/nexaa-cloud/nexaa-cli/cmd"
@@ -12,13 +10,7 @@ import (
 )
 
 func main() {
-	env := flag.String("env", config.GetEnvironment(), "Environment (dev, prod)")
-	flag.Parse()
-
-	if err := config.Initialize(*env); err != nil {
-		fmt.Printf("Error: %v\n", err)
-		os.Exit(1)
-	}
+	config.Initialize()
 
 	if err := config.LoadConfig(); err != nil {
 		fmt.Printf("Error loading config: %v\n", err)

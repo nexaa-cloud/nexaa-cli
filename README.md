@@ -11,16 +11,32 @@ Make sure you have golang (>=1.23.0) running (either locally or in a container).
 
 Building the binary can simply be done by `go build -o nexaa-cli .`
 
-## Running development
+## Environment Configuration
 
-If you're developing and want to talk to staging instead of production, use the environment variable TILAA_ENV=dev to talk to the dev environment
+By default, the CLI connects to the production environment. You can override specific endpoints using environment variables:
 
-`go run . <args>`
+- `NEXAA_GRAPHQL_URL` - GraphQL API endpoint (default: production endpoint)
+- `NEXAA_KEYCLOAK_URL` - Keycloak authentication URL (default: production endpoint)  
+- `NEXAA_TOKEN_FILE` - Token storage file location (default: `./auth.json`)
 
-This will ensure the code will talk to staging-auth and staging-graphql. Your
-access token, refresh token, and ExpiresAt will be stored in JSON in
-`./auth.json`. In the production version, this is stored at "~/.nexaa/auth.json"
-which is better.
+### Custom Environment Setup
+
+You can override the default endpoints in two ways:
+
+1. **Using a .env file** (recommended for development):
+   ```bash
+   cp .env.example .env
+   # Edit .env and customize the endpoints as needed
+   ```
+
+2. **Setting environment variables directly**:
+   ```bash
+   export NEXAA_GRAPHQL_URL="https://your-custom-endpoint/graphql/platform"
+   export NEXAA_KEYCLOAK_URL="https://your-custom-auth-endpoint"
+   go run . <args>
+   ```
+
+The CLI automatically loads `.env` files if present, making local development configuration easier.
 
 ## GraphQL Code Generation
 

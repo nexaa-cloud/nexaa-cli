@@ -9,7 +9,6 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var env string
 
 var completionCmd = &cobra.Command{
 	Use:   "completion",
@@ -41,10 +40,7 @@ var rootCmd = &cobra.Command{
 	Use:   "nexaa",
 	Short: "A CLI tool to manage cloud resources on the Nexaa Serverless Platform.",
 	PersistentPreRun: func(cmd *cobra.Command, args []string) {
-		if err := config.Initialize(env); err != nil {
-			fmt.Printf("Error initializing environment: %v\n", err)
-			os.Exit(1)
-		}
+		config.Initialize()
 
 		if err := config.LoadConfig(); err != nil {
 			log.Fatalf("Failed to load config: %v", err)
@@ -66,7 +62,6 @@ func Execute() {
 }
 
 func init() {
-	rootCmd.PersistentFlags().StringVar(&env, "env", config.GetEnvironment(), "Environment (dev, prod)")
 	rootCmd.AddCommand(completionCmd)
 	rootCmd.AddCommand(clouddatabaseclusterCmd)
 	rootCmd.AddCommand(containerCmd)

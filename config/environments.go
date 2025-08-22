@@ -1,34 +1,10 @@
 package config
 
 import (
-	"fmt"
 	"os"
+
+	"github.com/joho/godotenv"
 )
-
-type EnvConfig struct {
-	GraphQLURL       string
-	KeycloakURL      string
-	KeycloakClientID string
-	KeycloakRealm    string
-	TokenFile        string
-}
-
-var environments = map[string]EnvConfig{
-	"dev": {
-		GraphQLURL:       "https://staging-graphql.tilaa.com/graphql/platform",
-		KeycloakURL:      "https://staging-auth.tilaa.com",
-		KeycloakClientID: "cloud-tilaa",
-		KeycloakRealm:    "tilaa",
-		TokenFile:        "./auth-dev.json",
-	},
-	"prod": {
-		GraphQLURL:       "https://graphql.tilaa.com/graphql/platform",
-		KeycloakURL:      "https://auth.tilaa.com",
-		KeycloakClientID: "cloud-tilaa",
-		KeycloakRealm:    "tilaa",
-		TokenFile:        "./auth.json",
-	},
-}
 
 var (
 	GRAPHQL_URL        string
@@ -38,31 +14,24 @@ var (
 	TOKEN_FILE         string
 )
 
-// Initialize sets up the environment configuration
-func Initialize(env string) error {
-	if env == "" {
-		env = "prod" // default
-	}
+// Initialize sets up the environment configuration using individual environment variables
+// Defaults to production values, can be overridden with environment variables
+func Initialize() {
+	// Try to load .env file if it exists, ignore errors if it doesn't exist
+	_ = godotenv.Load()
 
-	config, exists := environments[env]
-	if !exists {
-		return fmt.Errorf("unknown environment: %s", env)
-	}
-
-	GRAPHQL_URL = config.GraphQLURL
-	KEYCLOAK_URL = config.KeycloakURL
-	KEYCLOAK_CLIENT_ID = config.KeycloakClientID
-	KEYCLOAK_REALM = config.KeycloakRealm
-	TOKEN_FILE = config.TokenFile
-
-	return nil
+	// Set production defaults
+	GRAPHQL_URL = getEnvWithDefault("NEXAA_GRAPHQL_URL", "https://graphql.tilaa.com/graphql/platform")
+	KEYCLOAK_URL = getEnvWithDefault("NEXAA_KEYCLOAK_URL", "https://auth.tilaa.com")
+	KEYCLOAK_CLIENT_ID = "cloud-tilaa"
+	KEYCLOAK_REALM = "tilaa"
+	TOKEN_FILE = getEnvWithDefault("NEXAA_TOKEN_FILE", "./auth.json")
 }
 
-// GetEnvironment returns current environment from env var or default
-func GetEnvironment() string {
-	env := os.Getenv("TILAA_ENV")
-	if env == "" {
-		return "prod"
+// getEnvWithDefault returns the environment variable value or the default if not set
+func getEnvWithDefault(key, defaultValue string) string {
+	if value := os.Getenv(key); value != "" {
+		return value
 	}
-	return env
+	return defaultValue
 }
