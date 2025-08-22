@@ -18,6 +18,7 @@ fragment ContainerJobResult on ContainerJob {
     schedule
     enabled
     state
+    locked
 }
 
 mutation containerJobCreate($scheduledJob: ContainerJobCreateInput!) {

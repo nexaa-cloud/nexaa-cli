@@ -197,6 +197,7 @@ type CloudDatabaseClusterResult struct {
 	Users     []CloudDatabaseClusterResultUsersDatabaseUser    `json:"users"`
 	AdminUser *CloudDatabaseClusterResultAdminUserDatabaseUser `json:"adminUser"`
 	State     string                                           `json:"state"`
+	Locked    bool                                             `json:"locked"`
 }
 
 // GetId returns CloudDatabaseClusterResult.Id, and is useful for accessing the field via an interface.
@@ -233,6 +234,9 @@ func (v *CloudDatabaseClusterResult) GetAdminUser() *CloudDatabaseClusterResultA
 
 // GetState returns CloudDatabaseClusterResult.State, and is useful for accessing the field via an interface.
 func (v *CloudDatabaseClusterResult) GetState() string { return v.State }
+
+// GetLocked returns CloudDatabaseClusterResult.Locked, and is useful for accessing the field via an interface.
+func (v *CloudDatabaseClusterResult) GetLocked() bool { return v.Locked }
 
 // CloudDatabaseClusterResultAdminUserDatabaseUser includes the requested fields of the GraphQL type DatabaseUser.
 type CloudDatabaseClusterResultAdminUserDatabaseUser struct {
@@ -608,6 +612,7 @@ type ContainerJobResult struct {
 	Schedule             string                             `json:"schedule"`
 	Enabled              bool                               `json:"enabled"`
 	State                string                             `json:"state"`
+	Locked               bool                               `json:"locked"`
 }
 
 // GetName returns ContainerJobResult.Name, and is useful for accessing the field via an interface.
@@ -646,6 +651,9 @@ func (v *ContainerJobResult) GetEnabled() bool { return v.Enabled }
 
 // GetState returns ContainerJobResult.State, and is useful for accessing the field via an interface.
 func (v *ContainerJobResult) GetState() string { return v.State }
+
+// GetLocked returns ContainerJobResult.Locked, and is useful for accessing the field via an interface.
+func (v *ContainerJobResult) GetLocked() bool { return v.Locked }
 
 // ContainerJobResultPrivateRegistry includes the requested fields of the GraphQL type PrivateRegistry.
 type ContainerJobResultPrivateRegistry struct {
@@ -1897,6 +1905,11 @@ func (v *containerJobListNamespaceContainerJobsContainerJob) GetState() string {
 	return v.ContainerJobResult.State
 }
 
+// GetLocked returns containerJobListNamespaceContainerJobsContainerJob.Locked, and is useful for accessing the field via an interface.
+func (v *containerJobListNamespaceContainerJobsContainerJob) GetLocked() bool {
+	return v.ContainerJobResult.Locked
+}
+
 func (v *containerJobListNamespaceContainerJobsContainerJob) UnmarshalJSON(b []byte) error {
 
 	if string(b) == "null" {
@@ -1944,6 +1957,8 @@ type __premarshalcontainerJobListNamespaceContainerJobsContainerJob struct {
 	Enabled bool `json:"enabled"`
 
 	State string `json:"state"`
+
+	Locked bool `json:"locked"`
 }
 
 func (v *containerJobListNamespaceContainerJobsContainerJob) MarshalJSON() ([]byte, error) {
@@ -1968,6 +1983,7 @@ func (v *containerJobListNamespaceContainerJobsContainerJob) __premarshalJSON() 
 	retval.Schedule = v.ContainerJobResult.Schedule
 	retval.Enabled = v.ContainerJobResult.Enabled
 	retval.State = v.ContainerJobResult.State
+	retval.Locked = v.ContainerJobResult.Locked
 	return &retval, nil
 }
 
@@ -2664,6 +2680,7 @@ fragment CloudDatabaseClusterResult on CloudDatabaseCluster {
 		role
 	}
 	state
+	locked
 }
 `
 
@@ -2771,6 +2788,7 @@ fragment CloudDatabaseClusterResult on CloudDatabaseCluster {
 		role
 	}
 	state
+	locked
 }
 `
 
@@ -3108,6 +3126,7 @@ fragment ContainerJobResult on ContainerJob {
 	schedule
 	enabled
 	state
+	locked
 }
 fragment EnvironmentVariableResult on EnvironmentVariable {
 	name
@@ -3175,6 +3194,7 @@ fragment ContainerJobResult on ContainerJob {
 	schedule
 	enabled
 	state
+	locked
 }
 fragment EnvironmentVariableResult on EnvironmentVariable {
 	name
@@ -3276,6 +3296,7 @@ fragment ContainerJobResult on ContainerJob {
 	schedule
 	enabled
 	state
+	locked
 }
 fragment EnvironmentVariableResult on EnvironmentVariable {
 	name
@@ -3341,6 +3362,7 @@ fragment ContainerJobResult on ContainerJob {
 	schedule
 	enabled
 	state
+	locked
 }
 fragment EnvironmentVariableResult on EnvironmentVariable {
 	name
@@ -3673,6 +3695,7 @@ fragment CloudDatabaseClusterResult on CloudDatabaseCluster {
 		role
 	}
 	state
+	locked
 }
 `
 
@@ -3784,6 +3807,7 @@ fragment CloudDatabaseClusterResult on CloudDatabaseCluster {
 		role
 	}
 	state
+	locked
 }
 `
 

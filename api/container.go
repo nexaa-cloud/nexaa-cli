@@ -103,6 +103,7 @@ func toContainerResult(container ContainerResult) (ContainerResult, error) {
 		NumberOfReplicas:     container.NumberOfReplicas,
 		AutoScaling:          autoScaling,
 		Locked:               container.Locked,
+		State:                container.State,
 	}, nil
 }
 

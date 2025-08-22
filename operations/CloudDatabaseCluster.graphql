@@ -38,6 +38,7 @@ fragment CloudDatabaseClusterResult on CloudDatabaseCluster {
     role
   }
   state
+  locked
 }
 
 fragment CloudDatabaseClusterDatabaseResult on Database {
