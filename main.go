@@ -21,4 +21,4 @@ func main() {
 	cmd.Execute()
 }
 
-//go:generate go run github.com/Khan/genqlient genqlient.yaml
+//go:generate go run -mod=mod github.com/Khan/genqlient genqlient.yaml
