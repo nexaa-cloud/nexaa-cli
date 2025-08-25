@@ -27,17 +27,21 @@ func enabledApiToString(enabled bool) string {
 	return "False"
 }
 
-func envsToApi(environmentVariables []string, secret bool) []api.EnvironmentVariableInput {
+func envsToApi(environmentVariables []string, secret bool, state api.State) []api.EnvironmentVariableInput {
 	var envs []api.EnvironmentVariableInput
 	for _, env := range environmentVariables {
 		parts := strings.Split(env, "=")
 		name := parts[0]
-		value := parts[1]
+
+		var value string
+		if len(parts) != 1 {
+			value = parts[1]
+		}
 		envs = append(envs, api.EnvironmentVariableInput{
 			Name:   name,
 			Value:  value,
 			Secret: secret,
-			State:  api.StatePresent,
+			State:  state,
 		})
 	}
 

@@ -30,7 +30,7 @@ var createContainerJobCmd = &cobra.Command{
 		environmentVariables, _ := cmd.Flags().GetStringArray("env")
 		secrets, _ := cmd.Flags().GetStringArray("secret")
 
-		envs := append(envsToApi(environmentVariables, false), envsToApi(secrets, true)...)
+		envs := append(envsToApi(environmentVariables, false, api.StatePresent), envsToApi(secrets, true, api.StatePresent)...)
 
 		input := api.ContainerJobCreateInput{
 			Name:                 name,
@@ -72,7 +72,15 @@ var modifyContainerJobCmd = &cobra.Command{
 		enabled, _ := cmd.Flags().GetBool("enable")
 		environmentVariables, _ := cmd.Flags().GetStringArray("env")
 		secrets, _ := cmd.Flags().GetStringArray("secret")
-		envs := append(envsToApi(environmentVariables, false), envsToApi(secrets, true)...)
+		removedEnvironmentVariables, _ := cmd.Flags().GetStringArray("remove-env")
+		envs := append(
+			envsToApi(environmentVariables, false, api.StatePresent),
+			envsToApi(secrets, true, api.StatePresent)...,
+		)
+		envs = append(
+			envs,
+			envsToApi(removedEnvironmentVariables, false, api.StateAbsent)...,
+		)
 
 		input := api.ContainerJobModifyInput{
 			Name:                 name,
@@ -219,6 +227,7 @@ func init() {
 	modifyContainerJobCmd.Flags().String("schedule", "", "Container job schedule")
 	modifyContainerJobCmd.Flags().Bool("enable", true, "enable container job")
 	modifyContainerJobCmd.Flags().StringArray("env", []string{}, "Container job environment variables")
+	modifyContainerJobCmd.Flags().StringArray("remove-env", []string{}, "Container job remove environment variables")
 	modifyContainerJobCmd.Flags().StringArray("secret", []string{}, "Container job secrets")
 	modifyContainerJobCmd.MarkFlagRequired("namespace")
 	modifyContainerJobCmd.MarkFlagRequired("name")

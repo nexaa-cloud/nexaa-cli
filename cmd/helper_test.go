@@ -88,12 +88,14 @@ func TestEnvsToApi(t *testing.T) {
 		name         string
 		envs         []string
 		secret       bool
+		state        api.State
 		expectedEnvs []api.EnvironmentVariableInput
 	}{
 		{
 			name:   "single environment variable, not secret",
 			envs:   []string{"KEY=value"},
 			secret: false,
+			state:  api.StatePresent,
 			expectedEnvs: []api.EnvironmentVariableInput{
 				{
 					Name:   "KEY",
@@ -107,6 +109,7 @@ func TestEnvsToApi(t *testing.T) {
 			name:   "single environment variable, secret",
 			envs:   []string{"PASSWORD=secret123"},
 			secret: true,
+			state:  api.StatePresent,
 			expectedEnvs: []api.EnvironmentVariableInput{
 				{
 					Name:   "PASSWORD",
@@ -120,6 +123,7 @@ func TestEnvsToApi(t *testing.T) {
 			name:   "multiple environment variables",
 			envs:   []string{"KEY1=value1", "KEY2=value2"},
 			secret: false,
+			state:  api.StatePresent,
 			expectedEnvs: []api.EnvironmentVariableInput{
 				{
 					Name:   "KEY1",
@@ -139,13 +143,14 @@ func TestEnvsToApi(t *testing.T) {
 			name:         "empty environment variables",
 			envs:         []string{},
 			secret:       false,
+			state:        api.StatePresent,
 			expectedEnvs: []api.EnvironmentVariableInput{},
 		},
 	}
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			result := envsToApi(tt.envs, tt.secret)
+			result := envsToApi(tt.envs, tt.secret, tt.state)
 
 			if len(result) != len(tt.expectedEnvs) {
 				t.Errorf("envsToApi() returned %d items, want %d", len(result), len(tt.expectedEnvs))
