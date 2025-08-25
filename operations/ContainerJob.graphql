@@ -1,6 +1,9 @@
 fragment ContainerJobResult on ContainerJob {
     name
     image
+    namespace {
+        name
+    }
     privateRegistry {
         name
     }

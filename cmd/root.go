@@ -64,7 +64,7 @@ func init() {
 	rootCmd.AddCommand(completionCmd)
 	rootCmd.AddCommand(clouddatabaseclusterCmd)
 	rootCmd.AddCommand(containerCmd)
-	rootCmd.AddCommand(containerjobCmd)
+	rootCmd.AddCommand(containerJobCmd)
 	rootCmd.AddCommand(registryCmd)
 	rootCmd.AddCommand(namespaceCmd)
 	rootCmd.AddCommand(loginCmd)

@@ -603,6 +603,7 @@ func (v *ContainerJobModifyInput) GetMounts() []MountInput { return v.Mounts }
 type ContainerJobResult struct {
 	Name                 string                             `json:"name"`
 	Image                string                             `json:"image"`
+	Namespace            ContainerJobResultNamespace        `json:"namespace"`
 	PrivateRegistry      *ContainerJobResultPrivateRegistry `json:"privateRegistry"`
 	Resources            ContainerResources                 `json:"resources"`
 	EnvironmentVariables []EnvironmentVariableResult        `json:"environmentVariables"`
@@ -620,6 +621,9 @@ func (v *ContainerJobResult) GetName() string { return v.Name }
 
 // GetImage returns ContainerJobResult.Image, and is useful for accessing the field via an interface.
 func (v *ContainerJobResult) GetImage() string { return v.Image }
+
+// GetNamespace returns ContainerJobResult.Namespace, and is useful for accessing the field via an interface.
+func (v *ContainerJobResult) GetNamespace() ContainerJobResultNamespace { return v.Namespace }
 
 // GetPrivateRegistry returns ContainerJobResult.PrivateRegistry, and is useful for accessing the field via an interface.
 func (v *ContainerJobResult) GetPrivateRegistry() *ContainerJobResultPrivateRegistry {
@@ -654,6 +658,14 @@ func (v *ContainerJobResult) GetState() string { return v.State }
 
 // GetLocked returns ContainerJobResult.Locked, and is useful for accessing the field via an interface.
 func (v *ContainerJobResult) GetLocked() bool { return v.Locked }
+
+// ContainerJobResultNamespace includes the requested fields of the GraphQL type Namespace.
+type ContainerJobResultNamespace struct {
+	Name string `json:"name"`
+}
+
+// GetName returns ContainerJobResultNamespace.Name, and is useful for accessing the field via an interface.
+func (v *ContainerJobResultNamespace) GetName() string { return v.Name }
 
 // ContainerJobResultPrivateRegistry includes the requested fields of the GraphQL type PrivateRegistry.
 type ContainerJobResultPrivateRegistry struct {
@@ -1860,6 +1872,11 @@ func (v *containerJobListNamespaceContainerJobsContainerJob) GetImage() string {
 	return v.ContainerJobResult.Image
 }
 
+// GetNamespace returns containerJobListNamespaceContainerJobsContainerJob.Namespace, and is useful for accessing the field via an interface.
+func (v *containerJobListNamespaceContainerJobsContainerJob) GetNamespace() ContainerJobResultNamespace {
+	return v.ContainerJobResult.Namespace
+}
+
 // GetPrivateRegistry returns containerJobListNamespaceContainerJobsContainerJob.PrivateRegistry, and is useful for accessing the field via an interface.
 func (v *containerJobListNamespaceContainerJobsContainerJob) GetPrivateRegistry() *ContainerJobResultPrivateRegistry {
 	return v.ContainerJobResult.PrivateRegistry
@@ -1940,6 +1957,8 @@ type __premarshalcontainerJobListNamespaceContainerJobsContainerJob struct {
 
 	Image string `json:"image"`
 
+	Namespace ContainerJobResultNamespace `json:"namespace"`
+
 	PrivateRegistry *ContainerJobResultPrivateRegistry `json:"privateRegistry"`
 
 	Resources ContainerResources `json:"resources"`
@@ -1974,6 +1993,7 @@ func (v *containerJobListNamespaceContainerJobsContainerJob) __premarshalJSON() 
 
 	retval.Name = v.ContainerJobResult.Name
 	retval.Image = v.ContainerJobResult.Image
+	retval.Namespace = v.ContainerJobResult.Namespace
 	retval.PrivateRegistry = v.ContainerJobResult.PrivateRegistry
 	retval.Resources = v.ContainerJobResult.Resources
 	retval.EnvironmentVariables = v.ContainerJobResult.EnvironmentVariables
@@ -3111,6 +3131,9 @@ query containerJobByName ($namespaceName: String!, $containerName: String!) {
 fragment ContainerJobResult on ContainerJob {
 	name
 	image
+	namespace {
+		name
+	}
 	privateRegistry {
 		name
 	}
@@ -3179,6 +3202,9 @@ mutation containerJobCreate ($scheduledJob: ContainerJobCreateInput!) {
 fragment ContainerJobResult on ContainerJob {
 	name
 	image
+	namespace {
+		name
+	}
 	privateRegistry {
 		name
 	}
@@ -3281,6 +3307,9 @@ query containerJobList ($namespaceName: String!) {
 fragment ContainerJobResult on ContainerJob {
 	name
 	image
+	namespace {
+		name
+	}
 	privateRegistry {
 		name
 	}
@@ -3347,6 +3376,9 @@ mutation containerJobModify ($scheduledJob: ContainerJobModifyInput!) {
 fragment ContainerJobResult on ContainerJob {
 	name
 	image
+	namespace {
+		name
+	}
 	privateRegistry {
 		name
 	}

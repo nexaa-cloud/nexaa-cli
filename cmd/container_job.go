@@ -2,15 +2,16 @@ package cmd
 
 import (
 	"fmt"
-	"github.com/nexaa-cloud/nexaa-cli/api"
-	"github.com/spf13/cobra"
 	"log"
 	"os"
 	"text/tabwriter"
+
+	"github.com/nexaa-cloud/nexaa-cli/api"
+	"github.com/spf13/cobra"
 )
 
-var containerjobCmd = &cobra.Command{
-	Use:   "containerjob",
+var containerJobCmd = &cobra.Command{
+	Use:   "container_job",
 	Short: "Manage container jobs",
 }
 
@@ -24,17 +25,19 @@ var createContainerJobCmd = &cobra.Command{
 		resources, _ := cmd.Flags().GetString("resources")
 		schedule, _ := cmd.Flags().GetString("schedule")
 		enabled, _ := cmd.Flags().GetBool("enable")
+		command, _ := cmd.Flags().GetStringArray("command")
+		entrypoint, _ := cmd.Flags().GetStringArray("entrypoint")
 
 		input := api.ContainerJobCreateInput{
 			Name:                 name,
 			Namespace:            namespace,
 			Resources:            api.ContainerResources(resources),
 			Image:                image,
-			Entrypoint:           []string{},
-			Command:              []string{},
+			Entrypoint:           entrypoint,
+			Command:              command,
 			Enabled:              enabled,
 			Schedule:             schedule,
-			EnvironmentVariables: nil,
+			EnvironmentVariables: []api.EnvironmentVariableInput{},
 			Mounts:               []api.MountInput{},
 		}
 
@@ -60,6 +63,8 @@ var modifyContainerJobCmd = &cobra.Command{
 		image, _ := cmd.Flags().GetString("image")
 		resources, _ := cmd.Flags().GetString("resources")
 		schedule, _ := cmd.Flags().GetString("schedule")
+		command, _ := cmd.Flags().GetStringArray("command")
+		entrypoint, _ := cmd.Flags().GetStringArray("entrypoint")
 		enabled, _ := cmd.Flags().GetBool("enable")
 
 		input := api.ContainerJobModifyInput{
@@ -81,6 +86,14 @@ var modifyContainerJobCmd = &cobra.Command{
 			input.Schedule = &schedule
 		}
 
+		if len(command) > 0 {
+			input.Command = command
+		}
+
+		if len(entrypoint) > 0 {
+			input.Entrypoint = entrypoint
+		}
+
 		client := api.NewClient()
 
 		containerJob, err := client.ContainerJobModify(input)
@@ -94,6 +107,29 @@ var modifyContainerJobCmd = &cobra.Command{
 	},
 }
 
+var getContainerJobCmd = &cobra.Command{
+	Use:   "get",
+	Short: "Get details of a container job",
+	Run: func(cmd *cobra.Command, args []string) {
+		namespace, _ := cmd.Flags().GetString("namespace")
+		name, _ := cmd.Flags().GetString("name")
+		client := api.NewClient()
+
+		container, err := client.ContainerJobByName(namespace, name)
+		if err != nil {
+			log.Fatalf("Failed to list container jobs: %v", err)
+		}
+
+		writer := tabwriter.NewWriter(os.Stdout, 0, 0, 3, ' ', tabwriter.Debug)
+
+		fmt.Fprintln(writer, "NAME\t STATE\t IMAGE\t ENTRYPOINT\t COMMAND\t ENABLED\t")
+
+		fmt.Fprintf(writer, "%s\t %s\t %s\t %s\t %s\t %s\t\n", container.Name, container.State, container.Image, commandApiToString(container.Entrypoint), commandApiToString(container.Command), enabledApiToString(container.Enabled))
+
+		writer.Flush()
+	},
+}
+
 var listContainerJobsCmd = &cobra.Command{
 	Use:   "list",
 	Short: "List all container jobs",
@@ -104,7 +140,7 @@ var listContainerJobsCmd = &cobra.Command{
 		containerJobs, err := client.ContainerJobList(namespace)
 
 		if err != nil {
-			log.Fatalf("Failed to list containerjobs: %v", err)
+			log.Fatalf("Failed to list container jobs: %v", err)
 		}
 
 		if len(containerJobs) == 0 {
@@ -114,15 +150,15 @@ var listContainerJobsCmd = &cobra.Command{
 
 		writer := tabwriter.NewWriter(os.Stdout, 0, 0, 3, ' ', tabwriter.Debug)
 
-		fmt.Fprintln(writer, "NAME\t STATE\t IMAGE\t ENABLED\t")
+		fmt.Fprintln(writer, "NAME\t STATE\t IMAGE\t ENTRYPOINT\t COMMAND\t ENABLED\t")
 
 		for _, container := range containerJobs {
-			enabled := "False"
-			if container.Enabled {
-				enabled = "True"
+			// Skip containers with empty names to avoid having a FALSE enabled empty row
+			if container.Name == "" {
+				continue
 			}
 
-			fmt.Fprintf(writer, "%s\t %s\t %s\t %s\t\n", container.Name, container.State, container.Image, enabled)
+			fmt.Fprintf(writer, "%s\t %s\t %s\t %s\t %s\t %s\t\n", container.Name, container.State, container.Image, commandApiToString(container.Entrypoint), commandApiToString(container.Command), enabledApiToString(container.Enabled))
 		}
 
 		writer.Flush()
@@ -140,15 +176,15 @@ var deleteContainerJobCmd = &cobra.Command{
 
 		result, err := client.ContainerJobDelete(namespace, name)
 		if err != nil {
-			log.Fatalf("Failed to delete containerJob: %q", err)
+			log.Fatalf("Failed to delete container job: %q", err)
 			return
 		}
 
 		if !result {
-			log.Fatalf("Could not delete containerJob with name: %q", name)
+			log.Fatalf("Could not delete container job with name: %q", name)
 		}
 
-		log.Println("deleted containerjob with name: ", name)
+		log.Println("deleted container job with name: ", name)
 	},
 }
 
@@ -164,25 +200,31 @@ func init() {
 	createContainerJobCmd.MarkFlagRequired("image")
 	createContainerJobCmd.MarkFlagRequired("resources")
 	createContainerJobCmd.MarkFlagRequired("schedule")
-	containerjobCmd.AddCommand(createContainerJobCmd)
+	containerJobCmd.AddCommand(createContainerJobCmd)
 
 	modifyContainerJobCmd.Flags().String("namespace", "", "Namespace")
-	modifyContainerJobCmd.Flags().String("name", "", "Name for this container")
+	modifyContainerJobCmd.Flags().String("name", "", "Name for this container job")
 	modifyContainerJobCmd.Flags().String("image", "", "Container image")
 	modifyContainerJobCmd.Flags().String("resources", "", "Container resources")
 	modifyContainerJobCmd.Flags().String("schedule", "", "Container schedule")
 	modifyContainerJobCmd.Flags().Bool("enable", true, "enable container job")
-	createContainerJobCmd.MarkFlagRequired("namespace")
+	modifyContainerJobCmd.MarkFlagRequired("namespace")
 	modifyContainerJobCmd.MarkFlagRequired("name")
-	containerjobCmd.AddCommand(modifyContainerJobCmd)
+	containerJobCmd.AddCommand(modifyContainerJobCmd)
 
 	listContainerJobsCmd.Flags().String("namespace", "", "Namespace")
 	listContainerJobsCmd.MarkFlagRequired("namespace")
-	containerjobCmd.AddCommand(listContainerJobsCmd)
+	containerJobCmd.AddCommand(listContainerJobsCmd)
 
 	deleteContainerJobCmd.Flags().String("namespace", "", "Namespace")
 	deleteContainerJobCmd.Flags().String("name", "", "Name of the containerjob")
 	deleteContainerJobCmd.MarkFlagRequired("namespace")
 	deleteContainerJobCmd.MarkFlagRequired("name")
-	containerjobCmd.AddCommand(deleteContainerJobCmd)
+	containerJobCmd.AddCommand(deleteContainerJobCmd)
+
+	getContainerJobCmd.Flags().String("namespace", "", "Namespace")
+	getContainerJobCmd.Flags().String("name", "", "Name of the container job")
+	getContainerJobCmd.MarkFlagRequired("namespace")
+	getContainerJobCmd.MarkFlagRequired("Name")
+	containerJobCmd.AddCommand(getContainerJobCmd)
 }
