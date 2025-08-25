@@ -27,6 +27,10 @@ var createContainerJobCmd = &cobra.Command{
 		enabled, _ := cmd.Flags().GetBool("enable")
 		command, _ := cmd.Flags().GetStringArray("command")
 		entrypoint, _ := cmd.Flags().GetStringArray("entrypoint")
+		environmentVariables, _ := cmd.Flags().GetStringArray("env")
+		secrets, _ := cmd.Flags().GetStringArray("secret")
+
+		envs := append(envsToApi(environmentVariables, false), envsToApi(secrets, true)...)
 
 		input := api.ContainerJobCreateInput{
 			Name:                 name,
@@ -37,7 +41,7 @@ var createContainerJobCmd = &cobra.Command{
 			Command:              command,
 			Enabled:              enabled,
 			Schedule:             schedule,
-			EnvironmentVariables: []api.EnvironmentVariableInput{},
+			EnvironmentVariables: envs,
 			Mounts:               []api.MountInput{},
 		}
 
@@ -66,11 +70,15 @@ var modifyContainerJobCmd = &cobra.Command{
 		command, _ := cmd.Flags().GetStringArray("command")
 		entrypoint, _ := cmd.Flags().GetStringArray("entrypoint")
 		enabled, _ := cmd.Flags().GetBool("enable")
+		environmentVariables, _ := cmd.Flags().GetStringArray("env")
+		secrets, _ := cmd.Flags().GetStringArray("secret")
+		envs := append(envsToApi(environmentVariables, false), envsToApi(secrets, true)...)
 
 		input := api.ContainerJobModifyInput{
-			Name:      name,
-			Namespace: namespace,
-			Enabled:   &enabled,
+			Name:                 name,
+			Namespace:            namespace,
+			Enabled:              &enabled,
+			EnvironmentVariables: envs,
 		}
 
 		if image != "" {
@@ -190,10 +198,12 @@ var deleteContainerJobCmd = &cobra.Command{
 
 func init() {
 	createContainerJobCmd.Flags().String("namespace", "", "Namespace")
-	createContainerJobCmd.Flags().String("name", "", "Name for this container")
-	createContainerJobCmd.Flags().String("image", "", "Container image")
-	createContainerJobCmd.Flags().String("resources", "", "Container resources")
-	createContainerJobCmd.Flags().String("schedule", "", "Container schedule")
+	createContainerJobCmd.Flags().String("name", "", "Name for this container job")
+	createContainerJobCmd.Flags().String("image", "", "Container job image")
+	createContainerJobCmd.Flags().String("resources", "", "Container job resources")
+	createContainerJobCmd.Flags().String("schedule", "", "Container job schedule")
+	createContainerJobCmd.Flags().StringArray("env", []string{}, "Container job environment variables")
+	createContainerJobCmd.Flags().StringArray("secret", []string{}, "Container job secrets")
 	createContainerJobCmd.Flags().Bool("enable", true, "enable container job")
 	createContainerJobCmd.MarkFlagRequired("namespace")
 	createContainerJobCmd.MarkFlagRequired("name")
@@ -204,10 +214,12 @@ func init() {
 
 	modifyContainerJobCmd.Flags().String("namespace", "", "Namespace")
 	modifyContainerJobCmd.Flags().String("name", "", "Name for this container job")
-	modifyContainerJobCmd.Flags().String("image", "", "Container image")
-	modifyContainerJobCmd.Flags().String("resources", "", "Container resources")
-	modifyContainerJobCmd.Flags().String("schedule", "", "Container schedule")
+	modifyContainerJobCmd.Flags().String("image", "", "Container job image")
+	modifyContainerJobCmd.Flags().String("resources", "", "Container job resources")
+	modifyContainerJobCmd.Flags().String("schedule", "", "Container job schedule")
 	modifyContainerJobCmd.Flags().Bool("enable", true, "enable container job")
+	modifyContainerJobCmd.Flags().StringArray("env", []string{}, "Container job environment variables")
+	modifyContainerJobCmd.Flags().StringArray("secret", []string{}, "Container job secrets")
 	modifyContainerJobCmd.MarkFlagRequired("namespace")
 	modifyContainerJobCmd.MarkFlagRequired("name")
 	containerJobCmd.AddCommand(modifyContainerJobCmd)
