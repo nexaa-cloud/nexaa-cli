@@ -131,16 +131,16 @@ var getContainerJobCmd = &cobra.Command{
 		name, _ := cmd.Flags().GetString("name")
 		client := api.NewClient()
 
-		container, err := client.ContainerJobByName(namespace, name)
+		containerJob, err := client.ContainerJobByName(namespace, name)
 		if err != nil {
-			log.Fatalf("Failed to list container jobs: %v", err)
+			log.Fatalf("Failed to list containerJob jobs: %v", err)
 		}
 
 		writer := tabwriter.NewWriter(os.Stdout, 0, 0, 3, ' ', tabwriter.Debug)
 
 		fmt.Fprintln(writer, "NAME\t STATE\t IMAGE\t ENTRYPOINT\t COMMAND\t ENABLED\t SCHEDULE\t")
 
-		fmt.Fprintf(writer, "%s\t %s\t %s\t %s\t %s\t %s\t %s\t\n", container.Name, container.State, container.Image, commandApiToString(container.Entrypoint), commandApiToString(container.Command), enabledApiToString(container.Enabled), container.Schedule)
+		fmt.Fprintf(writer, "%s\t %s\t %s\t %s\t %s\t %s\t %s\t\n", containerJob.Name, containerJob.State, containerJob.Image, commandApiToString(containerJob.Entrypoint), commandApiToString(containerJob.Command), enabledApiToString(containerJob.Enabled), containerJob.Schedule)
 
 		writer.Flush()
 	},
@@ -156,7 +156,7 @@ var listContainerJobsCmd = &cobra.Command{
 		containerJobs, err := client.ContainerJobList(namespace)
 
 		if err != nil {
-			log.Fatalf("Failed to list container jobs: %v", err)
+			log.Fatalf("Failed to list containerJob jobs: %v", err)
 		}
 
 		if len(containerJobs) == 0 {
@@ -168,13 +168,13 @@ var listContainerJobsCmd = &cobra.Command{
 
 		fmt.Fprintln(writer, "NAME\t STATE\t IMAGE\t ENTRYPOINT\t COMMAND\t ENABLED\t SCHEDULE\t")
 
-		for _, container := range containerJobs {
+		for _, containerJob := range containerJobs {
 			// Skip containers with empty names to avoid having a FALSE enabled empty row
-			if container.Name == "" {
+			if containerJob.Name == "" {
 				continue
 			}
 
-			fmt.Fprintf(writer, "%s\t %s\t %s\t %s\t %s\t %s\t %s\t\n", container.Name, container.State, container.Image, commandApiToString(container.Entrypoint), commandApiToString(container.Command), enabledApiToString(container.Enabled), container.Schedule)
+			fmt.Fprintf(writer, "%s\t %s\t %s\t %s\t %s\t %s\t %s\t\n", containerJob.Name, containerJob.State, containerJob.Image, commandApiToString(containerJob.Entrypoint), commandApiToString(containerJob.Command), enabledApiToString(containerJob.Enabled), containerJob.Schedule)
 		}
 
 		writer.Flush()
