@@ -138,9 +138,9 @@ var getContainerJobCmd = &cobra.Command{
 
 		writer := tabwriter.NewWriter(os.Stdout, 0, 0, 3, ' ', tabwriter.Debug)
 
-		fmt.Fprintln(writer, "NAME\t STATE\t IMAGE\t ENTRYPOINT\t COMMAND\t ENABLED\t")
+		fmt.Fprintln(writer, "NAME\t STATE\t IMAGE\t ENTRYPOINT\t COMMAND\t ENABLED\t SCHEDULE\t")
 
-		fmt.Fprintf(writer, "%s\t %s\t %s\t %s\t %s\t %s\t\n", container.Name, container.State, container.Image, commandApiToString(container.Entrypoint), commandApiToString(container.Command), enabledApiToString(container.Enabled))
+		fmt.Fprintf(writer, "%s\t %s\t %s\t %s\t %s\t %s\t %s\t\n", container.Name, container.State, container.Image, commandApiToString(container.Entrypoint), commandApiToString(container.Command), enabledApiToString(container.Enabled), container.Schedule)
 
 		writer.Flush()
 	},
@@ -166,7 +166,7 @@ var listContainerJobsCmd = &cobra.Command{
 
 		writer := tabwriter.NewWriter(os.Stdout, 0, 0, 3, ' ', tabwriter.Debug)
 
-		fmt.Fprintln(writer, "NAME\t STATE\t IMAGE\t ENTRYPOINT\t COMMAND\t ENABLED\t")
+		fmt.Fprintln(writer, "NAME\t STATE\t IMAGE\t ENTRYPOINT\t COMMAND\t ENABLED\t SCHEDULE\t")
 
 		for _, container := range containerJobs {
 			// Skip containers with empty names to avoid having a FALSE enabled empty row
@@ -174,7 +174,7 @@ var listContainerJobsCmd = &cobra.Command{
 				continue
 			}
 
-			fmt.Fprintf(writer, "%s\t %s\t %s\t %s\t %s\t %s\t\n", container.Name, container.State, container.Image, commandApiToString(container.Entrypoint), commandApiToString(container.Command), enabledApiToString(container.Enabled))
+			fmt.Fprintf(writer, "%s\t %s\t %s\t %s\t %s\t %s\t %s\t\n", container.Name, container.State, container.Image, commandApiToString(container.Entrypoint), commandApiToString(container.Command), enabledApiToString(container.Enabled), container.Schedule)
 		}
 
 		writer.Flush()
