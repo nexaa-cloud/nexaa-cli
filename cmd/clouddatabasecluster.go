@@ -191,65 +191,6 @@ var listCloudDatabaseClusterSpecsCmd = &cobra.Command{
 	},
 }
 
-var createClusterDatabaseCmd = &cobra.Command{
-	Use:   "create-db",
-	Short: "Create a database in a cloud database cluster",
-	Run: func(cmd *cobra.Command, args []string) {
-		clusterName, _ := cmd.Flags().GetString("cluster")
-		dbName, _ := cmd.Flags().GetString("name")
-		dbDescription, _ := cmd.Flags().GetString("description")
-		if dbDescription == "" {
-			dbDescription = "Created via CLI"
-		}
-		namespace, _ := cmd.Flags().GetString("namespace")
-		input := api.CloudDatabaseClusterDatabaseCreateInput{
-			Cluster: api.CloudDatabaseClusterResourceInput{
-				Name:      clusterName,
-				Namespace: namespace,
-			},
-			Database: api.DatabaseInput{
-				Name:        dbName,
-				Description: &dbDescription,
-				State:       api.StatePresent,
-			},
-		}
-		client := api.NewClient()
-		result, err := client.CloudDatabaseClusterDatabaseCreate(input)
-		if err != nil {
-			log.Fatalf("Failed to create database: %v", err)
-			return
-		}
-		fmt.Printf("Created database: %s\n", result.Name)
-	},
-}
-
-var deleteClusterDatabaseCmd = &cobra.Command{
-	Use:   "delete-db",
-	Short: "Delete a database from a cloud database cluster",
-	Run: func(cmd *cobra.Command, args []string) {
-		clusterName, _ := cmd.Flags().GetString("cluster")
-		dbName, _ := cmd.Flags().GetString("name")
-		namespace, _ := cmd.Flags().GetString("namespace")
-		input := api.CloudDatabaseClusterDatabaseResourceInput{
-			Cluster: api.CloudDatabaseClusterResourceInput{
-				Name:      clusterName,
-				Namespace: namespace,
-			},
-			Name: dbName,
-		}
-		client := api.NewClient()
-		result, err := client.CloudDatabaseClusterDatabaseDelete(input)
-		if err != nil {
-			log.Fatalf("Failed to delete database: %v", err)
-			return
-		}
-		if !result {
-			log.Fatalf("Could not delete database: %s", dbName)
-		}
-		fmt.Printf("Deleted database: %s\n", dbName)
-	},
-}
-
 var getClusterDatabaseUserCredentialsCmd = &cobra.Command{
 	Use:   "get-credentials",
 	Short: "Get user connection string for a database cluster",
@@ -300,23 +241,6 @@ func init() {
 	listCloudDatabaseClusterCmd.MarkFlagRequired("namespace")
 	listCloudDatabaseClusterCmd.MarkFlagRequired("name")
 	clouddatabaseclusterCmd.AddCommand(listCloudDatabaseClusterCmd)
-
-	createClusterDatabaseCmd.Flags().String("cluster", "", "Cluster name")
-	createClusterDatabaseCmd.Flags().String("name", "", "Database name")
-	createClusterDatabaseCmd.Flags().String("description", "", "Description for the database (optional)")
-	createClusterDatabaseCmd.Flags().StringP("namespace", "n", "", "Namespace")
-	createClusterDatabaseCmd.MarkFlagRequired("cluster")
-	createClusterDatabaseCmd.MarkFlagRequired("name")
-	createClusterDatabaseCmd.MarkFlagRequired("namespace")
-	clouddatabaseclusterCmd.AddCommand(createClusterDatabaseCmd)
-
-	deleteClusterDatabaseCmd.Flags().String("cluster", "", "Cluster name")
-	deleteClusterDatabaseCmd.Flags().String("name", "", "Database name")
-	deleteClusterDatabaseCmd.Flags().StringP("namespace", "n", "", "Namespace")
-	deleteClusterDatabaseCmd.MarkFlagRequired("cluster")
-	deleteClusterDatabaseCmd.MarkFlagRequired("name")
-	deleteClusterDatabaseCmd.MarkFlagRequired("namespace")
-	clouddatabaseclusterCmd.AddCommand(deleteClusterDatabaseCmd)
 
 	getClusterDatabaseUserCredentialsCmd.Flags().String("cluster", "", "Cluster name")
 	getClusterDatabaseUserCredentialsCmd.Flags().StringP("namespace", "n", "", "Namespace")

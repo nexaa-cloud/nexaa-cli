@@ -63,6 +63,7 @@ func Execute() {
 func init() {
 	rootCmd.AddCommand(completionCmd)
 	rootCmd.AddCommand(clouddatabaseclusterCmd)
+	rootCmd.AddCommand(cloudDatabaseClusterDatabaseCmd)
 	rootCmd.AddCommand(containerCmd)
 	rootCmd.AddCommand(containerJobCmd)
 	rootCmd.AddCommand(registryCmd)

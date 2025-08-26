@@ -1499,6 +1499,26 @@ func (v *__cloudDatabaseClusterCreateInput) GetCloudDatabaseClusterInput() Cloud
 	return v.CloudDatabaseClusterInput
 }
 
+// __cloudDatabaseClusterDatabaseCreateInput is used internally by genqlient
+type __cloudDatabaseClusterDatabaseCreateInput struct {
+	DatabaseInput CloudDatabaseClusterDatabaseCreateInput `json:"databaseInput"`
+}
+
+// GetDatabaseInput returns __cloudDatabaseClusterDatabaseCreateInput.DatabaseInput, and is useful for accessing the field via an interface.
+func (v *__cloudDatabaseClusterDatabaseCreateInput) GetDatabaseInput() CloudDatabaseClusterDatabaseCreateInput {
+	return v.DatabaseInput
+}
+
+// __cloudDatabaseClusterDatabaseDeleteInput is used internally by genqlient
+type __cloudDatabaseClusterDatabaseDeleteInput struct {
+	DatabaseInput CloudDatabaseClusterDatabaseResourceInput `json:"databaseInput"`
+}
+
+// GetDatabaseInput returns __cloudDatabaseClusterDatabaseDeleteInput.DatabaseInput, and is useful for accessing the field via an interface.
+func (v *__cloudDatabaseClusterDatabaseDeleteInput) GetDatabaseInput() CloudDatabaseClusterDatabaseResourceInput {
+	return v.DatabaseInput
+}
+
 // __cloudDatabaseClusterDeleteInput is used internally by genqlient
 type __cloudDatabaseClusterDeleteInput struct {
 	CloudDatabaseClusterResourceInput CloudDatabaseClusterResourceInput `json:"cloudDatabaseClusterResourceInput"`
@@ -1635,6 +1655,16 @@ func (v *__deleteCloudDatabaseClusterDatabaseInput) GetCloudDatabaseClusterDatab
 	return v.CloudDatabaseClusterDatabaseInput
 }
 
+// __getCloudDatabaseClusterDatabasesInput is used internally by genqlient
+type __getCloudDatabaseClusterDatabasesInput struct {
+	CloudDatabaseCluster CloudDatabaseClusterResourceInput `json:"cloudDatabaseCluster"`
+}
+
+// GetCloudDatabaseCluster returns __getCloudDatabaseClusterDatabasesInput.CloudDatabaseCluster, and is useful for accessing the field via an interface.
+func (v *__getCloudDatabaseClusterDatabasesInput) GetCloudDatabaseCluster() CloudDatabaseClusterResourceInput {
+	return v.CloudDatabaseCluster
+}
+
 // __getCloudDatabaseClusterInput is used internally by genqlient
 type __getCloudDatabaseClusterInput struct {
 	CloudDatabaseClusterInput CloudDatabaseClusterResourceInput `json:"cloudDatabaseClusterInput"`
@@ -1755,6 +1785,96 @@ type cloudDatabaseClusterCreateResponse struct {
 // GetCloudDatabaseClusterCreate returns cloudDatabaseClusterCreateResponse.CloudDatabaseClusterCreate, and is useful for accessing the field via an interface.
 func (v *cloudDatabaseClusterCreateResponse) GetCloudDatabaseClusterCreate() CloudDatabaseClusterResult {
 	return v.CloudDatabaseClusterCreate
+}
+
+// cloudDatabaseClusterDatabaseCreateCloudDatabaseClusterDatabaseCreateDatabase includes the requested fields of the GraphQL type Database.
+type cloudDatabaseClusterDatabaseCreateCloudDatabaseClusterDatabaseCreateDatabase struct {
+	CloudDatabaseClusterDatabaseResult `json:"-"`
+}
+
+// GetName returns cloudDatabaseClusterDatabaseCreateCloudDatabaseClusterDatabaseCreateDatabase.Name, and is useful for accessing the field via an interface.
+func (v *cloudDatabaseClusterDatabaseCreateCloudDatabaseClusterDatabaseCreateDatabase) GetName() string {
+	return v.CloudDatabaseClusterDatabaseResult.Name
+}
+
+// GetDescription returns cloudDatabaseClusterDatabaseCreateCloudDatabaseClusterDatabaseCreateDatabase.Description, and is useful for accessing the field via an interface.
+func (v *cloudDatabaseClusterDatabaseCreateCloudDatabaseClusterDatabaseCreateDatabase) GetDescription() *string {
+	return v.CloudDatabaseClusterDatabaseResult.Description
+}
+
+// GetStatus returns cloudDatabaseClusterDatabaseCreateCloudDatabaseClusterDatabaseCreateDatabase.Status, and is useful for accessing the field via an interface.
+func (v *cloudDatabaseClusterDatabaseCreateCloudDatabaseClusterDatabaseCreateDatabase) GetStatus() string {
+	return v.CloudDatabaseClusterDatabaseResult.Status
+}
+
+func (v *cloudDatabaseClusterDatabaseCreateCloudDatabaseClusterDatabaseCreateDatabase) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*cloudDatabaseClusterDatabaseCreateCloudDatabaseClusterDatabaseCreateDatabase
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.cloudDatabaseClusterDatabaseCreateCloudDatabaseClusterDatabaseCreateDatabase = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	err = json.Unmarshal(
+		b, &v.CloudDatabaseClusterDatabaseResult)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+type __premarshalcloudDatabaseClusterDatabaseCreateCloudDatabaseClusterDatabaseCreateDatabase struct {
+	Name string `json:"name"`
+
+	Description *string `json:"description"`
+
+	Status string `json:"status"`
+}
+
+func (v *cloudDatabaseClusterDatabaseCreateCloudDatabaseClusterDatabaseCreateDatabase) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *cloudDatabaseClusterDatabaseCreateCloudDatabaseClusterDatabaseCreateDatabase) __premarshalJSON() (*__premarshalcloudDatabaseClusterDatabaseCreateCloudDatabaseClusterDatabaseCreateDatabase, error) {
+	var retval __premarshalcloudDatabaseClusterDatabaseCreateCloudDatabaseClusterDatabaseCreateDatabase
+
+	retval.Name = v.CloudDatabaseClusterDatabaseResult.Name
+	retval.Description = v.CloudDatabaseClusterDatabaseResult.Description
+	retval.Status = v.CloudDatabaseClusterDatabaseResult.Status
+	return &retval, nil
+}
+
+// cloudDatabaseClusterDatabaseCreateResponse is returned by cloudDatabaseClusterDatabaseCreate on success.
+type cloudDatabaseClusterDatabaseCreateResponse struct {
+	CloudDatabaseClusterDatabaseCreate cloudDatabaseClusterDatabaseCreateCloudDatabaseClusterDatabaseCreateDatabase `json:"cloudDatabaseClusterDatabaseCreate"`
+}
+
+// GetCloudDatabaseClusterDatabaseCreate returns cloudDatabaseClusterDatabaseCreateResponse.CloudDatabaseClusterDatabaseCreate, and is useful for accessing the field via an interface.
+func (v *cloudDatabaseClusterDatabaseCreateResponse) GetCloudDatabaseClusterDatabaseCreate() cloudDatabaseClusterDatabaseCreateCloudDatabaseClusterDatabaseCreateDatabase {
+	return v.CloudDatabaseClusterDatabaseCreate
+}
+
+// cloudDatabaseClusterDatabaseDeleteResponse is returned by cloudDatabaseClusterDatabaseDelete on success.
+type cloudDatabaseClusterDatabaseDeleteResponse struct {
+	CloudDatabaseClusterDatabaseDelete bool `json:"cloudDatabaseClusterDatabaseDelete"`
+}
+
+// GetCloudDatabaseClusterDatabaseDelete returns cloudDatabaseClusterDatabaseDeleteResponse.CloudDatabaseClusterDatabaseDelete, and is useful for accessing the field via an interface.
+func (v *cloudDatabaseClusterDatabaseDeleteResponse) GetCloudDatabaseClusterDatabaseDelete() bool {
+	return v.CloudDatabaseClusterDatabaseDelete
 }
 
 // cloudDatabaseClusterDeleteResponse is returned by cloudDatabaseClusterDelete on success.
@@ -2219,6 +2339,96 @@ type deleteCloudDatabaseClusterDatabaseResponse struct {
 // GetCloudDatabaseClusterDatabaseDelete returns deleteCloudDatabaseClusterDatabaseResponse.CloudDatabaseClusterDatabaseDelete, and is useful for accessing the field via an interface.
 func (v *deleteCloudDatabaseClusterDatabaseResponse) GetCloudDatabaseClusterDatabaseDelete() bool {
 	return v.CloudDatabaseClusterDatabaseDelete
+}
+
+// getCloudDatabaseClusterDatabasesCloudDatabaseCluster includes the requested fields of the GraphQL type CloudDatabaseCluster.
+type getCloudDatabaseClusterDatabasesCloudDatabaseCluster struct {
+	Databases []getCloudDatabaseClusterDatabasesCloudDatabaseClusterDatabasesDatabase `json:"databases"`
+}
+
+// GetDatabases returns getCloudDatabaseClusterDatabasesCloudDatabaseCluster.Databases, and is useful for accessing the field via an interface.
+func (v *getCloudDatabaseClusterDatabasesCloudDatabaseCluster) GetDatabases() []getCloudDatabaseClusterDatabasesCloudDatabaseClusterDatabasesDatabase {
+	return v.Databases
+}
+
+// getCloudDatabaseClusterDatabasesCloudDatabaseClusterDatabasesDatabase includes the requested fields of the GraphQL type Database.
+type getCloudDatabaseClusterDatabasesCloudDatabaseClusterDatabasesDatabase struct {
+	CloudDatabaseClusterDatabaseResult `json:"-"`
+}
+
+// GetName returns getCloudDatabaseClusterDatabasesCloudDatabaseClusterDatabasesDatabase.Name, and is useful for accessing the field via an interface.
+func (v *getCloudDatabaseClusterDatabasesCloudDatabaseClusterDatabasesDatabase) GetName() string {
+	return v.CloudDatabaseClusterDatabaseResult.Name
+}
+
+// GetDescription returns getCloudDatabaseClusterDatabasesCloudDatabaseClusterDatabasesDatabase.Description, and is useful for accessing the field via an interface.
+func (v *getCloudDatabaseClusterDatabasesCloudDatabaseClusterDatabasesDatabase) GetDescription() *string {
+	return v.CloudDatabaseClusterDatabaseResult.Description
+}
+
+// GetStatus returns getCloudDatabaseClusterDatabasesCloudDatabaseClusterDatabasesDatabase.Status, and is useful for accessing the field via an interface.
+func (v *getCloudDatabaseClusterDatabasesCloudDatabaseClusterDatabasesDatabase) GetStatus() string {
+	return v.CloudDatabaseClusterDatabaseResult.Status
+}
+
+func (v *getCloudDatabaseClusterDatabasesCloudDatabaseClusterDatabasesDatabase) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*getCloudDatabaseClusterDatabasesCloudDatabaseClusterDatabasesDatabase
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.getCloudDatabaseClusterDatabasesCloudDatabaseClusterDatabasesDatabase = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	err = json.Unmarshal(
+		b, &v.CloudDatabaseClusterDatabaseResult)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+type __premarshalgetCloudDatabaseClusterDatabasesCloudDatabaseClusterDatabasesDatabase struct {
+	Name string `json:"name"`
+
+	Description *string `json:"description"`
+
+	Status string `json:"status"`
+}
+
+func (v *getCloudDatabaseClusterDatabasesCloudDatabaseClusterDatabasesDatabase) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *getCloudDatabaseClusterDatabasesCloudDatabaseClusterDatabasesDatabase) __premarshalJSON() (*__premarshalgetCloudDatabaseClusterDatabasesCloudDatabaseClusterDatabasesDatabase, error) {
+	var retval __premarshalgetCloudDatabaseClusterDatabasesCloudDatabaseClusterDatabasesDatabase
+
+	retval.Name = v.CloudDatabaseClusterDatabaseResult.Name
+	retval.Description = v.CloudDatabaseClusterDatabaseResult.Description
+	retval.Status = v.CloudDatabaseClusterDatabaseResult.Status
+	return &retval, nil
+}
+
+// getCloudDatabaseClusterDatabasesResponse is returned by getCloudDatabaseClusterDatabases on success.
+type getCloudDatabaseClusterDatabasesResponse struct {
+	CloudDatabaseCluster getCloudDatabaseClusterDatabasesCloudDatabaseCluster `json:"cloudDatabaseCluster"`
+}
+
+// GetCloudDatabaseCluster returns getCloudDatabaseClusterDatabasesResponse.CloudDatabaseCluster, and is useful for accessing the field via an interface.
+func (v *getCloudDatabaseClusterDatabasesResponse) GetCloudDatabaseCluster() getCloudDatabaseClusterDatabasesCloudDatabaseCluster {
+	return v.CloudDatabaseCluster
 }
 
 // getCloudDatabaseClusterResponse is returned by getCloudDatabaseCluster on success.
@@ -2718,6 +2928,77 @@ func cloudDatabaseClusterCreate(
 	}
 
 	data_ = &cloudDatabaseClusterCreateResponse{}
+	resp_ := &graphql.Response{Data: data_}
+
+	err_ = client_.MakeRequest(
+		ctx_,
+		req_,
+		resp_,
+	)
+
+	return data_, err_
+}
+
+// The mutation executed by cloudDatabaseClusterDatabaseCreate.
+const cloudDatabaseClusterDatabaseCreate_Operation = `
+mutation cloudDatabaseClusterDatabaseCreate ($databaseInput: CloudDatabaseClusterDatabaseCreateInput!) {
+	cloudDatabaseClusterDatabaseCreate(databaseInput: $databaseInput) {
+		... CloudDatabaseClusterDatabaseResult
+	}
+}
+fragment CloudDatabaseClusterDatabaseResult on Database {
+	name
+	description
+	status
+}
+`
+
+func cloudDatabaseClusterDatabaseCreate(
+	ctx_ context.Context,
+	client_ graphql.Client,
+	databaseInput CloudDatabaseClusterDatabaseCreateInput,
+) (data_ *cloudDatabaseClusterDatabaseCreateResponse, err_ error) {
+	req_ := &graphql.Request{
+		OpName: "cloudDatabaseClusterDatabaseCreate",
+		Query:  cloudDatabaseClusterDatabaseCreate_Operation,
+		Variables: &__cloudDatabaseClusterDatabaseCreateInput{
+			DatabaseInput: databaseInput,
+		},
+	}
+
+	data_ = &cloudDatabaseClusterDatabaseCreateResponse{}
+	resp_ := &graphql.Response{Data: data_}
+
+	err_ = client_.MakeRequest(
+		ctx_,
+		req_,
+		resp_,
+	)
+
+	return data_, err_
+}
+
+// The mutation executed by cloudDatabaseClusterDatabaseDelete.
+const cloudDatabaseClusterDatabaseDelete_Operation = `
+mutation cloudDatabaseClusterDatabaseDelete ($databaseInput: CloudDatabaseClusterDatabaseResourceInput!) {
+	cloudDatabaseClusterDatabaseDelete(databaseInput: $databaseInput)
+}
+`
+
+func cloudDatabaseClusterDatabaseDelete(
+	ctx_ context.Context,
+	client_ graphql.Client,
+	databaseInput CloudDatabaseClusterDatabaseResourceInput,
+) (data_ *cloudDatabaseClusterDatabaseDeleteResponse, err_ error) {
+	req_ := &graphql.Request{
+		OpName: "cloudDatabaseClusterDatabaseDelete",
+		Query:  cloudDatabaseClusterDatabaseDelete_Operation,
+		Variables: &__cloudDatabaseClusterDatabaseDeleteInput{
+			DatabaseInput: databaseInput,
+		},
+	}
+
+	data_ = &cloudDatabaseClusterDatabaseDeleteResponse{}
 	resp_ := &graphql.Response{Data: data_}
 
 	err_ = client_.MakeRequest(
@@ -3745,6 +4026,47 @@ func getCloudDatabaseCluster(
 	}
 
 	data_ = &getCloudDatabaseClusterResponse{}
+	resp_ := &graphql.Response{Data: data_}
+
+	err_ = client_.MakeRequest(
+		ctx_,
+		req_,
+		resp_,
+	)
+
+	return data_, err_
+}
+
+// The query executed by getCloudDatabaseClusterDatabases.
+const getCloudDatabaseClusterDatabases_Operation = `
+query getCloudDatabaseClusterDatabases ($cloudDatabaseCluster: CloudDatabaseClusterResourceInput!) {
+	cloudDatabaseCluster(cloudDatabase: $cloudDatabaseCluster) {
+		databases {
+			... CloudDatabaseClusterDatabaseResult
+		}
+	}
+}
+fragment CloudDatabaseClusterDatabaseResult on Database {
+	name
+	description
+	status
+}
+`
+
+func getCloudDatabaseClusterDatabases(
+	ctx_ context.Context,
+	client_ graphql.Client,
+	cloudDatabaseCluster CloudDatabaseClusterResourceInput,
+) (data_ *getCloudDatabaseClusterDatabasesResponse, err_ error) {
+	req_ := &graphql.Request{
+		OpName: "getCloudDatabaseClusterDatabases",
+		Query:  getCloudDatabaseClusterDatabases_Operation,
+		Variables: &__getCloudDatabaseClusterDatabasesInput{
+			CloudDatabaseCluster: cloudDatabaseCluster,
+		},
+	}
+
+	data_ = &getCloudDatabaseClusterDatabasesResponse{}
 	resp_ := &graphql.Response{Data: data_}
 
 	err_ = client_.MakeRequest(

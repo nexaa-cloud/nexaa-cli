@@ -41,12 +41,6 @@ fragment CloudDatabaseClusterResult on CloudDatabaseCluster {
   locked
 }
 
-fragment CloudDatabaseClusterDatabaseResult on Database {
-  name
-  description
-  status
-}
-
 fragment CloudDatabaseClusterPlan on Plan {
   cpu
   group
