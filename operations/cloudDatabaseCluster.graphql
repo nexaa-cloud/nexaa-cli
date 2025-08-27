@@ -45,7 +45,7 @@ fragment CloudDatabaseClusterPlan on Plan {
   cpu
   group
   id
-  memory
+  memory(unit: GB)
   name
   price {
     amount
