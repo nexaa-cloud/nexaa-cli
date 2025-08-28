@@ -1,0 +1,21 @@
+fragment CloudDatabaseClusterUserResult on DatabaseUser {
+    name
+    status
+    permissions {
+        databaseName
+        permission
+    }
+    dsn
+    password
+}
+
+
+query getCloudDatabaseClusterUsers(
+    $cloudDatabaseCluster: CloudDatabaseClusterResourceInput!
+) {
+    cloudDatabaseCluster(cloudDatabase: $cloudDatabaseCluster) {
+        users {
+            ...CloudDatabaseClusterUserResult
+        }
+    }
+}

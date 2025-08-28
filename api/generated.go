@@ -240,27 +240,159 @@ func (v *CloudDatabaseClusterResult) GetLocked() bool { return v.Locked }
 
 // CloudDatabaseClusterResultAdminUserDatabaseUser includes the requested fields of the GraphQL type DatabaseUser.
 type CloudDatabaseClusterResultAdminUserDatabaseUser struct {
-	Name string `json:"name"`
-	Role string `json:"role"`
+	CloudDatabaseClusterUserResult `json:"-"`
 }
 
 // GetName returns CloudDatabaseClusterResultAdminUserDatabaseUser.Name, and is useful for accessing the field via an interface.
-func (v *CloudDatabaseClusterResultAdminUserDatabaseUser) GetName() string { return v.Name }
+func (v *CloudDatabaseClusterResultAdminUserDatabaseUser) GetName() string {
+	return v.CloudDatabaseClusterUserResult.Name
+}
 
-// GetRole returns CloudDatabaseClusterResultAdminUserDatabaseUser.Role, and is useful for accessing the field via an interface.
-func (v *CloudDatabaseClusterResultAdminUserDatabaseUser) GetRole() string { return v.Role }
+// GetStatus returns CloudDatabaseClusterResultAdminUserDatabaseUser.Status, and is useful for accessing the field via an interface.
+func (v *CloudDatabaseClusterResultAdminUserDatabaseUser) GetStatus() string {
+	return v.CloudDatabaseClusterUserResult.Status
+}
+
+// GetPermissions returns CloudDatabaseClusterResultAdminUserDatabaseUser.Permissions, and is useful for accessing the field via an interface.
+func (v *CloudDatabaseClusterResultAdminUserDatabaseUser) GetPermissions() []CloudDatabaseClusterUserResultPermissionsDatabaseUserPermission {
+	return v.CloudDatabaseClusterUserResult.Permissions
+}
+
+// GetDsn returns CloudDatabaseClusterResultAdminUserDatabaseUser.Dsn, and is useful for accessing the field via an interface.
+func (v *CloudDatabaseClusterResultAdminUserDatabaseUser) GetDsn() string {
+	return v.CloudDatabaseClusterUserResult.Dsn
+}
+
+// GetPassword returns CloudDatabaseClusterResultAdminUserDatabaseUser.Password, and is useful for accessing the field via an interface.
+func (v *CloudDatabaseClusterResultAdminUserDatabaseUser) GetPassword() string {
+	return v.CloudDatabaseClusterUserResult.Password
+}
+
+func (v *CloudDatabaseClusterResultAdminUserDatabaseUser) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*CloudDatabaseClusterResultAdminUserDatabaseUser
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.CloudDatabaseClusterResultAdminUserDatabaseUser = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	err = json.Unmarshal(
+		b, &v.CloudDatabaseClusterUserResult)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+type __premarshalCloudDatabaseClusterResultAdminUserDatabaseUser struct {
+	Name string `json:"name"`
+
+	Status string `json:"status"`
+
+	Permissions []CloudDatabaseClusterUserResultPermissionsDatabaseUserPermission `json:"permissions"`
+
+	Dsn string `json:"dsn"`
+
+	Password string `json:"password"`
+}
+
+func (v *CloudDatabaseClusterResultAdminUserDatabaseUser) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *CloudDatabaseClusterResultAdminUserDatabaseUser) __premarshalJSON() (*__premarshalCloudDatabaseClusterResultAdminUserDatabaseUser, error) {
+	var retval __premarshalCloudDatabaseClusterResultAdminUserDatabaseUser
+
+	retval.Name = v.CloudDatabaseClusterUserResult.Name
+	retval.Status = v.CloudDatabaseClusterUserResult.Status
+	retval.Permissions = v.CloudDatabaseClusterUserResult.Permissions
+	retval.Dsn = v.CloudDatabaseClusterUserResult.Dsn
+	retval.Password = v.CloudDatabaseClusterUserResult.Password
+	return &retval, nil
+}
 
 // CloudDatabaseClusterResultDatabasesDatabase includes the requested fields of the GraphQL type Database.
 type CloudDatabaseClusterResultDatabasesDatabase struct {
-	Name        string  `json:"name"`
-	Description *string `json:"description"`
+	CloudDatabaseClusterDatabaseResult `json:"-"`
 }
 
 // GetName returns CloudDatabaseClusterResultDatabasesDatabase.Name, and is useful for accessing the field via an interface.
-func (v *CloudDatabaseClusterResultDatabasesDatabase) GetName() string { return v.Name }
+func (v *CloudDatabaseClusterResultDatabasesDatabase) GetName() string {
+	return v.CloudDatabaseClusterDatabaseResult.Name
+}
 
 // GetDescription returns CloudDatabaseClusterResultDatabasesDatabase.Description, and is useful for accessing the field via an interface.
-func (v *CloudDatabaseClusterResultDatabasesDatabase) GetDescription() *string { return v.Description }
+func (v *CloudDatabaseClusterResultDatabasesDatabase) GetDescription() *string {
+	return v.CloudDatabaseClusterDatabaseResult.Description
+}
+
+// GetStatus returns CloudDatabaseClusterResultDatabasesDatabase.Status, and is useful for accessing the field via an interface.
+func (v *CloudDatabaseClusterResultDatabasesDatabase) GetStatus() string {
+	return v.CloudDatabaseClusterDatabaseResult.Status
+}
+
+func (v *CloudDatabaseClusterResultDatabasesDatabase) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*CloudDatabaseClusterResultDatabasesDatabase
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.CloudDatabaseClusterResultDatabasesDatabase = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	err = json.Unmarshal(
+		b, &v.CloudDatabaseClusterDatabaseResult)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+type __premarshalCloudDatabaseClusterResultDatabasesDatabase struct {
+	Name string `json:"name"`
+
+	Description *string `json:"description"`
+
+	Status string `json:"status"`
+}
+
+func (v *CloudDatabaseClusterResultDatabasesDatabase) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *CloudDatabaseClusterResultDatabasesDatabase) __premarshalJSON() (*__premarshalCloudDatabaseClusterResultDatabasesDatabase, error) {
+	var retval __premarshalCloudDatabaseClusterResultDatabasesDatabase
+
+	retval.Name = v.CloudDatabaseClusterDatabaseResult.Name
+	retval.Description = v.CloudDatabaseClusterDatabaseResult.Description
+	retval.Status = v.CloudDatabaseClusterDatabaseResult.Status
+	return &retval, nil
+}
 
 // CloudDatabaseClusterResultNamespace includes the requested fields of the GraphQL type Namespace.
 type CloudDatabaseClusterResultNamespace struct {
@@ -330,40 +462,88 @@ func (v *CloudDatabaseClusterResultSpec) GetVersion() string { return v.Version 
 
 // CloudDatabaseClusterResultUsersDatabaseUser includes the requested fields of the GraphQL type DatabaseUser.
 type CloudDatabaseClusterResultUsersDatabaseUser struct {
-	Name        string                                                                         `json:"name"`
-	Role        string                                                                         `json:"role"`
-	Permissions []CloudDatabaseClusterResultUsersDatabaseUserPermissionsDatabaseUserPermission `json:"permissions"`
-	Status      string                                                                         `json:"status"`
+	CloudDatabaseClusterUserResult `json:"-"`
 }
 
 // GetName returns CloudDatabaseClusterResultUsersDatabaseUser.Name, and is useful for accessing the field via an interface.
-func (v *CloudDatabaseClusterResultUsersDatabaseUser) GetName() string { return v.Name }
-
-// GetRole returns CloudDatabaseClusterResultUsersDatabaseUser.Role, and is useful for accessing the field via an interface.
-func (v *CloudDatabaseClusterResultUsersDatabaseUser) GetRole() string { return v.Role }
-
-// GetPermissions returns CloudDatabaseClusterResultUsersDatabaseUser.Permissions, and is useful for accessing the field via an interface.
-func (v *CloudDatabaseClusterResultUsersDatabaseUser) GetPermissions() []CloudDatabaseClusterResultUsersDatabaseUserPermissionsDatabaseUserPermission {
-	return v.Permissions
+func (v *CloudDatabaseClusterResultUsersDatabaseUser) GetName() string {
+	return v.CloudDatabaseClusterUserResult.Name
 }
 
 // GetStatus returns CloudDatabaseClusterResultUsersDatabaseUser.Status, and is useful for accessing the field via an interface.
-func (v *CloudDatabaseClusterResultUsersDatabaseUser) GetStatus() string { return v.Status }
-
-// CloudDatabaseClusterResultUsersDatabaseUserPermissionsDatabaseUserPermission includes the requested fields of the GraphQL type DatabaseUserPermission.
-type CloudDatabaseClusterResultUsersDatabaseUserPermissionsDatabaseUserPermission struct {
-	DatabaseName string             `json:"databaseName"`
-	Permission   DatabasePermission `json:"permission"`
+func (v *CloudDatabaseClusterResultUsersDatabaseUser) GetStatus() string {
+	return v.CloudDatabaseClusterUserResult.Status
 }
 
-// GetDatabaseName returns CloudDatabaseClusterResultUsersDatabaseUserPermissionsDatabaseUserPermission.DatabaseName, and is useful for accessing the field via an interface.
-func (v *CloudDatabaseClusterResultUsersDatabaseUserPermissionsDatabaseUserPermission) GetDatabaseName() string {
-	return v.DatabaseName
+// GetPermissions returns CloudDatabaseClusterResultUsersDatabaseUser.Permissions, and is useful for accessing the field via an interface.
+func (v *CloudDatabaseClusterResultUsersDatabaseUser) GetPermissions() []CloudDatabaseClusterUserResultPermissionsDatabaseUserPermission {
+	return v.CloudDatabaseClusterUserResult.Permissions
 }
 
-// GetPermission returns CloudDatabaseClusterResultUsersDatabaseUserPermissionsDatabaseUserPermission.Permission, and is useful for accessing the field via an interface.
-func (v *CloudDatabaseClusterResultUsersDatabaseUserPermissionsDatabaseUserPermission) GetPermission() DatabasePermission {
-	return v.Permission
+// GetDsn returns CloudDatabaseClusterResultUsersDatabaseUser.Dsn, and is useful for accessing the field via an interface.
+func (v *CloudDatabaseClusterResultUsersDatabaseUser) GetDsn() string {
+	return v.CloudDatabaseClusterUserResult.Dsn
+}
+
+// GetPassword returns CloudDatabaseClusterResultUsersDatabaseUser.Password, and is useful for accessing the field via an interface.
+func (v *CloudDatabaseClusterResultUsersDatabaseUser) GetPassword() string {
+	return v.CloudDatabaseClusterUserResult.Password
+}
+
+func (v *CloudDatabaseClusterResultUsersDatabaseUser) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*CloudDatabaseClusterResultUsersDatabaseUser
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.CloudDatabaseClusterResultUsersDatabaseUser = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	err = json.Unmarshal(
+		b, &v.CloudDatabaseClusterUserResult)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+type __premarshalCloudDatabaseClusterResultUsersDatabaseUser struct {
+	Name string `json:"name"`
+
+	Status string `json:"status"`
+
+	Permissions []CloudDatabaseClusterUserResultPermissionsDatabaseUserPermission `json:"permissions"`
+
+	Dsn string `json:"dsn"`
+
+	Password string `json:"password"`
+}
+
+func (v *CloudDatabaseClusterResultUsersDatabaseUser) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *CloudDatabaseClusterResultUsersDatabaseUser) __premarshalJSON() (*__premarshalCloudDatabaseClusterResultUsersDatabaseUser, error) {
+	var retval __premarshalCloudDatabaseClusterResultUsersDatabaseUser
+
+	retval.Name = v.CloudDatabaseClusterUserResult.Name
+	retval.Status = v.CloudDatabaseClusterUserResult.Status
+	retval.Permissions = v.CloudDatabaseClusterUserResult.Permissions
+	retval.Dsn = v.CloudDatabaseClusterUserResult.Dsn
+	retval.Password = v.CloudDatabaseClusterUserResult.Password
+	return &retval, nil
 }
 
 // CloudDatabaseClusterSpec includes the GraphQL fields of Spec requested by the fragment CloudDatabaseClusterSpec.
@@ -388,6 +568,48 @@ func (v *CloudDatabaseClusterSpecInput) GetType() string { return v.Type }
 
 // GetVersion returns CloudDatabaseClusterSpecInput.Version, and is useful for accessing the field via an interface.
 func (v *CloudDatabaseClusterSpecInput) GetVersion() string { return v.Version }
+
+// CloudDatabaseClusterUserResult includes the GraphQL fields of DatabaseUser requested by the fragment CloudDatabaseClusterUserResult.
+type CloudDatabaseClusterUserResult struct {
+	Name        string                                                            `json:"name"`
+	Status      string                                                            `json:"status"`
+	Permissions []CloudDatabaseClusterUserResultPermissionsDatabaseUserPermission `json:"permissions"`
+	Dsn         string                                                            `json:"dsn"`
+	Password    string                                                            `json:"password"`
+}
+
+// GetName returns CloudDatabaseClusterUserResult.Name, and is useful for accessing the field via an interface.
+func (v *CloudDatabaseClusterUserResult) GetName() string { return v.Name }
+
+// GetStatus returns CloudDatabaseClusterUserResult.Status, and is useful for accessing the field via an interface.
+func (v *CloudDatabaseClusterUserResult) GetStatus() string { return v.Status }
+
+// GetPermissions returns CloudDatabaseClusterUserResult.Permissions, and is useful for accessing the field via an interface.
+func (v *CloudDatabaseClusterUserResult) GetPermissions() []CloudDatabaseClusterUserResultPermissionsDatabaseUserPermission {
+	return v.Permissions
+}
+
+// GetDsn returns CloudDatabaseClusterUserResult.Dsn, and is useful for accessing the field via an interface.
+func (v *CloudDatabaseClusterUserResult) GetDsn() string { return v.Dsn }
+
+// GetPassword returns CloudDatabaseClusterUserResult.Password, and is useful for accessing the field via an interface.
+func (v *CloudDatabaseClusterUserResult) GetPassword() string { return v.Password }
+
+// CloudDatabaseClusterUserResultPermissionsDatabaseUserPermission includes the requested fields of the GraphQL type DatabaseUserPermission.
+type CloudDatabaseClusterUserResultPermissionsDatabaseUserPermission struct {
+	DatabaseName string             `json:"databaseName"`
+	Permission   DatabasePermission `json:"permission"`
+}
+
+// GetDatabaseName returns CloudDatabaseClusterUserResultPermissionsDatabaseUserPermission.DatabaseName, and is useful for accessing the field via an interface.
+func (v *CloudDatabaseClusterUserResultPermissionsDatabaseUserPermission) GetDatabaseName() string {
+	return v.DatabaseName
+}
+
+// GetPermission returns CloudDatabaseClusterUserResultPermissionsDatabaseUserPermission.Permission, and is useful for accessing the field via an interface.
+func (v *CloudDatabaseClusterUserResultPermissionsDatabaseUserPermission) GetPermission() DatabasePermission {
+	return v.Permission
+}
 
 type ContainerCreateInput struct {
 	Name      string             `json:"name"`
@@ -1689,6 +1911,16 @@ func (v *__getCloudDatabaseClusterUserCredentialsInput) GetCloudDatabase() Cloud
 // GetUserName returns __getCloudDatabaseClusterUserCredentialsInput.UserName, and is useful for accessing the field via an interface.
 func (v *__getCloudDatabaseClusterUserCredentialsInput) GetUserName() string { return v.UserName }
 
+// __getCloudDatabaseClusterUsersInput is used internally by genqlient
+type __getCloudDatabaseClusterUsersInput struct {
+	CloudDatabaseCluster CloudDatabaseClusterResourceInput `json:"cloudDatabaseCluster"`
+}
+
+// GetCloudDatabaseCluster returns __getCloudDatabaseClusterUsersInput.CloudDatabaseCluster, and is useful for accessing the field via an interface.
+func (v *__getCloudDatabaseClusterUsersInput) GetCloudDatabaseCluster() CloudDatabaseClusterResourceInput {
+	return v.CloudDatabaseCluster
+}
+
 // __namespaceCreateInput is used internally by genqlient
 type __namespaceCreateInput struct {
 	Input NamespaceCreateInput `json:"input"`
@@ -2461,6 +2693,112 @@ func (v *getCloudDatabaseClusterUserCredentialsResponse) GetCloudDatabaseCluster
 	return v.CloudDatabaseClusterUserCredentials
 }
 
+// getCloudDatabaseClusterUsersCloudDatabaseCluster includes the requested fields of the GraphQL type CloudDatabaseCluster.
+type getCloudDatabaseClusterUsersCloudDatabaseCluster struct {
+	Users []getCloudDatabaseClusterUsersCloudDatabaseClusterUsersDatabaseUser `json:"users"`
+}
+
+// GetUsers returns getCloudDatabaseClusterUsersCloudDatabaseCluster.Users, and is useful for accessing the field via an interface.
+func (v *getCloudDatabaseClusterUsersCloudDatabaseCluster) GetUsers() []getCloudDatabaseClusterUsersCloudDatabaseClusterUsersDatabaseUser {
+	return v.Users
+}
+
+// getCloudDatabaseClusterUsersCloudDatabaseClusterUsersDatabaseUser includes the requested fields of the GraphQL type DatabaseUser.
+type getCloudDatabaseClusterUsersCloudDatabaseClusterUsersDatabaseUser struct {
+	CloudDatabaseClusterUserResult `json:"-"`
+}
+
+// GetName returns getCloudDatabaseClusterUsersCloudDatabaseClusterUsersDatabaseUser.Name, and is useful for accessing the field via an interface.
+func (v *getCloudDatabaseClusterUsersCloudDatabaseClusterUsersDatabaseUser) GetName() string {
+	return v.CloudDatabaseClusterUserResult.Name
+}
+
+// GetStatus returns getCloudDatabaseClusterUsersCloudDatabaseClusterUsersDatabaseUser.Status, and is useful for accessing the field via an interface.
+func (v *getCloudDatabaseClusterUsersCloudDatabaseClusterUsersDatabaseUser) GetStatus() string {
+	return v.CloudDatabaseClusterUserResult.Status
+}
+
+// GetPermissions returns getCloudDatabaseClusterUsersCloudDatabaseClusterUsersDatabaseUser.Permissions, and is useful for accessing the field via an interface.
+func (v *getCloudDatabaseClusterUsersCloudDatabaseClusterUsersDatabaseUser) GetPermissions() []CloudDatabaseClusterUserResultPermissionsDatabaseUserPermission {
+	return v.CloudDatabaseClusterUserResult.Permissions
+}
+
+// GetDsn returns getCloudDatabaseClusterUsersCloudDatabaseClusterUsersDatabaseUser.Dsn, and is useful for accessing the field via an interface.
+func (v *getCloudDatabaseClusterUsersCloudDatabaseClusterUsersDatabaseUser) GetDsn() string {
+	return v.CloudDatabaseClusterUserResult.Dsn
+}
+
+// GetPassword returns getCloudDatabaseClusterUsersCloudDatabaseClusterUsersDatabaseUser.Password, and is useful for accessing the field via an interface.
+func (v *getCloudDatabaseClusterUsersCloudDatabaseClusterUsersDatabaseUser) GetPassword() string {
+	return v.CloudDatabaseClusterUserResult.Password
+}
+
+func (v *getCloudDatabaseClusterUsersCloudDatabaseClusterUsersDatabaseUser) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*getCloudDatabaseClusterUsersCloudDatabaseClusterUsersDatabaseUser
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.getCloudDatabaseClusterUsersCloudDatabaseClusterUsersDatabaseUser = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	err = json.Unmarshal(
+		b, &v.CloudDatabaseClusterUserResult)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+type __premarshalgetCloudDatabaseClusterUsersCloudDatabaseClusterUsersDatabaseUser struct {
+	Name string `json:"name"`
+
+	Status string `json:"status"`
+
+	Permissions []CloudDatabaseClusterUserResultPermissionsDatabaseUserPermission `json:"permissions"`
+
+	Dsn string `json:"dsn"`
+
+	Password string `json:"password"`
+}
+
+func (v *getCloudDatabaseClusterUsersCloudDatabaseClusterUsersDatabaseUser) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *getCloudDatabaseClusterUsersCloudDatabaseClusterUsersDatabaseUser) __premarshalJSON() (*__premarshalgetCloudDatabaseClusterUsersCloudDatabaseClusterUsersDatabaseUser, error) {
+	var retval __premarshalgetCloudDatabaseClusterUsersCloudDatabaseClusterUsersDatabaseUser
+
+	retval.Name = v.CloudDatabaseClusterUserResult.Name
+	retval.Status = v.CloudDatabaseClusterUserResult.Status
+	retval.Permissions = v.CloudDatabaseClusterUserResult.Permissions
+	retval.Dsn = v.CloudDatabaseClusterUserResult.Dsn
+	retval.Password = v.CloudDatabaseClusterUserResult.Password
+	return &retval, nil
+}
+
+// getCloudDatabaseClusterUsersResponse is returned by getCloudDatabaseClusterUsers on success.
+type getCloudDatabaseClusterUsersResponse struct {
+	CloudDatabaseCluster getCloudDatabaseClusterUsersCloudDatabaseCluster `json:"cloudDatabaseCluster"`
+}
+
+// GetCloudDatabaseCluster returns getCloudDatabaseClusterUsersResponse.CloudDatabaseCluster, and is useful for accessing the field via an interface.
+func (v *getCloudDatabaseClusterUsersResponse) GetCloudDatabaseCluster() getCloudDatabaseClusterUsersCloudDatabaseCluster {
+	return v.CloudDatabaseCluster
+}
+
 // getCloudDatabaseClustersResponse is returned by getCloudDatabaseClusters on success.
 type getCloudDatabaseClustersResponse struct {
 	CloudDatabaseClusters []CloudDatabaseClusterResult `json:"cloudDatabaseClusters"`
@@ -2873,8 +3211,7 @@ mutation cloudDatabaseClusterCreate ($cloudDatabaseClusterInput: CloudDatabaseCl
 fragment CloudDatabaseClusterResult on CloudDatabaseCluster {
 	id
 	databases {
-		name
-		description
+		... CloudDatabaseClusterDatabaseResult
 	}
 	name
 	namespace {
@@ -2897,20 +3234,28 @@ fragment CloudDatabaseClusterResult on CloudDatabaseCluster {
 		version
 	}
 	users {
-		name
-		role
-		permissions {
-			databaseName
-			permission
-		}
-		status
+		... CloudDatabaseClusterUserResult
 	}
 	adminUser {
-		name
-		role
+		... CloudDatabaseClusterUserResult
 	}
 	state
 	locked
+}
+fragment CloudDatabaseClusterDatabaseResult on Database {
+	name
+	description
+	status
+}
+fragment CloudDatabaseClusterUserResult on DatabaseUser {
+	name
+	status
+	permissions {
+		databaseName
+		permission
+	}
+	dsn
+	password
 }
 `
 
@@ -3052,8 +3397,7 @@ mutation cloudDatabaseClusterModify ($cloudDatabaseClusterModifyInput: CloudData
 fragment CloudDatabaseClusterResult on CloudDatabaseCluster {
 	id
 	databases {
-		name
-		description
+		... CloudDatabaseClusterDatabaseResult
 	}
 	name
 	namespace {
@@ -3076,20 +3420,28 @@ fragment CloudDatabaseClusterResult on CloudDatabaseCluster {
 		version
 	}
 	users {
-		name
-		role
-		permissions {
-			databaseName
-			permission
-		}
-		status
+		... CloudDatabaseClusterUserResult
 	}
 	adminUser {
-		name
-		role
+		... CloudDatabaseClusterUserResult
 	}
 	state
 	locked
+}
+fragment CloudDatabaseClusterDatabaseResult on Database {
+	name
+	description
+	status
+}
+fragment CloudDatabaseClusterUserResult on DatabaseUser {
+	name
+	status
+	permissions {
+		databaseName
+		permission
+	}
+	dsn
+	password
 }
 `
 
@@ -3971,8 +4323,7 @@ query getCloudDatabaseCluster ($cloudDatabaseClusterInput: CloudDatabaseClusterR
 fragment CloudDatabaseClusterResult on CloudDatabaseCluster {
 	id
 	databases {
-		name
-		description
+		... CloudDatabaseClusterDatabaseResult
 	}
 	name
 	namespace {
@@ -3995,20 +4346,28 @@ fragment CloudDatabaseClusterResult on CloudDatabaseCluster {
 		version
 	}
 	users {
-		name
-		role
-		permissions {
-			databaseName
-			permission
-		}
-		status
+		... CloudDatabaseClusterUserResult
 	}
 	adminUser {
-		name
-		role
+		... CloudDatabaseClusterUserResult
 	}
 	state
 	locked
+}
+fragment CloudDatabaseClusterDatabaseResult on Database {
+	name
+	description
+	status
+}
+fragment CloudDatabaseClusterUserResult on DatabaseUser {
+	name
+	status
+	permissions {
+		databaseName
+		permission
+	}
+	dsn
+	password
 }
 `
 
@@ -4114,6 +4473,52 @@ func getCloudDatabaseClusterUserCredentials(
 	return data_, err_
 }
 
+// The query executed by getCloudDatabaseClusterUsers.
+const getCloudDatabaseClusterUsers_Operation = `
+query getCloudDatabaseClusterUsers ($cloudDatabaseCluster: CloudDatabaseClusterResourceInput!) {
+	cloudDatabaseCluster(cloudDatabase: $cloudDatabaseCluster) {
+		users {
+			... CloudDatabaseClusterUserResult
+		}
+	}
+}
+fragment CloudDatabaseClusterUserResult on DatabaseUser {
+	name
+	status
+	permissions {
+		databaseName
+		permission
+	}
+	dsn
+	password
+}
+`
+
+func getCloudDatabaseClusterUsers(
+	ctx_ context.Context,
+	client_ graphql.Client,
+	cloudDatabaseCluster CloudDatabaseClusterResourceInput,
+) (data_ *getCloudDatabaseClusterUsersResponse, err_ error) {
+	req_ := &graphql.Request{
+		OpName: "getCloudDatabaseClusterUsers",
+		Query:  getCloudDatabaseClusterUsers_Operation,
+		Variables: &__getCloudDatabaseClusterUsersInput{
+			CloudDatabaseCluster: cloudDatabaseCluster,
+		},
+	}
+
+	data_ = &getCloudDatabaseClusterUsersResponse{}
+	resp_ := &graphql.Response{Data: data_}
+
+	err_ = client_.MakeRequest(
+		ctx_,
+		req_,
+		resp_,
+	)
+
+	return data_, err_
+}
+
 // The query executed by getCloudDatabaseClusters.
 const getCloudDatabaseClusters_Operation = `
 query getCloudDatabaseClusters {
@@ -4124,8 +4529,7 @@ query getCloudDatabaseClusters {
 fragment CloudDatabaseClusterResult on CloudDatabaseCluster {
 	id
 	databases {
-		name
-		description
+		... CloudDatabaseClusterDatabaseResult
 	}
 	name
 	namespace {
@@ -4148,20 +4552,28 @@ fragment CloudDatabaseClusterResult on CloudDatabaseCluster {
 		version
 	}
 	users {
-		name
-		role
-		permissions {
-			databaseName
-			permission
-		}
-		status
+		... CloudDatabaseClusterUserResult
 	}
 	adminUser {
-		name
-		role
+		... CloudDatabaseClusterUserResult
 	}
 	state
 	locked
+}
+fragment CloudDatabaseClusterDatabaseResult on Database {
+	name
+	description
+	status
+}
+fragment CloudDatabaseClusterUserResult on DatabaseUser {
+	name
+	status
+	permissions {
+		databaseName
+		permission
+	}
+	dsn
+	password
 }
 `
 
