@@ -4,6 +4,7 @@ fragment CloudDatabaseClusterResult on CloudDatabaseCluster {
     ...CloudDatabaseClusterDatabaseResult
   }
   name
+  hostname
   namespace {
     name
   }

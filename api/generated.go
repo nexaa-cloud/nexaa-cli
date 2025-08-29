@@ -191,6 +191,7 @@ type CloudDatabaseClusterResult struct {
 	Id        string                                           `json:"id"`
 	Databases []CloudDatabaseClusterResultDatabasesDatabase    `json:"databases"`
 	Name      string                                           `json:"name"`
+	Hostname  string                                           `json:"hostname"`
 	Namespace CloudDatabaseClusterResultNamespace              `json:"namespace"`
 	Plan      CloudDatabaseClusterResultPlan                   `json:"plan"`
 	Spec      CloudDatabaseClusterResultSpec                   `json:"spec"`
@@ -210,6 +211,9 @@ func (v *CloudDatabaseClusterResult) GetDatabases() []CloudDatabaseClusterResult
 
 // GetName returns CloudDatabaseClusterResult.Name, and is useful for accessing the field via an interface.
 func (v *CloudDatabaseClusterResult) GetName() string { return v.Name }
+
+// GetHostname returns CloudDatabaseClusterResult.Hostname, and is useful for accessing the field via an interface.
+func (v *CloudDatabaseClusterResult) GetHostname() string { return v.Hostname }
 
 // GetNamespace returns CloudDatabaseClusterResult.Namespace, and is useful for accessing the field via an interface.
 func (v *CloudDatabaseClusterResult) GetNamespace() CloudDatabaseClusterResultNamespace {
@@ -3214,6 +3218,7 @@ fragment CloudDatabaseClusterResult on CloudDatabaseCluster {
 		... CloudDatabaseClusterDatabaseResult
 	}
 	name
+	hostname
 	namespace {
 		name
 	}
@@ -3400,6 +3405,7 @@ fragment CloudDatabaseClusterResult on CloudDatabaseCluster {
 		... CloudDatabaseClusterDatabaseResult
 	}
 	name
+	hostname
 	namespace {
 		name
 	}
@@ -4326,6 +4332,7 @@ fragment CloudDatabaseClusterResult on CloudDatabaseCluster {
 		... CloudDatabaseClusterDatabaseResult
 	}
 	name
+	hostname
 	namespace {
 		name
 	}
@@ -4532,6 +4539,7 @@ fragment CloudDatabaseClusterResult on CloudDatabaseCluster {
 		... CloudDatabaseClusterDatabaseResult
 	}
 	name
+	hostname
 	namespace {
 		name
 	}
