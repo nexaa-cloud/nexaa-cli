@@ -1566,8 +1566,13 @@ func (v *NamespaceCreateInput) GetDescription() *string { return v.Description }
 
 // NamespaceResult includes the GraphQL fields of Namespace requested by the fragment NamespaceResult.
 type NamespaceResult struct {
-	Name        string `json:"name"`
-	Description string `json:"description"`
+	Name                  string                                                     `json:"name"`
+	Description           string                                                     `json:"description"`
+	State                 string                                                     `json:"state"`
+	ContainerJobs         []NamespaceResultContainerJobsContainerJob                 `json:"containerJobs"`
+	Containers            []NamespaceResultContainersContainer                       `json:"containers"`
+	Volumes               []NamespaceResultVolumesVolume                             `json:"volumes"`
+	CloudDatabaseClusters []NamespaceResultCloudDatabaseClustersCloudDatabaseCluster `json:"cloudDatabaseClusters"`
 }
 
 // GetName returns NamespaceResult.Name, and is useful for accessing the field via an interface.
@@ -1575,6 +1580,57 @@ func (v *NamespaceResult) GetName() string { return v.Name }
 
 // GetDescription returns NamespaceResult.Description, and is useful for accessing the field via an interface.
 func (v *NamespaceResult) GetDescription() string { return v.Description }
+
+// GetState returns NamespaceResult.State, and is useful for accessing the field via an interface.
+func (v *NamespaceResult) GetState() string { return v.State }
+
+// GetContainerJobs returns NamespaceResult.ContainerJobs, and is useful for accessing the field via an interface.
+func (v *NamespaceResult) GetContainerJobs() []NamespaceResultContainerJobsContainerJob {
+	return v.ContainerJobs
+}
+
+// GetContainers returns NamespaceResult.Containers, and is useful for accessing the field via an interface.
+func (v *NamespaceResult) GetContainers() []NamespaceResultContainersContainer { return v.Containers }
+
+// GetVolumes returns NamespaceResult.Volumes, and is useful for accessing the field via an interface.
+func (v *NamespaceResult) GetVolumes() []NamespaceResultVolumesVolume { return v.Volumes }
+
+// GetCloudDatabaseClusters returns NamespaceResult.CloudDatabaseClusters, and is useful for accessing the field via an interface.
+func (v *NamespaceResult) GetCloudDatabaseClusters() []NamespaceResultCloudDatabaseClustersCloudDatabaseCluster {
+	return v.CloudDatabaseClusters
+}
+
+// NamespaceResultCloudDatabaseClustersCloudDatabaseCluster includes the requested fields of the GraphQL type CloudDatabaseCluster.
+type NamespaceResultCloudDatabaseClustersCloudDatabaseCluster struct {
+	Name string `json:"name"`
+}
+
+// GetName returns NamespaceResultCloudDatabaseClustersCloudDatabaseCluster.Name, and is useful for accessing the field via an interface.
+func (v *NamespaceResultCloudDatabaseClustersCloudDatabaseCluster) GetName() string { return v.Name }
+
+// NamespaceResultContainerJobsContainerJob includes the requested fields of the GraphQL type ContainerJob.
+type NamespaceResultContainerJobsContainerJob struct {
+	Name string `json:"name"`
+}
+
+// GetName returns NamespaceResultContainerJobsContainerJob.Name, and is useful for accessing the field via an interface.
+func (v *NamespaceResultContainerJobsContainerJob) GetName() string { return v.Name }
+
+// NamespaceResultContainersContainer includes the requested fields of the GraphQL type Container.
+type NamespaceResultContainersContainer struct {
+	Name string `json:"name"`
+}
+
+// GetName returns NamespaceResultContainersContainer.Name, and is useful for accessing the field via an interface.
+func (v *NamespaceResultContainersContainer) GetName() string { return v.Name }
+
+// NamespaceResultVolumesVolume includes the requested fields of the GraphQL type Volume.
+type NamespaceResultVolumesVolume struct {
+	Name string `json:"name"`
+}
+
+// GetName returns NamespaceResultVolumesVolume.Name, and is useful for accessing the field via an interface.
+func (v *NamespaceResultVolumesVolume) GetName() string { return v.Name }
 
 type RegistryCreateInput struct {
 	Namespace string `json:"namespace"`
@@ -1693,11 +1749,13 @@ func (v *VolumeModifyInput) GetSize() int { return v.Size }
 
 // VolumeResult includes the GraphQL fields of Volume requested by the fragment VolumeResult.
 type VolumeResult struct {
-	Name   string  `json:"name"`
-	Size   float64 `json:"size"`
-	Usage  float64 `json:"usage"`
-	State  string  `json:"state"`
-	Locked bool    `json:"locked"`
+	Name          string                                  `json:"name"`
+	Size          float64                                 `json:"size"`
+	Usage         float64                                 `json:"usage"`
+	State         string                                  `json:"state"`
+	Containers    []VolumeResultContainersContainer       `json:"containers"`
+	ContainerJobs []VolumeResultContainerJobsContainerJob `json:"containerJobs"`
+	Locked        bool                                    `json:"locked"`
 }
 
 // GetName returns VolumeResult.Name, and is useful for accessing the field via an interface.
@@ -1712,8 +1770,32 @@ func (v *VolumeResult) GetUsage() float64 { return v.Usage }
 // GetState returns VolumeResult.State, and is useful for accessing the field via an interface.
 func (v *VolumeResult) GetState() string { return v.State }
 
+// GetContainers returns VolumeResult.Containers, and is useful for accessing the field via an interface.
+func (v *VolumeResult) GetContainers() []VolumeResultContainersContainer { return v.Containers }
+
+// GetContainerJobs returns VolumeResult.ContainerJobs, and is useful for accessing the field via an interface.
+func (v *VolumeResult) GetContainerJobs() []VolumeResultContainerJobsContainerJob {
+	return v.ContainerJobs
+}
+
 // GetLocked returns VolumeResult.Locked, and is useful for accessing the field via an interface.
 func (v *VolumeResult) GetLocked() bool { return v.Locked }
+
+// VolumeResultContainerJobsContainerJob includes the requested fields of the GraphQL type ContainerJob.
+type VolumeResultContainerJobsContainerJob struct {
+	Name string `json:"name"`
+}
+
+// GetName returns VolumeResultContainerJobsContainerJob.Name, and is useful for accessing the field via an interface.
+func (v *VolumeResultContainerJobsContainerJob) GetName() string { return v.Name }
+
+// VolumeResultContainersContainer includes the requested fields of the GraphQL type Container.
+type VolumeResultContainersContainer struct {
+	Name string `json:"name"`
+}
+
+// GetName returns VolumeResultContainersContainer.Name, and is useful for accessing the field via an interface.
+func (v *VolumeResultContainersContainer) GetName() string { return v.Name }
 
 // __cloudDatabaseClusterCreateInput is used internally by genqlient
 type __cloudDatabaseClusterCreateInput struct {
@@ -2840,6 +2922,29 @@ func (v *namespaceListByNameNamespace) GetName() string { return v.NamespaceResu
 // GetDescription returns namespaceListByNameNamespace.Description, and is useful for accessing the field via an interface.
 func (v *namespaceListByNameNamespace) GetDescription() string { return v.NamespaceResult.Description }
 
+// GetState returns namespaceListByNameNamespace.State, and is useful for accessing the field via an interface.
+func (v *namespaceListByNameNamespace) GetState() string { return v.NamespaceResult.State }
+
+// GetContainerJobs returns namespaceListByNameNamespace.ContainerJobs, and is useful for accessing the field via an interface.
+func (v *namespaceListByNameNamespace) GetContainerJobs() []NamespaceResultContainerJobsContainerJob {
+	return v.NamespaceResult.ContainerJobs
+}
+
+// GetContainers returns namespaceListByNameNamespace.Containers, and is useful for accessing the field via an interface.
+func (v *namespaceListByNameNamespace) GetContainers() []NamespaceResultContainersContainer {
+	return v.NamespaceResult.Containers
+}
+
+// GetVolumes returns namespaceListByNameNamespace.Volumes, and is useful for accessing the field via an interface.
+func (v *namespaceListByNameNamespace) GetVolumes() []NamespaceResultVolumesVolume {
+	return v.NamespaceResult.Volumes
+}
+
+// GetCloudDatabaseClusters returns namespaceListByNameNamespace.CloudDatabaseClusters, and is useful for accessing the field via an interface.
+func (v *namespaceListByNameNamespace) GetCloudDatabaseClusters() []NamespaceResultCloudDatabaseClustersCloudDatabaseCluster {
+	return v.NamespaceResult.CloudDatabaseClusters
+}
+
 func (v *namespaceListByNameNamespace) UnmarshalJSON(b []byte) error {
 
 	if string(b) == "null" {
@@ -2869,6 +2974,16 @@ type __premarshalnamespaceListByNameNamespace struct {
 	Name string `json:"name"`
 
 	Description string `json:"description"`
+
+	State string `json:"state"`
+
+	ContainerJobs []NamespaceResultContainerJobsContainerJob `json:"containerJobs"`
+
+	Containers []NamespaceResultContainersContainer `json:"containers"`
+
+	Volumes []NamespaceResultVolumesVolume `json:"volumes"`
+
+	CloudDatabaseClusters []NamespaceResultCloudDatabaseClustersCloudDatabaseCluster `json:"cloudDatabaseClusters"`
 }
 
 func (v *namespaceListByNameNamespace) MarshalJSON() ([]byte, error) {
@@ -2884,6 +2999,11 @@ func (v *namespaceListByNameNamespace) __premarshalJSON() (*__premarshalnamespac
 
 	retval.Name = v.NamespaceResult.Name
 	retval.Description = v.NamespaceResult.Description
+	retval.State = v.NamespaceResult.State
+	retval.ContainerJobs = v.NamespaceResult.ContainerJobs
+	retval.Containers = v.NamespaceResult.Containers
+	retval.Volumes = v.NamespaceResult.Volumes
+	retval.CloudDatabaseClusters = v.NamespaceResult.CloudDatabaseClusters
 	return &retval, nil
 }
 
@@ -2906,6 +3026,29 @@ func (v *namespaceListNamespacesNamespace) GetName() string { return v.Namespace
 // GetDescription returns namespaceListNamespacesNamespace.Description, and is useful for accessing the field via an interface.
 func (v *namespaceListNamespacesNamespace) GetDescription() string {
 	return v.NamespaceResult.Description
+}
+
+// GetState returns namespaceListNamespacesNamespace.State, and is useful for accessing the field via an interface.
+func (v *namespaceListNamespacesNamespace) GetState() string { return v.NamespaceResult.State }
+
+// GetContainerJobs returns namespaceListNamespacesNamespace.ContainerJobs, and is useful for accessing the field via an interface.
+func (v *namespaceListNamespacesNamespace) GetContainerJobs() []NamespaceResultContainerJobsContainerJob {
+	return v.NamespaceResult.ContainerJobs
+}
+
+// GetContainers returns namespaceListNamespacesNamespace.Containers, and is useful for accessing the field via an interface.
+func (v *namespaceListNamespacesNamespace) GetContainers() []NamespaceResultContainersContainer {
+	return v.NamespaceResult.Containers
+}
+
+// GetVolumes returns namespaceListNamespacesNamespace.Volumes, and is useful for accessing the field via an interface.
+func (v *namespaceListNamespacesNamespace) GetVolumes() []NamespaceResultVolumesVolume {
+	return v.NamespaceResult.Volumes
+}
+
+// GetCloudDatabaseClusters returns namespaceListNamespacesNamespace.CloudDatabaseClusters, and is useful for accessing the field via an interface.
+func (v *namespaceListNamespacesNamespace) GetCloudDatabaseClusters() []NamespaceResultCloudDatabaseClustersCloudDatabaseCluster {
+	return v.NamespaceResult.CloudDatabaseClusters
 }
 
 func (v *namespaceListNamespacesNamespace) UnmarshalJSON(b []byte) error {
@@ -2937,6 +3080,16 @@ type __premarshalnamespaceListNamespacesNamespace struct {
 	Name string `json:"name"`
 
 	Description string `json:"description"`
+
+	State string `json:"state"`
+
+	ContainerJobs []NamespaceResultContainerJobsContainerJob `json:"containerJobs"`
+
+	Containers []NamespaceResultContainersContainer `json:"containers"`
+
+	Volumes []NamespaceResultVolumesVolume `json:"volumes"`
+
+	CloudDatabaseClusters []NamespaceResultCloudDatabaseClustersCloudDatabaseCluster `json:"cloudDatabaseClusters"`
 }
 
 func (v *namespaceListNamespacesNamespace) MarshalJSON() ([]byte, error) {
@@ -2952,6 +3105,11 @@ func (v *namespaceListNamespacesNamespace) __premarshalJSON() (*__premarshalname
 
 	retval.Name = v.NamespaceResult.Name
 	retval.Description = v.NamespaceResult.Description
+	retval.State = v.NamespaceResult.State
+	retval.ContainerJobs = v.NamespaceResult.ContainerJobs
+	retval.Containers = v.NamespaceResult.Containers
+	retval.Volumes = v.NamespaceResult.Volumes
+	retval.CloudDatabaseClusters = v.NamespaceResult.CloudDatabaseClusters
 	return &retval, nil
 }
 
@@ -3138,6 +3296,16 @@ func (v *volumeListNamespaceVolumesVolume) GetUsage() float64 { return v.VolumeR
 // GetState returns volumeListNamespaceVolumesVolume.State, and is useful for accessing the field via an interface.
 func (v *volumeListNamespaceVolumesVolume) GetState() string { return v.VolumeResult.State }
 
+// GetContainers returns volumeListNamespaceVolumesVolume.Containers, and is useful for accessing the field via an interface.
+func (v *volumeListNamespaceVolumesVolume) GetContainers() []VolumeResultContainersContainer {
+	return v.VolumeResult.Containers
+}
+
+// GetContainerJobs returns volumeListNamespaceVolumesVolume.ContainerJobs, and is useful for accessing the field via an interface.
+func (v *volumeListNamespaceVolumesVolume) GetContainerJobs() []VolumeResultContainerJobsContainerJob {
+	return v.VolumeResult.ContainerJobs
+}
+
 // GetLocked returns volumeListNamespaceVolumesVolume.Locked, and is useful for accessing the field via an interface.
 func (v *volumeListNamespaceVolumesVolume) GetLocked() bool { return v.VolumeResult.Locked }
 
@@ -3175,6 +3343,10 @@ type __premarshalvolumeListNamespaceVolumesVolume struct {
 
 	State string `json:"state"`
 
+	Containers []VolumeResultContainersContainer `json:"containers"`
+
+	ContainerJobs []VolumeResultContainerJobsContainerJob `json:"containerJobs"`
+
 	Locked bool `json:"locked"`
 }
 
@@ -3193,6 +3365,8 @@ func (v *volumeListNamespaceVolumesVolume) __premarshalJSON() (*__premarshalvolu
 	retval.Size = v.VolumeResult.Size
 	retval.Usage = v.VolumeResult.Usage
 	retval.State = v.VolumeResult.State
+	retval.Containers = v.VolumeResult.Containers
+	retval.ContainerJobs = v.VolumeResult.ContainerJobs
 	retval.Locked = v.VolumeResult.Locked
 	return &retval, nil
 }
@@ -4616,6 +4790,19 @@ mutation namespaceCreate ($input: NamespaceCreateInput!) {
 fragment NamespaceResult on Namespace {
 	name
 	description
+	state
+	containerJobs {
+		name
+	}
+	containers {
+		name
+	}
+	volumes {
+		name
+	}
+	cloudDatabaseClusters {
+		name
+	}
 }
 `
 
@@ -4686,6 +4873,19 @@ query namespaceList {
 fragment NamespaceResult on Namespace {
 	name
 	description
+	state
+	containerJobs {
+		name
+	}
+	containers {
+		name
+	}
+	volumes {
+		name
+	}
+	cloudDatabaseClusters {
+		name
+	}
 }
 `
 
@@ -4720,6 +4920,19 @@ query namespaceListByName ($name: String!) {
 fragment NamespaceResult on Namespace {
 	name
 	description
+	state
+	containerJobs {
+		name
+	}
+	containers {
+		name
+	}
+	volumes {
+		name
+	}
+	cloudDatabaseClusters {
+		name
+	}
 }
 `
 
@@ -4878,6 +5091,12 @@ fragment VolumeResult on Volume {
 	size
 	usage
 	state
+	containers {
+		name
+	}
+	containerJobs {
+		name
+	}
 	locked
 }
 `
@@ -4953,6 +5172,12 @@ fragment VolumeResult on Volume {
 	size
 	usage
 	state
+	containers {
+		name
+	}
+	containerJobs {
+		name
+	}
 	locked
 }
 `
@@ -4996,6 +5221,12 @@ fragment VolumeResult on Volume {
 	size
 	usage
 	state
+	containers {
+		name
+	}
+	containerJobs {
+		name
+	}
 	locked
 }
 `

@@ -33,13 +33,21 @@ func (client *Client) ListVolumeByName(namespace string, volumeName string) (*Vo
 		return nil, err
 	}
 
+	var volume *VolumeResult
 	for _, vol := range volumes {
-		if vol.Name == volumeName {
-			return &vol, nil
+		if vol.Name != volumeName {
+			continue
 		}
+
+		v := vol
+		volume = &v
+		break
 	}
 
-	return nil, fmt.Errorf("volume %q not found in namespace %q", volumeName, namespace)
+	if &volume == nil {
+		return nil, fmt.Errorf("volume %q not found in namespace %q", volumeName, namespace)
+	}
+	return volume, nil
 }
 
 func (client *Client) VolumeCreate(input VolumeCreateInput) (VolumeResult, error) {

@@ -1,6 +1,19 @@
 fragment NamespaceResult on Namespace {
     name
     description
+    state
+    containerJobs {
+        name
+    }
+    containers {
+        name
+    }
+    volumes {
+        name
+    }
+    cloudDatabaseClusters {
+        name
+    }
 }
 
 query namespaceList {
