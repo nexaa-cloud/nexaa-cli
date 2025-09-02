@@ -6,13 +6,6 @@ import (
 )
 
 func toContainerResult(container ContainerResult) (ContainerResult, error) {
-	var registryName string
-	if container.PrivateRegistry == nil {
-		registryName = "public"
-	} else {
-		registryName = container.PrivateRegistry.Name
-	}
-
 	// Environment Variables
 	var envVars []EnvironmentVariableResult
 	if container.EnvironmentVariables != nil {
@@ -89,11 +82,12 @@ func toContainerResult(container ContainerResult) (ContainerResult, error) {
 			Triggers: triggers,
 		}
 	}
+	registry := container.PrivateRegistry
 
 	return ContainerResult{
 		Name:                 container.Name,
 		Image:                container.Image,
-		PrivateRegistry:      &ContainerResultPrivateRegistry{Name: registryName},
+		PrivateRegistry:      registry,
 		Resources:            container.Resources,
 		EnvironmentVariables: envVars,
 		Ports:                container.Ports,

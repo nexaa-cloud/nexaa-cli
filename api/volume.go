@@ -2,7 +2,6 @@ package api
 
 import (
 	"context"
-	"fmt"
 )
 
 func (client *Client) ListVolumes(namespace string) ([]VolumeResult, error) {
@@ -44,9 +43,6 @@ func (client *Client) ListVolumeByName(namespace string, volumeName string) (*Vo
 		break
 	}
 
-	if &volume == nil {
-		return nil, fmt.Errorf("volume %q not found in namespace %q", volumeName, namespace)
-	}
 	return volume, nil
 }
 
