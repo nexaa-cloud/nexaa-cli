@@ -15,11 +15,13 @@ func (client *Client) ListVolumes(namespace string) ([]VolumeResult, error) {
 	result := make([]VolumeResult, len(namespaceResult.Volumes))
 	for i, vol := range namespaceResult.Volumes {
 		result[i] = VolumeResult{
-			Name:   vol.Name,
-			Size:   vol.Size,
-			Usage:  vol.Usage,
-			State:  vol.State,
-			Locked: vol.Locked,
+			Name:          vol.Name,
+			Size:          vol.Size,
+			Usage:         vol.Usage,
+			State:         vol.State,
+			Locked:        vol.Locked,
+			Containers:    vol.Containers,
+			ContainerJobs: vol.ContainerJobs,
 		}
 	}
 
