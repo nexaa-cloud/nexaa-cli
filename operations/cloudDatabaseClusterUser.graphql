@@ -7,6 +7,31 @@ fragment CloudDatabaseClusterUserResult on DatabaseUser {
     }
     dsn
     password
+    role
+}
+
+mutation deleteCloudDatabaseClusterUser(
+    $userInput: CloudDatabaseClusterUserResourceInput!
+) {
+    cloudDatabaseClusterUserDelete(
+        userInput: $userInput
+    )
+}
+
+mutation createCloudDatabaseClusterUser(
+    $userInput: CloudDatabaseClusterUserCreateInput!
+) {
+    cloudDatabaseClusterUserCreate(userInput: $userInput) {
+        ...CloudDatabaseClusterUserResult
+    }
+}
+
+mutation modifyCloudDatabaseClusterUser(
+    $userInput: CloudDatabaseClusterUserModifyInput!
+) {
+    cloudDatabaseClusterUserModify(userInput: $userInput) {
+        ...CloudDatabaseClusterUserResult
+    }
 }
 
 

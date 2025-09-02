@@ -11,7 +11,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var clouddatabaseclusterCmd = &cobra.Command{
+var cloudDatabaseClusterCmd = &cobra.Command{
 	Use:     "databasecluster",
 	Short:   "Manage cloud database clusters",
 	Aliases: []string{"dc"},
@@ -223,24 +223,24 @@ func init() {
 	createCloudDatabaseClusterCmd.MarkFlagRequired("plan ID")
 	createCloudDatabaseClusterCmd.MarkFlagRequired("type")
 	createCloudDatabaseClusterCmd.MarkFlagRequired("version")
-	clouddatabaseclusterCmd.AddCommand(createCloudDatabaseClusterCmd)
+	cloudDatabaseClusterCmd.AddCommand(createCloudDatabaseClusterCmd)
 
-	clouddatabaseclusterCmd.AddCommand(listCloudDatabaseClustersCmd)
+	cloudDatabaseClusterCmd.AddCommand(listCloudDatabaseClustersCmd)
 
 	deleteCloudDatabaseClusterCmd.Flags().String("namespace", "", "Namespace")
 	deleteCloudDatabaseClusterCmd.Flags().String("name", "", "Name of the cluster")
 	deleteCloudDatabaseClusterCmd.MarkFlagRequired("namespace")
 	deleteCloudDatabaseClusterCmd.MarkFlagRequired("name")
-	clouddatabaseclusterCmd.AddCommand(deleteCloudDatabaseClusterCmd)
+	cloudDatabaseClusterCmd.AddCommand(deleteCloudDatabaseClusterCmd)
 
-	clouddatabaseclusterCmd.AddCommand(listCloudDatabaseClusterPlansCmd)
-	clouddatabaseclusterCmd.AddCommand(listCloudDatabaseClusterSpecsCmd)
+	cloudDatabaseClusterCmd.AddCommand(listCloudDatabaseClusterPlansCmd)
+	cloudDatabaseClusterCmd.AddCommand(listCloudDatabaseClusterSpecsCmd)
 
 	listCloudDatabaseClusterCmd.Flags().StringP("namespace", "n", "", "Namespace name")
 	listCloudDatabaseClusterCmd.Flags().String("name", "", "Name of the cluster")
 	listCloudDatabaseClusterCmd.MarkFlagRequired("namespace")
 	listCloudDatabaseClusterCmd.MarkFlagRequired("name")
-	clouddatabaseclusterCmd.AddCommand(listCloudDatabaseClusterCmd)
+	cloudDatabaseClusterCmd.AddCommand(listCloudDatabaseClusterCmd)
 
 	getClusterDatabaseUserCredentialsCmd.Flags().String("cluster", "", "Cluster name")
 	getClusterDatabaseUserCredentialsCmd.Flags().StringP("namespace", "n", "", "Namespace")
@@ -248,5 +248,5 @@ func init() {
 	getClusterDatabaseUserCredentialsCmd.MarkFlagRequired("cluster")
 	getClusterDatabaseUserCredentialsCmd.MarkFlagRequired("namespace")
 	getClusterDatabaseUserCredentialsCmd.MarkFlagRequired("user")
-	clouddatabaseclusterCmd.AddCommand(getClusterDatabaseUserCredentialsCmd)
+	cloudDatabaseClusterCmd.AddCommand(getClusterDatabaseUserCredentialsCmd)
 }
