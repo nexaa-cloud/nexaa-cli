@@ -153,14 +153,14 @@ var listCloudDatabaseClusterUserCmd = &cobra.Command{
 		}
 
 		client := api.NewClient()
-		cluster, err := client.CloudDatabaseClusterUserList(resource)
+		users, err := client.CloudDatabaseClusterUserList(resource)
 		if err != nil {
 			log.Fatalf("Failed to list cloud database cluster users: %v", err)
 		}
 		writer := tabwriter.NewWriter(os.Stdout, 0, 0, 3, ' ', tabwriter.Debug)
 
 		var destructedUsers []destructedUser
-		for _, user := range cluster.Users {
+		for _, user := range users {
 			if len(user.Permissions) == 0 {
 				var permission string
 				if user.Role == "admin" {
