@@ -118,6 +118,13 @@ var modifyContainerCmd = &cobra.Command{
 		secrets, _ := cmd.Flags().GetStringArray("secret")
 		removedEnvironmentVariables, _ := cmd.Flags().GetStringArray("remove-env")
 
+		client := api.NewClient()
+
+		oldContainer, err := client.ListContainerByName(namespace, name)
+		if err != nil {
+			log.Fatalf("Container not found: %v", err)
+		}
+
 		envs := append(
 			envsToApi(environmentVariables, false, api.StatePresent),
 			envsToApi(secrets, true, api.StatePresent)...,
@@ -140,9 +147,10 @@ var modifyContainerCmd = &cobra.Command{
 		if resources != "" {
 			resource := api.ContainerResources(resources)
 			input.Resources = &resource
+		} else {
+			resources := oldContainer.Resources
+			input.Resources = &resources
 		}
-
-		client := api.NewClient()
 
 		container, err := client.ContainerModify(input)
 		if err != nil {
