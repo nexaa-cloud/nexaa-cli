@@ -143,15 +143,14 @@ var modifyContainerCmd = &cobra.Command{
 			registryName = registry
 		}
 
-		if removeRegistry {
-			registryName = ""
-		}
-
 		input := api.ContainerModifyInput{
 			Name:                 name,
 			Namespace:            namespace,
 			EnvironmentVariables: envs,
-			Registry:             &registryName,
+		}
+
+		if removeRegistry == false {
+			input.Registry = &registryName
 		}
 
 		if image != "" {
