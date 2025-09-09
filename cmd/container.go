@@ -118,6 +118,7 @@ var modifyContainerCmd = &cobra.Command{
 		secrets, _ := cmd.Flags().GetStringArray("secret")
 		removedEnvironmentVariables, _ := cmd.Flags().GetStringArray("remove-env")
 		registry, _ := cmd.Flags().GetString("registry")
+		removeRegistry, _ := cmd.Flags().GetBool("remove-registry")
 
 		client := api.NewClient()
 
@@ -140,6 +141,10 @@ var modifyContainerCmd = &cobra.Command{
 			registryName = oldContainer.PrivateRegistry.Name
 		} else {
 			registryName = registry
+		}
+
+		if removeRegistry {
+			registryName = ""
 		}
 
 		input := api.ContainerModifyInput{
@@ -215,6 +220,7 @@ func init() {
 	modifyContainerCmd.Flags().StringArray("secret", []string{}, "Container secrets")
 	modifyContainerCmd.Flags().StringArray("remove-env", []string{}, "Container remove environment variables")
 	modifyContainerCmd.Flags().StringArray("registry", []string{}, "Registry name for container image")
+	modifyContainerCmd.Flags().Bool("remove-registry", false, "Registry name for container image")
 	modifyContainerCmd.MarkFlagRequired("namespace")
 	modifyContainerCmd.MarkFlagRequired("name")
 	containerCmd.AddCommand(modifyContainerCmd)
