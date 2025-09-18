@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"strings"
 	"text/tabwriter"
 
 	"github.com/nexaa-cloud/nexaa-cli/api"
@@ -78,6 +79,14 @@ var createContainerCmd = &cobra.Command{
 		resources, _ := cmd.Flags().GetString("resources")
 		environmentVariables, _ := cmd.Flags().GetStringArray("env")
 		secrets, _ := cmd.Flags().GetStringArray("secret")
+		containerType, _ := cmd.Flags().GetString("type")
+
+		parsedContainerType := api.ContainerType(strings.ToUpper(containerType))
+
+		if parsedContainerType == api.ContainerTypeStarter && resources == "" {
+			log.Println("Starter container, defaulting to CPU: 0.25, RAM: 0.5GB")
+			resources = string(api.ContainerResourcesCpu250Ram500)
+		}
 
 		envs := append(envsToApi(environmentVariables, false, api.StatePresent), envsToApi(secrets, true, api.StatePresent)...)
 
@@ -90,7 +99,7 @@ var createContainerCmd = &cobra.Command{
 			Mounts:               []api.MountInput{},
 			Ports:                []string{},
 			Ingresses:            []api.IngressInput{},
-			HealthCheck:          &api.HealthCheckInput{},
+			Type:                 parsedContainerType,
 		}
 
 		client := api.NewClient()
@@ -102,7 +111,7 @@ var createContainerCmd = &cobra.Command{
 			return
 		}
 
-		log.Println("Created container: ", container.Name)
+		log.Println("Created container:", container.Name)
 	},
 }
 
@@ -202,10 +211,10 @@ func init() {
 	createContainerCmd.Flags().String("resources", "", "Container resources")
 	createContainerCmd.Flags().StringArray("env", []string{}, "Container environment variables")
 	createContainerCmd.Flags().StringArray("secret", []string{}, "Container secrets")
+	createContainerCmd.Flags().String("type", "default", "Container type (default, starter)")
 	createContainerCmd.MarkFlagRequired("namespace")
 	createContainerCmd.MarkFlagRequired("name")
 	createContainerCmd.MarkFlagRequired("image")
-	createContainerCmd.MarkFlagRequired("resources")
 	containerCmd.AddCommand(createContainerCmd)
 
 	modifyContainerCmd.Flags().String("namespace", "", "Namespace")

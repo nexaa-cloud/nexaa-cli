@@ -693,6 +693,7 @@ type ContainerCreateInput struct {
 	// When you want to disable the health check you must send us a null value. To leave the
 	// current health check unchanged you can omit this field.
 	HealthCheck *HealthCheckInput `json:"healthCheck"`
+	Type        ContainerType     `json:"type"`
 }
 
 // GetName returns ContainerCreateInput.Name, and is useful for accessing the field via an interface.
@@ -729,6 +730,9 @@ func (v *ContainerCreateInput) GetScaling() *ScalingInput { return v.Scaling }
 
 // GetHealthCheck returns ContainerCreateInput.HealthCheck, and is useful for accessing the field via an interface.
 func (v *ContainerCreateInput) GetHealthCheck() *HealthCheckInput { return v.HealthCheck }
+
+// GetType returns ContainerCreateInput.Type, and is useful for accessing the field via an interface.
+func (v *ContainerCreateInput) GetType() ContainerType { return v.Type }
 
 type ContainerJobCreateInput struct {
 	Name      string             `json:"name"`
@@ -1433,6 +1437,18 @@ type ContainerResultPrivateRegistry struct {
 
 // GetName returns ContainerResultPrivateRegistry.Name, and is useful for accessing the field via an interface.
 func (v *ContainerResultPrivateRegistry) GetName() string { return v.Name }
+
+type ContainerType string
+
+const (
+	ContainerTypeStarter ContainerType = "STARTER"
+	ContainerTypeDefault ContainerType = "DEFAULT"
+)
+
+var AllContainerType = []ContainerType{
+	ContainerTypeStarter,
+	ContainerTypeDefault,
+}
 
 type DatabaseInput struct {
 	Name        string  `json:"name"`
