@@ -90,6 +90,7 @@ var createContainerCmd = &cobra.Command{
 			Mounts:               []api.MountInput{},
 			Ports:                []string{},
 			Ingresses:            []api.IngressInput{},
+			Type:                 api.ContainerTypeDefault,
 		}
 
 		client := api.NewClient()

@@ -1306,6 +1306,7 @@ type ContainerResult struct {
 	AutoScaling          *ContainerResultAutoScaling       `json:"autoScaling"`
 	State                string                            `json:"state"`
 	Locked               bool                              `json:"locked"`
+	Type                 ContainerType                     `json:"type"`
 }
 
 // GetName returns ContainerResult.Name, and is useful for accessing the field via an interface.
@@ -1353,6 +1354,9 @@ func (v *ContainerResult) GetState() string { return v.State }
 
 // GetLocked returns ContainerResult.Locked, and is useful for accessing the field via an interface.
 func (v *ContainerResult) GetLocked() bool { return v.Locked }
+
+// GetType returns ContainerResult.Type, and is useful for accessing the field via an interface.
+func (v *ContainerResult) GetType() ContainerType { return v.Type }
 
 // ContainerResultAutoScaling includes the requested fields of the GraphQL type AutoScaling.
 type ContainerResultAutoScaling struct {
@@ -2645,6 +2649,11 @@ func (v *containerListNamespaceContainersContainer) GetState() string { return v
 // GetLocked returns containerListNamespaceContainersContainer.Locked, and is useful for accessing the field via an interface.
 func (v *containerListNamespaceContainersContainer) GetLocked() bool { return v.ContainerResult.Locked }
 
+// GetType returns containerListNamespaceContainersContainer.Type, and is useful for accessing the field via an interface.
+func (v *containerListNamespaceContainersContainer) GetType() ContainerType {
+	return v.ContainerResult.Type
+}
+
 func (v *containerListNamespaceContainersContainer) UnmarshalJSON(b []byte) error {
 
 	if string(b) == "null" {
@@ -2698,6 +2707,8 @@ type __premarshalcontainerListNamespaceContainersContainer struct {
 	State string `json:"state"`
 
 	Locked bool `json:"locked"`
+
+	Type ContainerType `json:"type"`
 }
 
 func (v *containerListNamespaceContainersContainer) MarshalJSON() ([]byte, error) {
@@ -2725,6 +2736,7 @@ func (v *containerListNamespaceContainersContainer) __premarshalJSON() (*__prema
 	retval.AutoScaling = v.ContainerResult.AutoScaling
 	retval.State = v.ContainerResult.State
 	retval.Locked = v.ContainerResult.Locked
+	retval.Type = v.ContainerResult.Type
 	return &retval, nil
 }
 
@@ -4105,6 +4117,7 @@ fragment ContainerResult on Container {
 	}
 	state
 	locked
+	type
 }
 fragment EnvironmentVariableResult on EnvironmentVariable {
 	name
@@ -4193,6 +4206,7 @@ fragment ContainerResult on Container {
 	}
 	state
 	locked
+	type
 }
 fragment EnvironmentVariableResult on EnvironmentVariable {
 	name
@@ -4629,6 +4643,7 @@ fragment ContainerResult on Container {
 	}
 	state
 	locked
+	type
 }
 fragment EnvironmentVariableResult on EnvironmentVariable {
 	name
@@ -4715,6 +4730,7 @@ fragment ContainerResult on Container {
 	}
 	state
 	locked
+	type
 }
 fragment EnvironmentVariableResult on EnvironmentVariable {
 	name
