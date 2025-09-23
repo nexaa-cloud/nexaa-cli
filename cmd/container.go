@@ -90,7 +90,7 @@ var createContainerCmd = &cobra.Command{
 			Mounts:               []api.MountInput{},
 			Ports:                []string{},
 			Ingresses:            []api.IngressInput{},
-			HealthCheck:          &api.HealthCheckInput{},
+			Type:                 api.ContainerTypeDefault,
 		}
 
 		client := api.NewClient()
@@ -102,7 +102,44 @@ var createContainerCmd = &cobra.Command{
 			return
 		}
 
-		log.Println("Created container: ", container.Name)
+		log.Println("Created container:", container.Name)
+	},
+}
+
+var createStarterContainerCmd = &cobra.Command{
+	Use:   "create-starter",
+	Short: "Create a new starter container (CPU: 0.25, RAM: 0.5GB)",
+	Run: func(cmd *cobra.Command, args []string) {
+		namespace, _ := cmd.Flags().GetString("namespace")
+		name, _ := cmd.Flags().GetString("name")
+		image, _ := cmd.Flags().GetString("image")
+		environmentVariables, _ := cmd.Flags().GetStringArray("env")
+		secrets, _ := cmd.Flags().GetStringArray("secret")
+
+		envs := append(envsToApi(environmentVariables, false, api.StatePresent), envsToApi(secrets, true, api.StatePresent)...)
+
+		input := api.ContainerCreateInput{
+			Name:                 name,
+			Namespace:            namespace,
+			Resources:            api.ContainerResourcesCpu250Ram500,
+			Image:                image,
+			EnvironmentVariables: envs,
+			Mounts:               []api.MountInput{},
+			Ports:                []string{},
+			Ingresses:            []api.IngressInput{},
+			Type:                 api.ContainerTypeStarter,
+		}
+
+		client := api.NewClient()
+
+		container, err := client.ContainerCreate(input)
+
+		if err != nil {
+			log.Fatalf("Failed to create starter container: %v", err)
+			return
+		}
+
+		log.Println("Created starter container:", container.Name)
 	},
 }
 
@@ -205,8 +242,17 @@ func init() {
 	createContainerCmd.MarkFlagRequired("namespace")
 	createContainerCmd.MarkFlagRequired("name")
 	createContainerCmd.MarkFlagRequired("image")
-	createContainerCmd.MarkFlagRequired("resources")
 	containerCmd.AddCommand(createContainerCmd)
+
+	createStarterContainerCmd.Flags().String("namespace", "", "Namespace")
+	createStarterContainerCmd.Flags().String("name", "", "Name for the container")
+	createStarterContainerCmd.Flags().String("image", "", "Container image")
+	createStarterContainerCmd.Flags().StringArray("env", []string{}, "Container environment variables")
+	createStarterContainerCmd.Flags().StringArray("secret", []string{}, "Container secrets")
+	createStarterContainerCmd.MarkFlagRequired("namespace")
+	createStarterContainerCmd.MarkFlagRequired("name")
+	createStarterContainerCmd.MarkFlagRequired("image")
+	containerCmd.AddCommand(createStarterContainerCmd)
 
 	modifyContainerCmd.Flags().String("namespace", "", "Namespace")
 	modifyContainerCmd.Flags().String("name", "", "Name for the container")

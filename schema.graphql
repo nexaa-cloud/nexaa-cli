@@ -236,6 +236,7 @@ input ConfigureContainerInput {
 type Container {
   autoScaling: AutoScaling
   availableReplicas: Int!
+  containerType: ContainerType! @deprecated(reason: "use `type` instead")
   createdAt: DateTime!
   deletedAt: DateTime @deprecated(reason: "this field will be removed in the future, and doesn't have a replacement")
   environmentVariables: [EnvironmentVariable!]!
@@ -255,6 +256,7 @@ type Container {
   resources: ContainerResources!
   startedAt: DateTime!
   state: String!
+  type: ContainerType!
 }
 
 input ContainerCreateInput {
@@ -297,6 +299,9 @@ input ContainerCreateInput {
   current health check unchanged you can omit this field.
   """
   healthCheck: HealthCheckInput = null
+
+  ""
+  type: ContainerType! = DEFAULT
 }
 
 input ContainerDeleteInput {
@@ -635,6 +640,11 @@ enum ContainerResources {
   CPU_4000_RAM_14000
   CPU_4000_RAM_15000
   CPU_4000_RAM_16000
+}
+
+enum ContainerType {
+  STARTER
+  DEFAULT
 }
 
 input CreateContainerInput {
