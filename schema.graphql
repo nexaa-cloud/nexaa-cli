@@ -236,9 +236,11 @@ input ConfigureContainerInput {
 type Container {
   autoScaling: AutoScaling
   availableReplicas: Int!
+  command: [String!]
   containerType: ContainerType! @deprecated(reason: "use `type` instead")
   createdAt: DateTime!
   deletedAt: DateTime @deprecated(reason: "this field will be removed in the future, and doesn't have a replacement")
+  entrypoint: [String!]
   environmentVariables: [EnvironmentVariable!]!
   healthCheck: HealthCheck
   id: ID!
@@ -302,6 +304,35 @@ input ContainerCreateInput {
 
   ""
   type: ContainerType! = DEFAULT
+
+  """
+  Entrypoint of the container.
+  This field will overwrite the default entrypoint of the image. When the field is omitted, the default entrypoint of the image will be used.
+  
+  Null will reset the command to the default.
+  
+  Entry point is the first command executed when the container starts. It will receive the command as arguments.
+  For example when the entrypoint is `python`, the command `app.py` will be executed as `python app.py`.
+  
+  This field is defined in docker exec format. https://docs.docker.com/reference/dockerfile/#shell-and-exec-form
+  """
+  entrypoint: [String!]
+
+  """
+  Command to run.
+  This is the command executed at the given schedule.
+  When the field is omitted, the default command of the image will be used.
+  
+  Null will reset the command to the default.
+  The command will be passed to the entrypoint as arguments. Use quotes to pass an argument with spaces.
+  
+  Environment variables can be used in the command by using the syntax `$(ENVIRONMENT_VARIABLE)`.
+  
+  Example: `echo "Hello $(NAME)"`.
+  
+  This field is defined in docker exec format. https://docs.docker.com/reference/dockerfile/#shell-and-exec-form
+  """
+  command: [String!]
 }
 
 input ContainerDeleteInput {
@@ -510,6 +541,35 @@ input ContainerModifyInput {
   current health check unchanged you can omit this field.
   """
   healthCheck: HealthCheckInput
+
+  """
+  Entrypoint of the container.
+  This field will overwrite the default entrypoint of the image. When the field is omitted, the default entrypoint of the image will be used.
+  
+  Null will reset the command to the default.
+  
+  Entry point is the first command executed when the container starts. It will receive the command as arguments.
+  For example when the entrypoint is `python`, the command `app.py` will be executed as `python app.py`.
+  
+  This field is defined in docker exec format. https://docs.docker.com/reference/dockerfile/#shell-and-exec-form
+  """
+  entrypoint: [String!]
+
+  """
+  Command to run.
+  This is the command executed at the given schedule.
+  When the field is omitted, the default command of the image will be used.
+  
+  Null will reset the command to the default.
+  The command will be passed to the entrypoint as arguments. Use quotes to pass an argument with spaces.
+  
+  Environment variables can be used in the command by using the syntax `$(ENVIRONMENT_VARIABLE)`.
+  
+  Example: `echo "Hello $(NAME)"`.
+  
+  This field is defined in docker exec format. https://docs.docker.com/reference/dockerfile/#shell-and-exec-form
+  """
+  command: [String!]
 }
 
 input ContainerResourceInput {

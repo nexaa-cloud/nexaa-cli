@@ -78,6 +78,8 @@ var createContainerCmd = &cobra.Command{
 		resources, _ := cmd.Flags().GetString("resources")
 		environmentVariables, _ := cmd.Flags().GetStringArray("env")
 		secrets, _ := cmd.Flags().GetStringArray("secret")
+		command, _ := cmd.Flags().GetStringArray("command")
+		entrypoint, _ := cmd.Flags().GetStringArray("entrypoint")
 
 		envs := append(envsToApi(environmentVariables, false, api.StatePresent), envsToApi(secrets, true, api.StatePresent)...)
 
@@ -87,6 +89,8 @@ var createContainerCmd = &cobra.Command{
 			Resources:            api.ContainerResources(resources),
 			Image:                image,
 			EnvironmentVariables: envs,
+			Entrypoint:           entrypoint,
+			Command:              command,
 			Mounts:               []api.MountInput{},
 			Ports:                []string{},
 			Ingresses:            []api.IngressInput{},
@@ -115,6 +119,8 @@ var createStarterContainerCmd = &cobra.Command{
 		image, _ := cmd.Flags().GetString("image")
 		environmentVariables, _ := cmd.Flags().GetStringArray("env")
 		secrets, _ := cmd.Flags().GetStringArray("secret")
+		command, _ := cmd.Flags().GetStringArray("command")
+		entrypoint, _ := cmd.Flags().GetStringArray("entrypoint")
 
 		envs := append(envsToApi(environmentVariables, false, api.StatePresent), envsToApi(secrets, true, api.StatePresent)...)
 
@@ -124,6 +130,8 @@ var createStarterContainerCmd = &cobra.Command{
 			Resources:            api.ContainerResourcesCpu250Ram500,
 			Image:                image,
 			EnvironmentVariables: envs,
+			Entrypoint:           entrypoint,
+			Command:              command,
 			Mounts:               []api.MountInput{},
 			Ports:                []string{},
 			Ingresses:            []api.IngressInput{},
@@ -156,6 +164,8 @@ var modifyContainerCmd = &cobra.Command{
 		removedEnvironmentVariables, _ := cmd.Flags().GetStringArray("remove-env")
 		registry, _ := cmd.Flags().GetString("registry")
 		removeRegistry, _ := cmd.Flags().GetBool("remove-registry")
+		command, _ := cmd.Flags().GetStringArray("command")
+		entrypoint, _ := cmd.Flags().GetStringArray("entrypoint")
 
 		client := api.NewClient()
 
@@ -197,6 +207,14 @@ var modifyContainerCmd = &cobra.Command{
 		} else {
 			resources := oldContainer.Resources
 			input.Resources = &resources
+		}
+
+		if len(command) > 0 {
+			input.Command = command
+		}
+
+		if len(entrypoint) > 0 {
+			input.Entrypoint = entrypoint
 		}
 
 		container, err := client.ContainerModify(input)
@@ -242,6 +260,8 @@ func init() {
 	createContainerCmd.MarkFlagRequired("namespace")
 	createContainerCmd.MarkFlagRequired("name")
 	createContainerCmd.MarkFlagRequired("image")
+	createContainerCmd.Flags().StringArray("entrypoint", []string{}, "Entrypoint for the container")
+	createContainerCmd.Flags().StringArray("command", []string{}, "Command to run in the container")
 	containerCmd.AddCommand(createContainerCmd)
 
 	createStarterContainerCmd.Flags().String("namespace", "", "Namespace")
@@ -249,6 +269,8 @@ func init() {
 	createStarterContainerCmd.Flags().String("image", "", "Container image")
 	createStarterContainerCmd.Flags().StringArray("env", []string{}, "Container environment variables")
 	createStarterContainerCmd.Flags().StringArray("secret", []string{}, "Container secrets")
+	createStarterContainerCmd.Flags().StringArray("entrypoint", []string{}, "Entrypoint for the container")
+	createStarterContainerCmd.Flags().StringArray("command", []string{}, "Command to run in the container")
 	createStarterContainerCmd.MarkFlagRequired("namespace")
 	createStarterContainerCmd.MarkFlagRequired("name")
 	createStarterContainerCmd.MarkFlagRequired("image")
@@ -258,6 +280,8 @@ func init() {
 	modifyContainerCmd.Flags().String("name", "", "Name for the container")
 	modifyContainerCmd.Flags().String("image", "", "Container image")
 	modifyContainerCmd.Flags().String("resources", "", "Container resources")
+	modifyContainerCmd.Flags().StringArray("command", []string{}, "Command to run in the container")
+	modifyContainerCmd.Flags().StringArray("entrypoint", []string{}, "Entrypoint for the container")
 	modifyContainerCmd.Flags().StringArray("env", []string{}, "Container environment variables")
 	modifyContainerCmd.Flags().StringArray("secret", []string{}, "Container secrets")
 	modifyContainerCmd.Flags().StringArray("remove-env", []string{}, "Container remove environment variables")
