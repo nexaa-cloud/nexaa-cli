@@ -694,6 +694,29 @@ type ContainerCreateInput struct {
 	// current health check unchanged you can omit this field.
 	HealthCheck *HealthCheckInput `json:"healthCheck"`
 	Type        ContainerType     `json:"type"`
+	// Entrypoint of the container.
+	// This field will overwrite the default entrypoint of the image. When the field is omitted, the default entrypoint of the image will be used.
+	//
+	// Null will reset the command to the default.
+	//
+	// Entry point is the first command executed when the container starts. It will receive the command as arguments.
+	// For example when the entrypoint is `python`, the command `app.py` will be executed as `python app.py`.
+	//
+	// This field is defined in docker exec format. https://docs.docker.com/reference/dockerfile/#shell-and-exec-form
+	Entrypoint []string `json:"entrypoint"`
+	// Command to run.
+	// This is the command executed at the given schedule.
+	// When the field is omitted, the default command of the image will be used.
+	//
+	// Null will reset the command to the default.
+	// The command will be passed to the entrypoint as arguments. Use quotes to pass an argument with spaces.
+	//
+	// Environment variables can be used in the command by using the syntax `$(ENVIRONMENT_VARIABLE)`.
+	//
+	// Example: `echo "Hello $(NAME)"`.
+	//
+	// This field is defined in docker exec format. https://docs.docker.com/reference/dockerfile/#shell-and-exec-form
+	Command []string `json:"command"`
 }
 
 // GetName returns ContainerCreateInput.Name, and is useful for accessing the field via an interface.
@@ -733,6 +756,12 @@ func (v *ContainerCreateInput) GetHealthCheck() *HealthCheckInput { return v.Hea
 
 // GetType returns ContainerCreateInput.Type, and is useful for accessing the field via an interface.
 func (v *ContainerCreateInput) GetType() ContainerType { return v.Type }
+
+// GetEntrypoint returns ContainerCreateInput.Entrypoint, and is useful for accessing the field via an interface.
+func (v *ContainerCreateInput) GetEntrypoint() []string { return v.Entrypoint }
+
+// GetCommand returns ContainerCreateInput.Command, and is useful for accessing the field via an interface.
+func (v *ContainerCreateInput) GetCommand() []string { return v.Command }
 
 type ContainerJobCreateInput struct {
 	Name      string             `json:"name"`
@@ -983,6 +1012,29 @@ type ContainerModifyInput struct {
 	// When you want to disable the health check you must send us a null value. To leave the
 	// current health check unchanged you can omit this field.
 	HealthCheck *HealthCheckInput `json:"healthCheck"`
+	// Entrypoint of the container.
+	// This field will overwrite the default entrypoint of the image. When the field is omitted, the default entrypoint of the image will be used.
+	//
+	// Null will reset the command to the default.
+	//
+	// Entry point is the first command executed when the container starts. It will receive the command as arguments.
+	// For example when the entrypoint is `python`, the command `app.py` will be executed as `python app.py`.
+	//
+	// This field is defined in docker exec format. https://docs.docker.com/reference/dockerfile/#shell-and-exec-form
+	Entrypoint []string `json:"entrypoint"`
+	// Command to run.
+	// This is the command executed at the given schedule.
+	// When the field is omitted, the default command of the image will be used.
+	//
+	// Null will reset the command to the default.
+	// The command will be passed to the entrypoint as arguments. Use quotes to pass an argument with spaces.
+	//
+	// Environment variables can be used in the command by using the syntax `$(ENVIRONMENT_VARIABLE)`.
+	//
+	// Example: `echo "Hello $(NAME)"`.
+	//
+	// This field is defined in docker exec format. https://docs.docker.com/reference/dockerfile/#shell-and-exec-form
+	Command []string `json:"command"`
 }
 
 // GetName returns ContainerModifyInput.Name, and is useful for accessing the field via an interface.
@@ -1019,6 +1071,12 @@ func (v *ContainerModifyInput) GetScaling() *ScalingInput { return v.Scaling }
 
 // GetHealthCheck returns ContainerModifyInput.HealthCheck, and is useful for accessing the field via an interface.
 func (v *ContainerModifyInput) GetHealthCheck() *HealthCheckInput { return v.HealthCheck }
+
+// GetEntrypoint returns ContainerModifyInput.Entrypoint, and is useful for accessing the field via an interface.
+func (v *ContainerModifyInput) GetEntrypoint() []string { return v.Entrypoint }
+
+// GetCommand returns ContainerModifyInput.Command, and is useful for accessing the field via an interface.
+func (v *ContainerModifyInput) GetCommand() []string { return v.Command }
 
 // ContainerMounts includes the GraphQL fields of Mount requested by the fragment ContainerMounts.
 type ContainerMounts struct {
@@ -1296,6 +1354,8 @@ type ContainerResult struct {
 	Image                string                            `json:"image"`
 	PrivateRegistry      *ContainerResultPrivateRegistry   `json:"privateRegistry"`
 	Resources            ContainerResources                `json:"resources"`
+	Command              []string                          `json:"command"`
+	Entrypoint           []string                          `json:"entrypoint"`
 	EnvironmentVariables []EnvironmentVariableResult       `json:"environmentVariables"`
 	Ports                []string                          `json:"ports"`
 	Ingresses            []ContainerResultIngressesIngress `json:"ingresses"`
@@ -1322,6 +1382,12 @@ func (v *ContainerResult) GetPrivateRegistry() *ContainerResultPrivateRegistry {
 
 // GetResources returns ContainerResult.Resources, and is useful for accessing the field via an interface.
 func (v *ContainerResult) GetResources() ContainerResources { return v.Resources }
+
+// GetCommand returns ContainerResult.Command, and is useful for accessing the field via an interface.
+func (v *ContainerResult) GetCommand() []string { return v.Command }
+
+// GetEntrypoint returns ContainerResult.Entrypoint, and is useful for accessing the field via an interface.
+func (v *ContainerResult) GetEntrypoint() []string { return v.Entrypoint }
 
 // GetEnvironmentVariables returns ContainerResult.EnvironmentVariables, and is useful for accessing the field via an interface.
 func (v *ContainerResult) GetEnvironmentVariables() []EnvironmentVariableResult {
@@ -2603,6 +2669,16 @@ func (v *containerListNamespaceContainersContainer) GetResources() ContainerReso
 	return v.ContainerResult.Resources
 }
 
+// GetCommand returns containerListNamespaceContainersContainer.Command, and is useful for accessing the field via an interface.
+func (v *containerListNamespaceContainersContainer) GetCommand() []string {
+	return v.ContainerResult.Command
+}
+
+// GetEntrypoint returns containerListNamespaceContainersContainer.Entrypoint, and is useful for accessing the field via an interface.
+func (v *containerListNamespaceContainersContainer) GetEntrypoint() []string {
+	return v.ContainerResult.Entrypoint
+}
+
 // GetEnvironmentVariables returns containerListNamespaceContainersContainer.EnvironmentVariables, and is useful for accessing the field via an interface.
 func (v *containerListNamespaceContainersContainer) GetEnvironmentVariables() []EnvironmentVariableResult {
 	return v.ContainerResult.EnvironmentVariables
@@ -2688,6 +2764,10 @@ type __premarshalcontainerListNamespaceContainersContainer struct {
 
 	Resources ContainerResources `json:"resources"`
 
+	Command []string `json:"command"`
+
+	Entrypoint []string `json:"entrypoint"`
+
 	EnvironmentVariables []EnvironmentVariableResult `json:"environmentVariables"`
 
 	Ports []string `json:"ports"`
@@ -2726,6 +2806,8 @@ func (v *containerListNamespaceContainersContainer) __premarshalJSON() (*__prema
 	retval.Image = v.ContainerResult.Image
 	retval.PrivateRegistry = v.ContainerResult.PrivateRegistry
 	retval.Resources = v.ContainerResult.Resources
+	retval.Command = v.ContainerResult.Command
+	retval.Entrypoint = v.ContainerResult.Entrypoint
 	retval.EnvironmentVariables = v.ContainerResult.EnvironmentVariables
 	retval.Ports = v.ContainerResult.Ports
 	retval.Ingresses = v.ContainerResult.Ingresses
@@ -4085,6 +4167,8 @@ fragment ContainerResult on Container {
 		name
 	}
 	resources
+	command
+	entrypoint
 	environmentVariables {
 		... EnvironmentVariableResult
 	}
@@ -4174,6 +4258,8 @@ fragment ContainerResult on Container {
 		name
 	}
 	resources
+	command
+	entrypoint
 	environmentVariables {
 		... EnvironmentVariableResult
 	}
@@ -4611,6 +4697,8 @@ fragment ContainerResult on Container {
 		name
 	}
 	resources
+	command
+	entrypoint
 	environmentVariables {
 		... EnvironmentVariableResult
 	}
@@ -4698,6 +4786,8 @@ fragment ContainerResult on Container {
 		name
 	}
 	resources
+	command
+	entrypoint
 	environmentVariables {
 		... EnvironmentVariableResult
 	}
@@ -4746,6 +4836,7 @@ fragment ContainerMounts on Mount {
 }
 `
 
+// @genqlien(omitempty: true)
 func containerModify(
 	ctx_ context.Context,
 	client_ graphql.Client,

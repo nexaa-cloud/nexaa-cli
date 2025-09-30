@@ -5,6 +5,8 @@ fragment ContainerResult on Container {
     name
   }
   resources
+  command
+  entrypoint
   # @genqlient(flatten: true)
   environmentVariables {
       ... EnvironmentVariableResult

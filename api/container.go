@@ -98,6 +98,8 @@ func toContainerResult(container ContainerResult) (ContainerResult, error) {
 		AutoScaling:          autoScaling,
 		Locked:               container.Locked,
 		State:                container.State,
+		Command:              container.Command,
+		Entrypoint:           container.Entrypoint,
 	}, nil
 }
 
