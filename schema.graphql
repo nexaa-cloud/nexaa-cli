@@ -942,6 +942,61 @@ input ManualScalingInput {
   replicas: Int!
 }
 
+type MessageQueue {
+  id: String!
+  locked: Boolean!
+  name: String!
+  namespace: Namespace!
+  state: String!
+}
+
+input MessageQueueCreateInput {
+  ""
+  name: String!
+
+  ""
+  namespace: String!
+
+  ""
+  plan: String!
+
+  ""
+  spec: MessageQueueSpecInput!
+}
+
+type MessageQueuePlan {
+  cpu: Int!
+  group: String!
+  id: String!
+  memory(unit: Unit = GB): Float!
+  name: String!
+  price: Price!
+  replicas: Int!
+  storage: Int!
+}
+
+input MessageQueueResourceInput {
+  ""
+  name: String!
+
+  ""
+  namespace: String!
+}
+
+type MessageQueueSpec {
+  patchLevelVersion: String!
+  type: String!
+  version: String!
+}
+
+input MessageQueueSpecInput {
+  ""
+  type: String!
+
+  ""
+  version: String!
+}
+
 type Mount {
   path: String!
   volume: Volume!
@@ -976,7 +1031,7 @@ input MountVolumeInput {
 }
 
 type Mutation {
-  addPrivateRegistry(namespaceId: Int!, name: String!, source: String!, username: String!, password: String!, verify: Boolean = true): Boolean! @deprecated(reason: "use `registryCreate` mutation")
+  addPrivateRegistry(namespaceId: Int!, name: String!, source: String!, username: String!, password: String!, verify: Boolean = true): Boolean! @deprecated(reason: "use `registryConnectionCreate` mutation")
   cloudDatabaseClusterCreate(cloudDatabaseClusterInput: CloudDatabaseClusterCreateInput): CloudDatabaseCluster!
   cloudDatabaseClusterDatabaseCreate(databaseInput: CloudDatabaseClusterDatabaseCreateInput): Database!
   cloudDatabaseClusterDatabaseDelete(databaseInput: CloudDatabaseClusterDatabaseResourceInput!): Boolean!
@@ -991,7 +1046,7 @@ type Mutation {
   containerJobDelete(scheduledJob: ResourceNameInput!): Boolean!
   containerJobModify(scheduledJob: ContainerJobModifyInput): ContainerJob!
   containerModify(containerInput: ContainerModifyInput): Container!
-  createCloudDatabase(customerId: Int!, name: String!, username: String!, version: String!, nodeType: String!, password: String!, location: String!, whitelist: [String!]! = []): Boolean!
+  createCloudDatabase(customerId: Int!, name: String!, username: String!, version: String!, nodeType: String!, password: String!, location: String!, whitelist: [String!]! = []): Boolean! @deprecated(reason: "Use `createCloudDatabaseCluster` mutation instead")
   createContainer(containerInput: CreateContainerInput!): Boolean! @deprecated(reason: "use `containerCreate` mutation instead")
   createNamespace(name: String!, customerId: Int = null, description: String = null, pricingPlanId: Int = 2, resourceSpecificationId: Int = null): Boolean! @deprecated(reason: "use `namespaceCreate` mutation")
   createVolume(namespaceId: Int!, name: String!, size: Int!): Volume @deprecated(reason: "use `volumeCreate` mutation")
@@ -1012,6 +1067,8 @@ type Mutation {
   """
   increaseVolume(namespaceId: NamespaceId!, name: String!, size: Int!): Volume! @deprecated(reason: "use `volumeIncrease` mutation")
 
+  messageQueueCreate(messageQueue: MessageQueueCreateInput!): MessageQueue!
+  messageQueueDelete(messageQueue: ResourceNameInput!): Boolean!
   modifyContainer(containerInput: ConfigureContainerInput!): Boolean! @deprecated(reason: "use `containerModify` mutation instead")
   namespaceCreate(namespaceInput: NamespaceCreateInput!): Namespace!
   namespaceDelete(namespace: DeleteNamespaceInput!): Boolean!
@@ -1031,6 +1088,7 @@ type Namespace {
   description: String!
   id(legacy: Boolean = true): ID!
   internalName: String! @deprecated(reason: "this field will be removed in the future. There is no replacement")
+  messageQueues: [MessageQueue!]!
   modifiedAt: DateTime
   name: String!
   pricingPlan: PricingPlan!
@@ -1118,6 +1176,10 @@ type Query {
   containerJob(namespace: String!, name: String!): ContainerJob!
   databaseVersions: [DatabaseVersion!]!
   locations: [Location!]!
+  messageQueue(messageQueue: MessageQueueResourceInput!): MessageQueue!
+  messageQueuePlans: [MessageQueuePlan!]!
+  messageQueueVersions: [MessageQueueSpec!]!
+  messageQueues: [MessageQueue!]!
   namespace(id: ID = null, name: String = null): Namespace!
   namespaces: [Namespace!]!
   nodeType(id: String!): NodeType!

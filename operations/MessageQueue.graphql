@@ -1,0 +1,67 @@
+fragment MessageQueueResult on MessageQueue {
+  id
+  locked
+  name
+  state
+  namespace {
+    name
+  }
+}
+
+fragment MessageQueuePlanResult on MessageQueuePlan {
+  cpu
+  group
+  id
+  memory(unit: GB)
+  name
+  price {
+    amount
+    currency
+  }
+  replicas
+  storage
+}
+
+fragment MessageQueueVersionResult on MessageQueueSpec {
+    patchLevelVersion
+    type
+    version
+}
+
+query messageQueuesGet {
+  # @genqlient(flatten: true)
+  messageQueues {
+    ...MessageQueueResult
+  }
+}
+
+query messageQueueGet($messageQueueInput: MessageQueueResourceInput!) {
+  # @genqlient(flatten: true)
+  messageQueue(messageQueue: $messageQueueInput) {
+    ...MessageQueueResult
+  }
+}
+
+mutation messageQueueCreate($messageQueueInput: MessageQueueCreateInput!) {
+  # @genqlient(flatten: true)
+  messageQueueCreate(messageQueue: $messageQueueInput) {
+    ...MessageQueueResult
+  }
+}
+mutation messageQueueDelete($messageQueueInput: ResourceNameInput!) {
+  messageQueueDelete(messageQueue: $messageQueueInput)
+}
+
+query messageQueuePlansGet {
+  # @genqlient(flatten: true)
+  messageQueuePlans {
+    ...MessageQueuePlanResult
+  }
+}
+
+query messageQueueVersionsGet {
+  # @genqlient(flatten: true)
+  messageQueueVersions {
+    ...MessageQueueVersionResult
+  }
+}

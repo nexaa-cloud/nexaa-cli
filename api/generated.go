@@ -1657,6 +1657,143 @@ type ManualScalingInput struct {
 // GetReplicas returns ManualScalingInput.Replicas, and is useful for accessing the field via an interface.
 func (v *ManualScalingInput) GetReplicas() int { return v.Replicas }
 
+type MessageQueueCreateInput struct {
+	Name      string                `json:"name"`
+	Namespace string                `json:"namespace"`
+	Plan      string                `json:"plan"`
+	Spec      MessageQueueSpecInput `json:"spec"`
+}
+
+// GetName returns MessageQueueCreateInput.Name, and is useful for accessing the field via an interface.
+func (v *MessageQueueCreateInput) GetName() string { return v.Name }
+
+// GetNamespace returns MessageQueueCreateInput.Namespace, and is useful for accessing the field via an interface.
+func (v *MessageQueueCreateInput) GetNamespace() string { return v.Namespace }
+
+// GetPlan returns MessageQueueCreateInput.Plan, and is useful for accessing the field via an interface.
+func (v *MessageQueueCreateInput) GetPlan() string { return v.Plan }
+
+// GetSpec returns MessageQueueCreateInput.Spec, and is useful for accessing the field via an interface.
+func (v *MessageQueueCreateInput) GetSpec() MessageQueueSpecInput { return v.Spec }
+
+// MessageQueuePlanResult includes the GraphQL fields of MessageQueuePlan requested by the fragment MessageQueuePlanResult.
+type MessageQueuePlanResult struct {
+	Cpu      int                         `json:"cpu"`
+	Group    string                      `json:"group"`
+	Id       string                      `json:"id"`
+	Memory   float64                     `json:"memory"`
+	Name     string                      `json:"name"`
+	Price    MessageQueuePlanResultPrice `json:"price"`
+	Replicas int                         `json:"replicas"`
+	Storage  int                         `json:"storage"`
+}
+
+// GetCpu returns MessageQueuePlanResult.Cpu, and is useful for accessing the field via an interface.
+func (v *MessageQueuePlanResult) GetCpu() int { return v.Cpu }
+
+// GetGroup returns MessageQueuePlanResult.Group, and is useful for accessing the field via an interface.
+func (v *MessageQueuePlanResult) GetGroup() string { return v.Group }
+
+// GetId returns MessageQueuePlanResult.Id, and is useful for accessing the field via an interface.
+func (v *MessageQueuePlanResult) GetId() string { return v.Id }
+
+// GetMemory returns MessageQueuePlanResult.Memory, and is useful for accessing the field via an interface.
+func (v *MessageQueuePlanResult) GetMemory() float64 { return v.Memory }
+
+// GetName returns MessageQueuePlanResult.Name, and is useful for accessing the field via an interface.
+func (v *MessageQueuePlanResult) GetName() string { return v.Name }
+
+// GetPrice returns MessageQueuePlanResult.Price, and is useful for accessing the field via an interface.
+func (v *MessageQueuePlanResult) GetPrice() MessageQueuePlanResultPrice { return v.Price }
+
+// GetReplicas returns MessageQueuePlanResult.Replicas, and is useful for accessing the field via an interface.
+func (v *MessageQueuePlanResult) GetReplicas() int { return v.Replicas }
+
+// GetStorage returns MessageQueuePlanResult.Storage, and is useful for accessing the field via an interface.
+func (v *MessageQueuePlanResult) GetStorage() int { return v.Storage }
+
+// MessageQueuePlanResultPrice includes the requested fields of the GraphQL type Price.
+type MessageQueuePlanResultPrice struct {
+	Amount   *int    `json:"amount"`
+	Currency *string `json:"currency"`
+}
+
+// GetAmount returns MessageQueuePlanResultPrice.Amount, and is useful for accessing the field via an interface.
+func (v *MessageQueuePlanResultPrice) GetAmount() *int { return v.Amount }
+
+// GetCurrency returns MessageQueuePlanResultPrice.Currency, and is useful for accessing the field via an interface.
+func (v *MessageQueuePlanResultPrice) GetCurrency() *string { return v.Currency }
+
+type MessageQueueResourceInput struct {
+	Name      string `json:"name"`
+	Namespace string `json:"namespace"`
+}
+
+// GetName returns MessageQueueResourceInput.Name, and is useful for accessing the field via an interface.
+func (v *MessageQueueResourceInput) GetName() string { return v.Name }
+
+// GetNamespace returns MessageQueueResourceInput.Namespace, and is useful for accessing the field via an interface.
+func (v *MessageQueueResourceInput) GetNamespace() string { return v.Namespace }
+
+// MessageQueueResult includes the GraphQL fields of MessageQueue requested by the fragment MessageQueueResult.
+type MessageQueueResult struct {
+	Id        string                      `json:"id"`
+	Locked    bool                        `json:"locked"`
+	Name      string                      `json:"name"`
+	State     string                      `json:"state"`
+	Namespace MessageQueueResultNamespace `json:"namespace"`
+}
+
+// GetId returns MessageQueueResult.Id, and is useful for accessing the field via an interface.
+func (v *MessageQueueResult) GetId() string { return v.Id }
+
+// GetLocked returns MessageQueueResult.Locked, and is useful for accessing the field via an interface.
+func (v *MessageQueueResult) GetLocked() bool { return v.Locked }
+
+// GetName returns MessageQueueResult.Name, and is useful for accessing the field via an interface.
+func (v *MessageQueueResult) GetName() string { return v.Name }
+
+// GetState returns MessageQueueResult.State, and is useful for accessing the field via an interface.
+func (v *MessageQueueResult) GetState() string { return v.State }
+
+// GetNamespace returns MessageQueueResult.Namespace, and is useful for accessing the field via an interface.
+func (v *MessageQueueResult) GetNamespace() MessageQueueResultNamespace { return v.Namespace }
+
+// MessageQueueResultNamespace includes the requested fields of the GraphQL type Namespace.
+type MessageQueueResultNamespace struct {
+	Name string `json:"name"`
+}
+
+// GetName returns MessageQueueResultNamespace.Name, and is useful for accessing the field via an interface.
+func (v *MessageQueueResultNamespace) GetName() string { return v.Name }
+
+type MessageQueueSpecInput struct {
+	Type    string `json:"type"`
+	Version string `json:"version"`
+}
+
+// GetType returns MessageQueueSpecInput.Type, and is useful for accessing the field via an interface.
+func (v *MessageQueueSpecInput) GetType() string { return v.Type }
+
+// GetVersion returns MessageQueueSpecInput.Version, and is useful for accessing the field via an interface.
+func (v *MessageQueueSpecInput) GetVersion() string { return v.Version }
+
+// MessageQueueVersionResult includes the GraphQL fields of MessageQueueSpec requested by the fragment MessageQueueVersionResult.
+type MessageQueueVersionResult struct {
+	PatchLevelVersion string `json:"patchLevelVersion"`
+	Type              string `json:"type"`
+	Version           string `json:"version"`
+}
+
+// GetPatchLevelVersion returns MessageQueueVersionResult.PatchLevelVersion, and is useful for accessing the field via an interface.
+func (v *MessageQueueVersionResult) GetPatchLevelVersion() string { return v.PatchLevelVersion }
+
+// GetType returns MessageQueueVersionResult.Type, and is useful for accessing the field via an interface.
+func (v *MessageQueueVersionResult) GetType() string { return v.Type }
+
+// GetVersion returns MessageQueueVersionResult.Version, and is useful for accessing the field via an interface.
+func (v *MessageQueueVersionResult) GetVersion() string { return v.Version }
+
 type MountInput struct {
 	// Path to mount the volume in the container.
 	Path   string           `json:"path"`
@@ -1838,6 +1975,17 @@ func (v *ReplicasInput) GetMinimum() int { return v.Minimum }
 
 // GetMaximum returns ReplicasInput.Maximum, and is useful for accessing the field via an interface.
 func (v *ReplicasInput) GetMaximum() int { return v.Maximum }
+
+type ResourceNameInput struct {
+	Name      string `json:"name"`
+	Namespace string `json:"namespace"`
+}
+
+// GetName returns ResourceNameInput.Name, and is useful for accessing the field via an interface.
+func (v *ResourceNameInput) GetName() string { return v.Name }
+
+// GetNamespace returns ResourceNameInput.Namespace, and is useful for accessing the field via an interface.
+func (v *ResourceNameInput) GetNamespace() string { return v.Namespace }
 
 type ScalingInput struct {
 	Auto   *AutoScalingInput   `json:"auto"`
@@ -2170,6 +2318,36 @@ type __getCloudDatabaseClusterUsersInput struct {
 // GetCloudDatabaseCluster returns __getCloudDatabaseClusterUsersInput.CloudDatabaseCluster, and is useful for accessing the field via an interface.
 func (v *__getCloudDatabaseClusterUsersInput) GetCloudDatabaseCluster() CloudDatabaseClusterResourceInput {
 	return v.CloudDatabaseCluster
+}
+
+// __messageQueueCreateInput is used internally by genqlient
+type __messageQueueCreateInput struct {
+	MessageQueueInput MessageQueueCreateInput `json:"messageQueueInput"`
+}
+
+// GetMessageQueueInput returns __messageQueueCreateInput.MessageQueueInput, and is useful for accessing the field via an interface.
+func (v *__messageQueueCreateInput) GetMessageQueueInput() MessageQueueCreateInput {
+	return v.MessageQueueInput
+}
+
+// __messageQueueDeleteInput is used internally by genqlient
+type __messageQueueDeleteInput struct {
+	MessageQueueInput ResourceNameInput `json:"messageQueueInput"`
+}
+
+// GetMessageQueueInput returns __messageQueueDeleteInput.MessageQueueInput, and is useful for accessing the field via an interface.
+func (v *__messageQueueDeleteInput) GetMessageQueueInput() ResourceNameInput {
+	return v.MessageQueueInput
+}
+
+// __messageQueueGetInput is used internally by genqlient
+type __messageQueueGetInput struct {
+	MessageQueueInput MessageQueueResourceInput `json:"messageQueueInput"`
+}
+
+// GetMessageQueueInput returns __messageQueueGetInput.MessageQueueInput, and is useful for accessing the field via an interface.
+func (v *__messageQueueGetInput) GetMessageQueueInput() MessageQueueResourceInput {
+	return v.MessageQueueInput
 }
 
 // __modifyCloudDatabaseClusterUserInput is used internally by genqlient
@@ -3215,6 +3393,60 @@ type getCloudDatabaseClustersResponse struct {
 func (v *getCloudDatabaseClustersResponse) GetCloudDatabaseClusters() []CloudDatabaseClusterResult {
 	return v.CloudDatabaseClusters
 }
+
+// messageQueueCreateResponse is returned by messageQueueCreate on success.
+type messageQueueCreateResponse struct {
+	MessageQueueCreate MessageQueueResult `json:"messageQueueCreate"`
+}
+
+// GetMessageQueueCreate returns messageQueueCreateResponse.MessageQueueCreate, and is useful for accessing the field via an interface.
+func (v *messageQueueCreateResponse) GetMessageQueueCreate() MessageQueueResult {
+	return v.MessageQueueCreate
+}
+
+// messageQueueDeleteResponse is returned by messageQueueDelete on success.
+type messageQueueDeleteResponse struct {
+	MessageQueueDelete bool `json:"messageQueueDelete"`
+}
+
+// GetMessageQueueDelete returns messageQueueDeleteResponse.MessageQueueDelete, and is useful for accessing the field via an interface.
+func (v *messageQueueDeleteResponse) GetMessageQueueDelete() bool { return v.MessageQueueDelete }
+
+// messageQueueGetResponse is returned by messageQueueGet on success.
+type messageQueueGetResponse struct {
+	MessageQueue MessageQueueResult `json:"messageQueue"`
+}
+
+// GetMessageQueue returns messageQueueGetResponse.MessageQueue, and is useful for accessing the field via an interface.
+func (v *messageQueueGetResponse) GetMessageQueue() MessageQueueResult { return v.MessageQueue }
+
+// messageQueuePlansGetResponse is returned by messageQueuePlansGet on success.
+type messageQueuePlansGetResponse struct {
+	MessageQueuePlans []MessageQueuePlanResult `json:"messageQueuePlans"`
+}
+
+// GetMessageQueuePlans returns messageQueuePlansGetResponse.MessageQueuePlans, and is useful for accessing the field via an interface.
+func (v *messageQueuePlansGetResponse) GetMessageQueuePlans() []MessageQueuePlanResult {
+	return v.MessageQueuePlans
+}
+
+// messageQueueVersionsGetResponse is returned by messageQueueVersionsGet on success.
+type messageQueueVersionsGetResponse struct {
+	MessageQueueVersions []MessageQueueVersionResult `json:"messageQueueVersions"`
+}
+
+// GetMessageQueueVersions returns messageQueueVersionsGetResponse.MessageQueueVersions, and is useful for accessing the field via an interface.
+func (v *messageQueueVersionsGetResponse) GetMessageQueueVersions() []MessageQueueVersionResult {
+	return v.MessageQueueVersions
+}
+
+// messageQueuesGetResponse is returned by messageQueuesGet on success.
+type messageQueuesGetResponse struct {
+	MessageQueues []MessageQueueResult `json:"messageQueues"`
+}
+
+// GetMessageQueues returns messageQueuesGetResponse.MessageQueues, and is useful for accessing the field via an interface.
+func (v *messageQueuesGetResponse) GetMessageQueues() []MessageQueueResult { return v.MessageQueues }
 
 // modifyCloudDatabaseClusterUserCloudDatabaseClusterUserModifyDatabaseUser includes the requested fields of the GraphQL type DatabaseUser.
 type modifyCloudDatabaseClusterUserCloudDatabaseClusterUserModifyDatabaseUser struct {
@@ -4836,7 +5068,6 @@ fragment ContainerMounts on Mount {
 }
 `
 
-// @genqlien(omitempty: true)
 func containerModify(
 	ctx_ context.Context,
 	client_ graphql.Client,
@@ -5289,6 +5520,241 @@ func getCloudDatabaseClusters(
 	}
 
 	data_ = &getCloudDatabaseClustersResponse{}
+	resp_ := &graphql.Response{Data: data_}
+
+	err_ = client_.MakeRequest(
+		ctx_,
+		req_,
+		resp_,
+	)
+
+	return data_, err_
+}
+
+// The mutation executed by messageQueueCreate.
+const messageQueueCreate_Operation = `
+mutation messageQueueCreate ($messageQueueInput: MessageQueueCreateInput!) {
+	messageQueueCreate(messageQueue: $messageQueueInput) {
+		... MessageQueueResult
+	}
+}
+fragment MessageQueueResult on MessageQueue {
+	id
+	locked
+	name
+	state
+	namespace {
+		name
+	}
+}
+`
+
+func messageQueueCreate(
+	ctx_ context.Context,
+	client_ graphql.Client,
+	messageQueueInput MessageQueueCreateInput,
+) (data_ *messageQueueCreateResponse, err_ error) {
+	req_ := &graphql.Request{
+		OpName: "messageQueueCreate",
+		Query:  messageQueueCreate_Operation,
+		Variables: &__messageQueueCreateInput{
+			MessageQueueInput: messageQueueInput,
+		},
+	}
+
+	data_ = &messageQueueCreateResponse{}
+	resp_ := &graphql.Response{Data: data_}
+
+	err_ = client_.MakeRequest(
+		ctx_,
+		req_,
+		resp_,
+	)
+
+	return data_, err_
+}
+
+// The mutation executed by messageQueueDelete.
+const messageQueueDelete_Operation = `
+mutation messageQueueDelete ($messageQueueInput: ResourceNameInput!) {
+	messageQueueDelete(messageQueue: $messageQueueInput)
+}
+`
+
+func messageQueueDelete(
+	ctx_ context.Context,
+	client_ graphql.Client,
+	messageQueueInput ResourceNameInput,
+) (data_ *messageQueueDeleteResponse, err_ error) {
+	req_ := &graphql.Request{
+		OpName: "messageQueueDelete",
+		Query:  messageQueueDelete_Operation,
+		Variables: &__messageQueueDeleteInput{
+			MessageQueueInput: messageQueueInput,
+		},
+	}
+
+	data_ = &messageQueueDeleteResponse{}
+	resp_ := &graphql.Response{Data: data_}
+
+	err_ = client_.MakeRequest(
+		ctx_,
+		req_,
+		resp_,
+	)
+
+	return data_, err_
+}
+
+// The query executed by messageQueueGet.
+const messageQueueGet_Operation = `
+query messageQueueGet ($messageQueueInput: MessageQueueResourceInput!) {
+	messageQueue(messageQueue: $messageQueueInput) {
+		... MessageQueueResult
+	}
+}
+fragment MessageQueueResult on MessageQueue {
+	id
+	locked
+	name
+	state
+	namespace {
+		name
+	}
+}
+`
+
+func messageQueueGet(
+	ctx_ context.Context,
+	client_ graphql.Client,
+	messageQueueInput MessageQueueResourceInput,
+) (data_ *messageQueueGetResponse, err_ error) {
+	req_ := &graphql.Request{
+		OpName: "messageQueueGet",
+		Query:  messageQueueGet_Operation,
+		Variables: &__messageQueueGetInput{
+			MessageQueueInput: messageQueueInput,
+		},
+	}
+
+	data_ = &messageQueueGetResponse{}
+	resp_ := &graphql.Response{Data: data_}
+
+	err_ = client_.MakeRequest(
+		ctx_,
+		req_,
+		resp_,
+	)
+
+	return data_, err_
+}
+
+// The query executed by messageQueuePlansGet.
+const messageQueuePlansGet_Operation = `
+query messageQueuePlansGet {
+	messageQueuePlans {
+		... MessageQueuePlanResult
+	}
+}
+fragment MessageQueuePlanResult on MessageQueuePlan {
+	cpu
+	group
+	id
+	memory(unit: GB)
+	name
+	price {
+		amount
+		currency
+	}
+	replicas
+	storage
+}
+`
+
+func messageQueuePlansGet(
+	ctx_ context.Context,
+	client_ graphql.Client,
+) (data_ *messageQueuePlansGetResponse, err_ error) {
+	req_ := &graphql.Request{
+		OpName: "messageQueuePlansGet",
+		Query:  messageQueuePlansGet_Operation,
+	}
+
+	data_ = &messageQueuePlansGetResponse{}
+	resp_ := &graphql.Response{Data: data_}
+
+	err_ = client_.MakeRequest(
+		ctx_,
+		req_,
+		resp_,
+	)
+
+	return data_, err_
+}
+
+// The query executed by messageQueueVersionsGet.
+const messageQueueVersionsGet_Operation = `
+query messageQueueVersionsGet {
+	messageQueueVersions {
+		... MessageQueueVersionResult
+	}
+}
+fragment MessageQueueVersionResult on MessageQueueSpec {
+	patchLevelVersion
+	type
+	version
+}
+`
+
+func messageQueueVersionsGet(
+	ctx_ context.Context,
+	client_ graphql.Client,
+) (data_ *messageQueueVersionsGetResponse, err_ error) {
+	req_ := &graphql.Request{
+		OpName: "messageQueueVersionsGet",
+		Query:  messageQueueVersionsGet_Operation,
+	}
+
+	data_ = &messageQueueVersionsGetResponse{}
+	resp_ := &graphql.Response{Data: data_}
+
+	err_ = client_.MakeRequest(
+		ctx_,
+		req_,
+		resp_,
+	)
+
+	return data_, err_
+}
+
+// The query executed by messageQueuesGet.
+const messageQueuesGet_Operation = `
+query messageQueuesGet {
+	messageQueues {
+		... MessageQueueResult
+	}
+}
+fragment MessageQueueResult on MessageQueue {
+	id
+	locked
+	name
+	state
+	namespace {
+		name
+	}
+}
+`
+
+func messageQueuesGet(
+	ctx_ context.Context,
+	client_ graphql.Client,
+) (data_ *messageQueuesGetResponse, err_ error) {
+	req_ := &graphql.Request{
+		OpName: "messageQueuesGet",
+		Query:  messageQueuesGet_Operation,
+	}
+
+	data_ = &messageQueuesGetResponse{}
 	resp_ := &graphql.Response{Data: data_}
 
 	err_ = client_.MakeRequest(
