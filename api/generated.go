@@ -9,6 +9,18 @@ import (
 	"github.com/Khan/genqlient/graphql"
 )
 
+type AllowListInput struct {
+	// Ip address or a Ip cidr including the subnet
+	Ip    string `json:"ip"`
+	State State  `json:"state"`
+}
+
+// GetIp returns AllowListInput.Ip, and is useful for accessing the field via an interface.
+func (v *AllowListInput) GetIp() string { return v.Ip }
+
+// GetState returns AllowListInput.State, and is useful for accessing the field via an interface.
+func (v *AllowListInput) GetState() State { return v.State }
+
 type AutoScalingInput struct {
 	Replicas ReplicasInput             `json:"replicas"`
 	Triggers []AutoScalingTriggerInput `json:"triggers"`
@@ -1662,6 +1674,7 @@ type MessageQueueCreateInput struct {
 	Namespace string                `json:"namespace"`
 	Plan      string                `json:"plan"`
 	Spec      MessageQueueSpecInput `json:"spec"`
+	AllowList []AllowListInput      `json:"allowList"`
 }
 
 // GetName returns MessageQueueCreateInput.Name, and is useful for accessing the field via an interface.
@@ -1675,6 +1688,9 @@ func (v *MessageQueueCreateInput) GetPlan() string { return v.Plan }
 
 // GetSpec returns MessageQueueCreateInput.Spec, and is useful for accessing the field via an interface.
 func (v *MessageQueueCreateInput) GetSpec() MessageQueueSpecInput { return v.Spec }
+
+// GetAllowList returns MessageQueueCreateInput.AllowList, and is useful for accessing the field via an interface.
+func (v *MessageQueueCreateInput) GetAllowList() []AllowListInput { return v.AllowList }
 
 // MessageQueuePlanResult includes the GraphQL fields of MessageQueuePlan requested by the fragment MessageQueuePlanResult.
 type MessageQueuePlanResult struct {

@@ -47,3 +47,15 @@ func envsToApi(environmentVariables []string, secret bool, state api.State) []ap
 
 	return envs
 }
+
+func splitAndTrim(input string) []string {
+	var result []string
+	parts := strings.Split(input, ",")
+	for _, part := range parts {
+		trimmed := strings.TrimSpace(part)
+		if trimmed != "" {
+			result = append(result, trimmed)
+		}
+	}
+	return result
+}

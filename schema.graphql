@@ -13,6 +13,14 @@ type Address {
   streetNameAndHouseNumber: String!
 }
 
+input AllowListInput {
+  "Ip address or a Ip cidr including the subnet"
+  ip: String!
+
+  ""
+  state: State! = PRESENT
+}
+
 type AuditLog {
   account: Account
   changeSet: [AuditLogChange!]!
@@ -962,6 +970,9 @@ input MessageQueueCreateInput {
 
   ""
   spec: MessageQueueSpecInput!
+
+  ""
+  allowList: [AllowListInput!]!
 }
 
 type MessageQueuePlan {

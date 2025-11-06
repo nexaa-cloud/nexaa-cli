@@ -75,6 +75,19 @@ var createMessageQueueCmd = &cobra.Command{
 		plan, _ := cmd.Flags().GetString("plan")
 		queueType, _ := cmd.Flags().GetString("type")
 		version, _ := cmd.Flags().GetString("version")
+		allowlistStr, _ := cmd.Flags().GetString("allowlist")
+
+		// Parse allowlist
+		var allowList []api.AllowListInput
+		if allowlistStr != "" {
+			ips := splitAndTrim(allowlistStr)
+			for _, ip := range ips {
+				allowList = append(allowList, api.AllowListInput{
+					Ip:    ip,
+					State: api.StatePresent,
+				})
+			}
+		}
 
 		input := api.MessageQueueCreateInput{
 			Name:      name,
@@ -84,6 +97,7 @@ var createMessageQueueCmd = &cobra.Command{
 				Type:    queueType,
 				Version: version,
 			},
+			AllowList: allowList,
 		}
 
 		client := api.NewClient()
@@ -190,8 +204,9 @@ func init() {
 	createMessageQueueCmd.Flags().String("namespace", "", "Namespace")
 	createMessageQueueCmd.Flags().String("name", "", "Name for the message queue")
 	createMessageQueueCmd.Flags().String("plan", "", "Plan ID for the message queue")
-	createMessageQueueCmd.Flags().String("type", "", "Type of the message queue (e.g., rabbitmq)")
+	createMessageQueueCmd.Flags().String("type", "", "Type of the message queue (e.g., RabbitMQ)")
 	createMessageQueueCmd.Flags().String("version", "", "Version of the message queue")
+	createMessageQueueCmd.Flags().String("allowlist", "", "Comma-separated list of IP addresses or CIDR ranges (e.g., 192.168.1.1,10.0.0.0/24)")
 	createMessageQueueCmd.MarkFlagRequired("namespace")
 	createMessageQueueCmd.MarkFlagRequired("name")
 	createMessageQueueCmd.MarkFlagRequired("plan")
