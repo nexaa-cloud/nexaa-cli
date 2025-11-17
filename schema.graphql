@@ -14,7 +14,7 @@ type Address {
 }
 
 input AllowListInput {
-  "Ip address or a Ip cidr including the subnet"
+  "IP address or a CIDR including the subnet"
   ip: String!
 
   ""
@@ -715,6 +715,11 @@ enum ContainerType {
   DEFAULT
 }
 
+enum CpuUnit {
+  mCPU
+  CPU
+}
+
 input CreateContainerInput {
   ""
   namespaceId: Int!
@@ -951,7 +956,9 @@ input ManualScalingInput {
 }
 
 type MessageQueue {
+  adminUser: MessageQueueUser
   id: String!
+  ingress: MessageQueueIngress!
   locked: Boolean!
   name: String!
   namespace: Namespace!
@@ -975,15 +982,23 @@ input MessageQueueCreateInput {
   allowList: [AllowListInput!]!
 }
 
+type MessageQueueIngress {
+  allowList: [String!]
+  domainName: String!
+  id: String!
+  status: Status!
+  tlsEnabled: Boolean!
+}
+
 type MessageQueuePlan {
-  cpu: Int!
+  cpu(unit: CpuUnit = CPU): Float!
   group: String!
   id: String!
   memory(unit: Unit = GB): Float!
   name: String!
   price: Price!
   replicas: Int!
-  storage: Int!
+  storage(unit: Unit = GB): Float!
 }
 
 input MessageQueueResourceInput {
@@ -1006,6 +1021,14 @@ input MessageQueueSpecInput {
 
   ""
   version: String!
+}
+
+type MessageQueueUser {
+  dsn: String!
+  name: String!
+  password: String!
+  role: String!
+  status: String!
 }
 
 type Mount {
@@ -1268,6 +1291,20 @@ type Spec {
 enum State {
   PRESENT
   ABSENT
+}
+
+enum Status {
+  UNPROVISIONED
+  CREATE_REQUESTED
+  CREATING
+  CREATED
+  UPDATING
+  UPDATED
+  ON_HOLD
+  FAILED
+  DELETE_PENDING
+  DELETE_REQUESTED
+  DELETING
 }
 
 type Subscription {

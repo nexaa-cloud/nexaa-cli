@@ -152,10 +152,10 @@ var listMessageQueuePlansCmd = &cobra.Command{
 		}
 
 		w := tabwriter.NewWriter(os.Stdout, 0, 0, 3, ' ', tabwriter.Debug)
-		fmt.Fprintln(w, "ID\t NAME\t GROUP\t CPU\t MEMORY (GB)\t REPLICAS\t STORAGE\t")
+		fmt.Fprintln(w, "ID\t NAME\t GROUP\t CPU\t MEMORY (GB)\t REPLICAS\t STORAGE (GB)\t")
 
 		for _, plan := range plans {
-			fmt.Fprintf(w, "%s\t %s\t %s\t %d\t %.2f\t %d\t %d\t\n",
+			fmt.Fprintf(w, "%s\t %s\t %s\t %.2f\t %.2f\t %d\t %.2f\t\n",
 				plan.Id, plan.Name, plan.Group, plan.Cpu, plan.Memory, plan.Replicas, plan.Storage)
 		}
 

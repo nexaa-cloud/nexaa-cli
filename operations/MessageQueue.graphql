@@ -9,7 +9,7 @@ fragment MessageQueueResult on MessageQueue {
 }
 
 fragment MessageQueuePlanResult on MessageQueuePlan {
-  cpu
+  cpu(unit: CPU)
   group
   id
   memory(unit: GB)
@@ -19,7 +19,7 @@ fragment MessageQueuePlanResult on MessageQueuePlan {
     currency
   }
   replicas
-  storage
+  storage(unit: GB)
 }
 
 fragment MessageQueueVersionResult on MessageQueueSpec {

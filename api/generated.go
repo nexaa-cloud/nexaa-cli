@@ -10,7 +10,7 @@ import (
 )
 
 type AllowListInput struct {
-	// Ip address or a Ip cidr including the subnet
+	// IP address or a CIDR including the subnet
 	Ip    string `json:"ip"`
 	State State  `json:"state"`
 }
@@ -1694,18 +1694,18 @@ func (v *MessageQueueCreateInput) GetAllowList() []AllowListInput { return v.All
 
 // MessageQueuePlanResult includes the GraphQL fields of MessageQueuePlan requested by the fragment MessageQueuePlanResult.
 type MessageQueuePlanResult struct {
-	Cpu      int                         `json:"cpu"`
+	Cpu      float64                     `json:"cpu"`
 	Group    string                      `json:"group"`
 	Id       string                      `json:"id"`
 	Memory   float64                     `json:"memory"`
 	Name     string                      `json:"name"`
 	Price    MessageQueuePlanResultPrice `json:"price"`
 	Replicas int                         `json:"replicas"`
-	Storage  int                         `json:"storage"`
+	Storage  float64                     `json:"storage"`
 }
 
 // GetCpu returns MessageQueuePlanResult.Cpu, and is useful for accessing the field via an interface.
-func (v *MessageQueuePlanResult) GetCpu() int { return v.Cpu }
+func (v *MessageQueuePlanResult) GetCpu() float64 { return v.Cpu }
 
 // GetGroup returns MessageQueuePlanResult.Group, and is useful for accessing the field via an interface.
 func (v *MessageQueuePlanResult) GetGroup() string { return v.Group }
@@ -1726,7 +1726,7 @@ func (v *MessageQueuePlanResult) GetPrice() MessageQueuePlanResultPrice { return
 func (v *MessageQueuePlanResult) GetReplicas() int { return v.Replicas }
 
 // GetStorage returns MessageQueuePlanResult.Storage, and is useful for accessing the field via an interface.
-func (v *MessageQueuePlanResult) GetStorage() int { return v.Storage }
+func (v *MessageQueuePlanResult) GetStorage() float64 { return v.Storage }
 
 // MessageQueuePlanResultPrice includes the requested fields of the GraphQL type Price.
 type MessageQueuePlanResultPrice struct {
@@ -5673,7 +5673,7 @@ query messageQueuePlansGet {
 	}
 }
 fragment MessageQueuePlanResult on MessageQueuePlan {
-	cpu
+	cpu(unit: CPU)
 	group
 	id
 	memory(unit: GB)
@@ -5683,7 +5683,7 @@ fragment MessageQueuePlanResult on MessageQueuePlan {
 		currency
 	}
 	replicas
-	storage
+	storage(unit: GB)
 }
 `
 
