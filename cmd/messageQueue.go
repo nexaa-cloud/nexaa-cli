@@ -31,10 +31,10 @@ var listMessageQueuesCmd = &cobra.Command{
 		}
 
 		w := tabwriter.NewWriter(os.Stdout, 0, 0, 3, ' ', tabwriter.Debug)
-		fmt.Fprintln(w, "NAME\t NAMESPACE\t STATE\t LOCKED\t")
+		fmt.Fprintln(w, "NAME\t NAMESPACE\t STATE\t LOCKED\t ADMIN USER\t")
 
 		for _, queue := range queues {
-			fmt.Fprintf(w, "%s\t %s\t %s\t %t\t\n", queue.Name, queue.Namespace.Name, queue.State, queue.Locked)
+			fmt.Fprintf(w, "%s\t %s\t %s\t %t\t %s\t \n", queue.Name, queue.Namespace.Name, queue.State, queue.Locked, queue.AdminUser.Name)
 		}
 
 		w.Flush()
@@ -60,8 +60,8 @@ var getMessageQueueCmd = &cobra.Command{
 		}
 
 		w := tabwriter.NewWriter(os.Stdout, 0, 0, 3, ' ', tabwriter.Debug)
-		fmt.Fprintln(w, "NAME\t NAMESPACE\t STATE\t LOCKED\t")
-		fmt.Fprintf(w, "%s\t %s\t %s\t %t\t\n", queue.Name, queue.Namespace.Name, queue.State, queue.Locked)
+		fmt.Fprintln(w, "NAME\t NAMESPACE\t STATE\t LOCKED\t ADMIN USER\t")
+		fmt.Fprintf(w, "%s\t %s\t %s\t %t\t %s\t \n", queue.Name, queue.Namespace.Name, queue.State, queue.Locked, queue.AdminUser.Name)
 		w.Flush()
 	},
 }
@@ -189,6 +189,34 @@ var listMessageQueueVersionsCmd = &cobra.Command{
 	},
 }
 
+var listAdminUserCredentialsCmd = &cobra.Command{
+	Use:   "admin-credentials",
+	Short: "List admin user credentials for a message queue",
+	Run: func(cmd *cobra.Command, args []string) {
+		namespace, _ := cmd.Flags().GetString("namespace")
+		name, _ := cmd.Flags().GetString("name")
+		username, _ := cmd.Flags().GetString("username")
+		client := api.NewClient()
+
+		input := api.MessageQueueResourceInput{
+			Name:      name,
+			Namespace: namespace,
+		}
+
+		credentials, err := client.MessageQueueAdminCredentials(input, username)
+		if err != nil {
+			log.Fatalf("Failed to get admin user credentials: %v", err)
+		}
+
+		fmt.Println("Admin User Credentials:")
+		fmt.Printf("Username: %s\n", credentials.Name)
+		fmt.Printf("Password: %s\n", credentials.Password)
+		fmt.Printf("Role: %s\n", credentials.Role)
+		fmt.Printf("DSN: %s\n", credentials.Dsn)
+		fmt.Printf("Status: %s\n", credentials.Status)
+	},
+}
+
 func init() {
 	// List command
 	messageQueueCmd.AddCommand(listMessageQueuesCmd)
@@ -226,4 +254,13 @@ func init() {
 
 	// Versions command
 	messageQueueCmd.AddCommand(listMessageQueueVersionsCmd)
+
+	// Admin credentials command
+	listAdminUserCredentialsCmd.Flags().String("namespace", "", "Namespace name")
+	listAdminUserCredentialsCmd.Flags().String("name", "", "Name of the message queue")
+	listAdminUserCredentialsCmd.Flags().String("username", "", "Admin username")
+	listAdminUserCredentialsCmd.MarkFlagRequired("namespace")
+	listAdminUserCredentialsCmd.MarkFlagRequired("name")
+	listAdminUserCredentialsCmd.MarkFlagRequired("username")
+	messageQueueCmd.AddCommand(listAdminUserCredentialsCmd)
 }

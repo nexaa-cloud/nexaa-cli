@@ -6,6 +6,11 @@ fragment MessageQueueResult on MessageQueue {
   namespace {
     name
   }
+  adminUser {
+    name
+    role
+    status
+  }
 }
 
 fragment MessageQueuePlanResult on MessageQueuePlan {
@@ -23,9 +28,17 @@ fragment MessageQueuePlanResult on MessageQueuePlan {
 }
 
 fragment MessageQueueVersionResult on MessageQueueSpec {
-    patchLevelVersion
-    type
-    version
+  patchLevelVersion
+  type
+  version
+}
+
+fragment MessageQueueUserCredentialsResult on MessageQueueUser {
+  name
+  dsn
+  password
+  role
+  status
 }
 
 query messageQueuesGet {
@@ -63,5 +76,18 @@ query messageQueueVersionsGet {
   # @genqlient(flatten: true)
   messageQueueVersions {
     ...MessageQueueVersionResult
+  }
+}
+
+query messageQueueUserCredentialsGet(
+  $messageQueueInput: MessageQueueResourceInput!
+  $username: String!
+) {
+  # @genqlient(flatten: true)
+  messageQueueUserCredentials(
+    messageQueue: $messageQueueInput
+    username: $username
+  ) {
+    ...MessageQueueUserCredentialsResult
   }
 }

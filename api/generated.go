@@ -1753,11 +1753,12 @@ func (v *MessageQueueResourceInput) GetNamespace() string { return v.Namespace }
 
 // MessageQueueResult includes the GraphQL fields of MessageQueue requested by the fragment MessageQueueResult.
 type MessageQueueResult struct {
-	Id        string                      `json:"id"`
-	Locked    bool                        `json:"locked"`
-	Name      string                      `json:"name"`
-	State     string                      `json:"state"`
-	Namespace MessageQueueResultNamespace `json:"namespace"`
+	Id        string                                       `json:"id"`
+	Locked    bool                                         `json:"locked"`
+	Name      string                                       `json:"name"`
+	State     string                                       `json:"state"`
+	Namespace MessageQueueResultNamespace                  `json:"namespace"`
+	AdminUser *MessageQueueResultAdminUserMessageQueueUser `json:"adminUser"`
 }
 
 // GetId returns MessageQueueResult.Id, and is useful for accessing the field via an interface.
@@ -1774,6 +1775,27 @@ func (v *MessageQueueResult) GetState() string { return v.State }
 
 // GetNamespace returns MessageQueueResult.Namespace, and is useful for accessing the field via an interface.
 func (v *MessageQueueResult) GetNamespace() MessageQueueResultNamespace { return v.Namespace }
+
+// GetAdminUser returns MessageQueueResult.AdminUser, and is useful for accessing the field via an interface.
+func (v *MessageQueueResult) GetAdminUser() *MessageQueueResultAdminUserMessageQueueUser {
+	return v.AdminUser
+}
+
+// MessageQueueResultAdminUserMessageQueueUser includes the requested fields of the GraphQL type MessageQueueUser.
+type MessageQueueResultAdminUserMessageQueueUser struct {
+	Name   string `json:"name"`
+	Role   string `json:"role"`
+	Status string `json:"status"`
+}
+
+// GetName returns MessageQueueResultAdminUserMessageQueueUser.Name, and is useful for accessing the field via an interface.
+func (v *MessageQueueResultAdminUserMessageQueueUser) GetName() string { return v.Name }
+
+// GetRole returns MessageQueueResultAdminUserMessageQueueUser.Role, and is useful for accessing the field via an interface.
+func (v *MessageQueueResultAdminUserMessageQueueUser) GetRole() string { return v.Role }
+
+// GetStatus returns MessageQueueResultAdminUserMessageQueueUser.Status, and is useful for accessing the field via an interface.
+func (v *MessageQueueResultAdminUserMessageQueueUser) GetStatus() string { return v.Status }
 
 // MessageQueueResultNamespace includes the requested fields of the GraphQL type Namespace.
 type MessageQueueResultNamespace struct {
@@ -1793,6 +1815,30 @@ func (v *MessageQueueSpecInput) GetType() string { return v.Type }
 
 // GetVersion returns MessageQueueSpecInput.Version, and is useful for accessing the field via an interface.
 func (v *MessageQueueSpecInput) GetVersion() string { return v.Version }
+
+// MessageQueueUserCredentialsResult includes the GraphQL fields of MessageQueueUser requested by the fragment MessageQueueUserCredentialsResult.
+type MessageQueueUserCredentialsResult struct {
+	Name     string `json:"name"`
+	Dsn      string `json:"dsn"`
+	Password string `json:"password"`
+	Role     string `json:"role"`
+	Status   string `json:"status"`
+}
+
+// GetName returns MessageQueueUserCredentialsResult.Name, and is useful for accessing the field via an interface.
+func (v *MessageQueueUserCredentialsResult) GetName() string { return v.Name }
+
+// GetDsn returns MessageQueueUserCredentialsResult.Dsn, and is useful for accessing the field via an interface.
+func (v *MessageQueueUserCredentialsResult) GetDsn() string { return v.Dsn }
+
+// GetPassword returns MessageQueueUserCredentialsResult.Password, and is useful for accessing the field via an interface.
+func (v *MessageQueueUserCredentialsResult) GetPassword() string { return v.Password }
+
+// GetRole returns MessageQueueUserCredentialsResult.Role, and is useful for accessing the field via an interface.
+func (v *MessageQueueUserCredentialsResult) GetRole() string { return v.Role }
+
+// GetStatus returns MessageQueueUserCredentialsResult.Status, and is useful for accessing the field via an interface.
+func (v *MessageQueueUserCredentialsResult) GetStatus() string { return v.Status }
 
 // MessageQueueVersionResult includes the GraphQL fields of MessageQueueSpec requested by the fragment MessageQueueVersionResult.
 type MessageQueueVersionResult struct {
@@ -2365,6 +2411,20 @@ type __messageQueueGetInput struct {
 func (v *__messageQueueGetInput) GetMessageQueueInput() MessageQueueResourceInput {
 	return v.MessageQueueInput
 }
+
+// __messageQueueUserCredentialsGetInput is used internally by genqlient
+type __messageQueueUserCredentialsGetInput struct {
+	MessageQueueInput MessageQueueResourceInput `json:"messageQueueInput"`
+	Username          string                    `json:"username"`
+}
+
+// GetMessageQueueInput returns __messageQueueUserCredentialsGetInput.MessageQueueInput, and is useful for accessing the field via an interface.
+func (v *__messageQueueUserCredentialsGetInput) GetMessageQueueInput() MessageQueueResourceInput {
+	return v.MessageQueueInput
+}
+
+// GetUsername returns __messageQueueUserCredentialsGetInput.Username, and is useful for accessing the field via an interface.
+func (v *__messageQueueUserCredentialsGetInput) GetUsername() string { return v.Username }
 
 // __modifyCloudDatabaseClusterUserInput is used internally by genqlient
 type __modifyCloudDatabaseClusterUserInput struct {
@@ -3444,6 +3504,16 @@ type messageQueuePlansGetResponse struct {
 // GetMessageQueuePlans returns messageQueuePlansGetResponse.MessageQueuePlans, and is useful for accessing the field via an interface.
 func (v *messageQueuePlansGetResponse) GetMessageQueuePlans() []MessageQueuePlanResult {
 	return v.MessageQueuePlans
+}
+
+// messageQueueUserCredentialsGetResponse is returned by messageQueueUserCredentialsGet on success.
+type messageQueueUserCredentialsGetResponse struct {
+	MessageQueueUserCredentials MessageQueueUserCredentialsResult `json:"messageQueueUserCredentials"`
+}
+
+// GetMessageQueueUserCredentials returns messageQueueUserCredentialsGetResponse.MessageQueueUserCredentials, and is useful for accessing the field via an interface.
+func (v *messageQueueUserCredentialsGetResponse) GetMessageQueueUserCredentials() MessageQueueUserCredentialsResult {
+	return v.MessageQueueUserCredentials
 }
 
 // messageQueueVersionsGetResponse is returned by messageQueueVersionsGet on success.
@@ -5562,6 +5632,11 @@ fragment MessageQueueResult on MessageQueue {
 	namespace {
 		name
 	}
+	adminUser {
+		name
+		role
+		status
+	}
 }
 `
 
@@ -5637,6 +5712,11 @@ fragment MessageQueueResult on MessageQueue {
 	namespace {
 		name
 	}
+	adminUser {
+		name
+		role
+		status
+	}
 }
 `
 
@@ -5708,6 +5788,49 @@ func messageQueuePlansGet(
 	return data_, err_
 }
 
+// The query executed by messageQueueUserCredentialsGet.
+const messageQueueUserCredentialsGet_Operation = `
+query messageQueueUserCredentialsGet ($messageQueueInput: MessageQueueResourceInput!, $username: String!) {
+	messageQueueUserCredentials(messageQueue: $messageQueueInput, username: $username) {
+		... MessageQueueUserCredentialsResult
+	}
+}
+fragment MessageQueueUserCredentialsResult on MessageQueueUser {
+	name
+	dsn
+	password
+	role
+	status
+}
+`
+
+func messageQueueUserCredentialsGet(
+	ctx_ context.Context,
+	client_ graphql.Client,
+	messageQueueInput MessageQueueResourceInput,
+	username string,
+) (data_ *messageQueueUserCredentialsGetResponse, err_ error) {
+	req_ := &graphql.Request{
+		OpName: "messageQueueUserCredentialsGet",
+		Query:  messageQueueUserCredentialsGet_Operation,
+		Variables: &__messageQueueUserCredentialsGetInput{
+			MessageQueueInput: messageQueueInput,
+			Username:          username,
+		},
+	}
+
+	data_ = &messageQueueUserCredentialsGetResponse{}
+	resp_ := &graphql.Response{Data: data_}
+
+	err_ = client_.MakeRequest(
+		ctx_,
+		req_,
+		resp_,
+	)
+
+	return data_, err_
+}
+
 // The query executed by messageQueueVersionsGet.
 const messageQueueVersionsGet_Operation = `
 query messageQueueVersionsGet {
@@ -5757,6 +5880,11 @@ fragment MessageQueueResult on MessageQueue {
 	state
 	namespace {
 		name
+	}
+	adminUser {
+		name
+		role
+		status
 	}
 }
 `

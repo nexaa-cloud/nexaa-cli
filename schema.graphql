@@ -1212,6 +1212,7 @@ type Query {
   locations: [Location!]!
   messageQueue(messageQueue: MessageQueueResourceInput!): MessageQueue!
   messageQueuePlans: [MessageQueuePlan!]!
+  messageQueueUserCredentials(messageQueue: MessageQueueResourceInput!, username: String!): MessageQueueUser!
   messageQueueVersions: [MessageQueueSpec!]!
   messageQueues: [MessageQueue!]!
   namespace(id: ID = null, name: String = null): Namespace!

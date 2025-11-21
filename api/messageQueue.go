@@ -60,3 +60,11 @@ func (client *Client) MessageQueueVersions() ([]MessageQueueVersionResult, error
 
 	return result, nil
 }
+
+func (client *Client) MessageQueueAdminCredentials(input MessageQueueResourceInput, username string) (MessageQueueUserCredentialsResult, error) {
+	resp, err := messageQueueUserCredentialsGet(context.Background(), *client.client, input, username)
+	if err != nil {
+		return MessageQueueUserCredentialsResult{}, err
+	}
+	return resp.GetMessageQueueUserCredentials(), nil
+}
