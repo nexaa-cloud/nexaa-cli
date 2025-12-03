@@ -1,16 +1,35 @@
+version: "2"
 linters:
   enable:
-    - gofmt
     - nolintlint
-
-linters-settings:
-  errcheck:
-    exclude-functions:
-      - (*github.com/spf13/cobra.Command).RegisterFlagCompletionFunc
-      - (*github.com/spf13/cobra.Command).MarkFlagRequired
-      - (*github.com/spf13/cobra.Command).Usage
-      - (*github.com/spf13/pflag.FlagSet).MarkDeprecated
-      - (*github.com/spf13/pflag.FlagSet).MarkHidden
+  settings:
+    errcheck:
+      exclude-functions:
+        - (*github.com/spf13/cobra.Command).RegisterFlagCompletionFunc
+        - (*github.com/spf13/cobra.Command).MarkFlagRequired
+        - (*github.com/spf13/cobra.Command).Usage
+        - (*github.com/spf13/pflag.FlagSet).MarkDeprecated
+        - (*github.com/spf13/pflag.FlagSet).MarkHidden
+  exclusions:
+    generated: lax
+    presets:
+      - comments
+      - common-false-positives
+      - legacy
+      - std-error-handling
+    paths:
+      - third_party$
+      - builtin$
+      - examples$
 issues:
   max-issues-per-linter: 0
   max-same-issues: 0
+formatters:
+  enable:
+    - gofmt
+  exclusions:
+    generated: lax
+    paths:
+      - third_party$
+      - builtin$
+      - examples$
