@@ -61,7 +61,7 @@ mutation messageQueueCreate($messageQueueInput: MessageQueueCreateInput!) {
     ...MessageQueueResult
   }
 }
-mutation messageQueueDelete($messageQueueInput: ResourceNameInput!) {
+mutation messageQueueDelete($messageQueueInput: MessageQueueResourceInput!) {
   messageQueueDelete(messageQueue: $messageQueueInput)
 }
 

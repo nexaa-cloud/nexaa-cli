@@ -2038,17 +2038,6 @@ func (v *ReplicasInput) GetMinimum() int { return v.Minimum }
 // GetMaximum returns ReplicasInput.Maximum, and is useful for accessing the field via an interface.
 func (v *ReplicasInput) GetMaximum() int { return v.Maximum }
 
-type ResourceNameInput struct {
-	Name      string `json:"name"`
-	Namespace string `json:"namespace"`
-}
-
-// GetName returns ResourceNameInput.Name, and is useful for accessing the field via an interface.
-func (v *ResourceNameInput) GetName() string { return v.Name }
-
-// GetNamespace returns ResourceNameInput.Namespace, and is useful for accessing the field via an interface.
-func (v *ResourceNameInput) GetNamespace() string { return v.Namespace }
-
 type ScalingInput struct {
 	Auto   *AutoScalingInput   `json:"auto"`
 	Manual *ManualScalingInput `json:"manual"`
@@ -2394,11 +2383,11 @@ func (v *__messageQueueCreateInput) GetMessageQueueInput() MessageQueueCreateInp
 
 // __messageQueueDeleteInput is used internally by genqlient
 type __messageQueueDeleteInput struct {
-	MessageQueueInput ResourceNameInput `json:"messageQueueInput"`
+	MessageQueueInput MessageQueueResourceInput `json:"messageQueueInput"`
 }
 
 // GetMessageQueueInput returns __messageQueueDeleteInput.MessageQueueInput, and is useful for accessing the field via an interface.
-func (v *__messageQueueDeleteInput) GetMessageQueueInput() ResourceNameInput {
+func (v *__messageQueueDeleteInput) GetMessageQueueInput() MessageQueueResourceInput {
 	return v.MessageQueueInput
 }
 
@@ -2526,6 +2515,7 @@ func (v *__volumeListInput) GetNamespaceName() string { return v.NamespaceName }
 
 // cloudDatabaseClusterCreateResponse is returned by cloudDatabaseClusterCreate on success.
 type cloudDatabaseClusterCreateResponse struct {
+	// Cost: complexity = 100, multipliers = [], defaultMultiplier = null
 	CloudDatabaseClusterCreate CloudDatabaseClusterResult `json:"cloudDatabaseClusterCreate"`
 }
 
@@ -2606,6 +2596,7 @@ func (v *cloudDatabaseClusterDatabaseCreateCloudDatabaseClusterDatabaseCreateDat
 
 // cloudDatabaseClusterDatabaseCreateResponse is returned by cloudDatabaseClusterDatabaseCreate on success.
 type cloudDatabaseClusterDatabaseCreateResponse struct {
+	// Cost: complexity = 100, multipliers = [], defaultMultiplier = null
 	CloudDatabaseClusterDatabaseCreate cloudDatabaseClusterDatabaseCreateCloudDatabaseClusterDatabaseCreateDatabase `json:"cloudDatabaseClusterDatabaseCreate"`
 }
 
@@ -2616,6 +2607,7 @@ func (v *cloudDatabaseClusterDatabaseCreateResponse) GetCloudDatabaseClusterData
 
 // cloudDatabaseClusterDatabaseDeleteResponse is returned by cloudDatabaseClusterDatabaseDelete on success.
 type cloudDatabaseClusterDatabaseDeleteResponse struct {
+	// Cost: complexity = 100, multipliers = [], defaultMultiplier = null
 	CloudDatabaseClusterDatabaseDelete bool `json:"cloudDatabaseClusterDatabaseDelete"`
 }
 
@@ -2626,6 +2618,7 @@ func (v *cloudDatabaseClusterDatabaseDeleteResponse) GetCloudDatabaseClusterData
 
 // cloudDatabaseClusterDeleteResponse is returned by cloudDatabaseClusterDelete on success.
 type cloudDatabaseClusterDeleteResponse struct {
+	// Cost: complexity = 100, multipliers = [], defaultMultiplier = null
 	CloudDatabaseClusterDelete bool `json:"cloudDatabaseClusterDelete"`
 }
 
@@ -2636,6 +2629,7 @@ func (v *cloudDatabaseClusterDeleteResponse) GetCloudDatabaseClusterDelete() boo
 
 // cloudDatabaseClusterModifyResponse is returned by cloudDatabaseClusterModify on success.
 type cloudDatabaseClusterModifyResponse struct {
+	// Cost: complexity = 100, multipliers = [], defaultMultiplier = null
 	CloudDatabaseClusterModify CloudDatabaseClusterResult `json:"cloudDatabaseClusterModify"`
 }
 
@@ -2646,6 +2640,7 @@ func (v *cloudDatabaseClusterModifyResponse) GetCloudDatabaseClusterModify() Clo
 
 // clusterPlansResponse is returned by clusterPlans on success.
 type clusterPlansResponse struct {
+	// Cost: complexity = 100, multipliers = [], defaultMultiplier = null
 	CloudDatabaseClusterPlans []CloudDatabaseClusterPlan `json:"cloudDatabaseClusterPlans"`
 }
 
@@ -2656,6 +2651,7 @@ func (v *clusterPlansResponse) GetCloudDatabaseClusterPlans() []CloudDatabaseClu
 
 // clusterVersionsResponse is returned by clusterVersions on success.
 type clusterVersionsResponse struct {
+	// Cost: complexity = 100, multipliers = [], defaultMultiplier = null
 	CloudDatabaseClusterVersions []CloudDatabaseClusterSpec `json:"cloudDatabaseClusterVersions"`
 }
 
@@ -2666,6 +2662,7 @@ func (v *clusterVersionsResponse) GetCloudDatabaseClusterVersions() []CloudDatab
 
 // containerByNameResponse is returned by containerByName on success.
 type containerByNameResponse struct {
+	// Cost: complexity = 100, multipliers = [], defaultMultiplier = null
 	Container ContainerResult `json:"container"`
 }
 
@@ -2674,6 +2671,7 @@ func (v *containerByNameResponse) GetContainer() ContainerResult { return v.Cont
 
 // containerCreateResponse is returned by containerCreate on success.
 type containerCreateResponse struct {
+	// Cost: complexity = 100, multipliers = [], defaultMultiplier = null
 	ContainerCreate ContainerResult `json:"containerCreate"`
 }
 
@@ -2682,6 +2680,7 @@ func (v *containerCreateResponse) GetContainerCreate() ContainerResult { return 
 
 // containerDeleteResponse is returned by containerDelete on success.
 type containerDeleteResponse struct {
+	// Cost: complexity = 100, multipliers = [], defaultMultiplier = null
 	ContainerDelete bool `json:"containerDelete"`
 }
 
@@ -2690,6 +2689,7 @@ func (v *containerDeleteResponse) GetContainerDelete() bool { return v.Container
 
 // containerJobByNameResponse is returned by containerJobByName on success.
 type containerJobByNameResponse struct {
+	// Cost: complexity = 100, multipliers = [], defaultMultiplier = null
 	ContainerJob ContainerJobResult `json:"containerJob"`
 }
 
@@ -2698,6 +2698,7 @@ func (v *containerJobByNameResponse) GetContainerJob() ContainerJobResult { retu
 
 // containerJobCreateResponse is returned by containerJobCreate on success.
 type containerJobCreateResponse struct {
+	// Cost: complexity = 100, multipliers = [], defaultMultiplier = null
 	ContainerJobCreate ContainerJobResult `json:"containerJobCreate"`
 }
 
@@ -2708,6 +2709,7 @@ func (v *containerJobCreateResponse) GetContainerJobCreate() ContainerJobResult 
 
 // containerJobDeleteResponse is returned by containerJobDelete on success.
 type containerJobDeleteResponse struct {
+	// Cost: complexity = 100, multipliers = [], defaultMultiplier = null
 	ContainerJobDelete bool `json:"containerJobDelete"`
 }
 
@@ -2876,6 +2878,7 @@ func (v *containerJobListNamespaceContainerJobsContainerJob) __premarshalJSON() 
 
 // containerJobListResponse is returned by containerJobList on success.
 type containerJobListResponse struct {
+	// Cost: complexity = 100, multipliers = [], defaultMultiplier = null
 	Namespace containerJobListNamespace `json:"namespace"`
 }
 
@@ -2884,6 +2887,7 @@ func (v *containerJobListResponse) GetNamespace() containerJobListNamespace { re
 
 // containerJobModifyResponse is returned by containerJobModify on success.
 type containerJobModifyResponse struct {
+	// Cost: complexity = 100, multipliers = [], defaultMultiplier = null
 	ContainerJobModify ContainerJobResult `json:"containerJobModify"`
 }
 
@@ -3078,6 +3082,7 @@ func (v *containerListNamespaceContainersContainer) __premarshalJSON() (*__prema
 
 // containerListResponse is returned by containerList on success.
 type containerListResponse struct {
+	// Cost: complexity = 100, multipliers = [], defaultMultiplier = null
 	Namespace containerListNamespace `json:"namespace"`
 }
 
@@ -3086,6 +3091,7 @@ func (v *containerListResponse) GetNamespace() containerListNamespace { return v
 
 // containerModifyResponse is returned by containerModify on success.
 type containerModifyResponse struct {
+	// Cost: complexity = 100, multipliers = [], defaultMultiplier = null
 	ContainerModify ContainerResult `json:"containerModify"`
 }
 
@@ -3094,6 +3100,7 @@ func (v *containerModifyResponse) GetContainerModify() ContainerResult { return 
 
 // createCloudDatabaseClusterDatabaseResponse is returned by createCloudDatabaseClusterDatabase on success.
 type createCloudDatabaseClusterDatabaseResponse struct {
+	// Cost: complexity = 100, multipliers = [], defaultMultiplier = null
 	CloudDatabaseClusterDatabaseCreate CloudDatabaseClusterDatabaseResult `json:"cloudDatabaseClusterDatabaseCreate"`
 }
 
@@ -3198,6 +3205,7 @@ func (v *createCloudDatabaseClusterUserCloudDatabaseClusterUserCreateDatabaseUse
 
 // createCloudDatabaseClusterUserResponse is returned by createCloudDatabaseClusterUser on success.
 type createCloudDatabaseClusterUserResponse struct {
+	// Cost: complexity = 100, multipliers = [], defaultMultiplier = null
 	CloudDatabaseClusterUserCreate createCloudDatabaseClusterUserCloudDatabaseClusterUserCreateDatabaseUser `json:"cloudDatabaseClusterUserCreate"`
 }
 
@@ -3208,6 +3216,7 @@ func (v *createCloudDatabaseClusterUserResponse) GetCloudDatabaseClusterUserCrea
 
 // deleteCloudDatabaseClusterDatabaseResponse is returned by deleteCloudDatabaseClusterDatabase on success.
 type deleteCloudDatabaseClusterDatabaseResponse struct {
+	// Cost: complexity = 100, multipliers = [], defaultMultiplier = null
 	CloudDatabaseClusterDatabaseDelete bool `json:"cloudDatabaseClusterDatabaseDelete"`
 }
 
@@ -3218,6 +3227,7 @@ func (v *deleteCloudDatabaseClusterDatabaseResponse) GetCloudDatabaseClusterData
 
 // deleteCloudDatabaseClusterUserResponse is returned by deleteCloudDatabaseClusterUser on success.
 type deleteCloudDatabaseClusterUserResponse struct {
+	// Cost: complexity = 100, multipliers = [], defaultMultiplier = null
 	CloudDatabaseClusterUserDelete bool `json:"cloudDatabaseClusterUserDelete"`
 }
 
@@ -3308,6 +3318,7 @@ func (v *getCloudDatabaseClusterDatabasesCloudDatabaseClusterDatabasesDatabase) 
 
 // getCloudDatabaseClusterDatabasesResponse is returned by getCloudDatabaseClusterDatabases on success.
 type getCloudDatabaseClusterDatabasesResponse struct {
+	// Cost: complexity = 100, multipliers = [], defaultMultiplier = null
 	CloudDatabaseCluster getCloudDatabaseClusterDatabasesCloudDatabaseCluster `json:"cloudDatabaseCluster"`
 }
 
@@ -3318,6 +3329,7 @@ func (v *getCloudDatabaseClusterDatabasesResponse) GetCloudDatabaseCluster() get
 
 // getCloudDatabaseClusterResponse is returned by getCloudDatabaseCluster on success.
 type getCloudDatabaseClusterResponse struct {
+	// Cost: complexity = 100, multipliers = [], defaultMultiplier = null
 	CloudDatabaseCluster CloudDatabaseClusterResult `json:"cloudDatabaseCluster"`
 }
 
@@ -3338,6 +3350,7 @@ func (v *getCloudDatabaseClusterUserCredentialsCloudDatabaseClusterUserCredentia
 
 // getCloudDatabaseClusterUserCredentialsResponse is returned by getCloudDatabaseClusterUserCredentials on success.
 type getCloudDatabaseClusterUserCredentialsResponse struct {
+	// Cost: complexity = 750, multipliers = [], defaultMultiplier = null
 	CloudDatabaseClusterUserCredentials getCloudDatabaseClusterUserCredentialsCloudDatabaseClusterUserCredentialsDatabaseUser `json:"cloudDatabaseClusterUserCredentials"`
 }
 
@@ -3452,6 +3465,7 @@ func (v *getCloudDatabaseClusterUsersCloudDatabaseClusterUsersDatabaseUser) __pr
 
 // getCloudDatabaseClusterUsersResponse is returned by getCloudDatabaseClusterUsers on success.
 type getCloudDatabaseClusterUsersResponse struct {
+	// Cost: complexity = 100, multipliers = [], defaultMultiplier = null
 	CloudDatabaseCluster getCloudDatabaseClusterUsersCloudDatabaseCluster `json:"cloudDatabaseCluster"`
 }
 
@@ -3462,6 +3476,7 @@ func (v *getCloudDatabaseClusterUsersResponse) GetCloudDatabaseCluster() getClou
 
 // getCloudDatabaseClustersResponse is returned by getCloudDatabaseClusters on success.
 type getCloudDatabaseClustersResponse struct {
+	// Cost: complexity = 100, multipliers = [], defaultMultiplier = null
 	CloudDatabaseClusters []CloudDatabaseClusterResult `json:"cloudDatabaseClusters"`
 }
 
@@ -3472,6 +3487,7 @@ func (v *getCloudDatabaseClustersResponse) GetCloudDatabaseClusters() []CloudDat
 
 // messageQueueCreateResponse is returned by messageQueueCreate on success.
 type messageQueueCreateResponse struct {
+	// Cost: complexity = 100, multipliers = [], defaultMultiplier = null
 	MessageQueueCreate MessageQueueResult `json:"messageQueueCreate"`
 }
 
@@ -3482,6 +3498,7 @@ func (v *messageQueueCreateResponse) GetMessageQueueCreate() MessageQueueResult 
 
 // messageQueueDeleteResponse is returned by messageQueueDelete on success.
 type messageQueueDeleteResponse struct {
+	// Cost: complexity = 100, multipliers = [], defaultMultiplier = null
 	MessageQueueDelete bool `json:"messageQueueDelete"`
 }
 
@@ -3490,6 +3507,7 @@ func (v *messageQueueDeleteResponse) GetMessageQueueDelete() bool { return v.Mes
 
 // messageQueueGetResponse is returned by messageQueueGet on success.
 type messageQueueGetResponse struct {
+	// Cost: complexity = 100, multipliers = [], defaultMultiplier = null
 	MessageQueue MessageQueueResult `json:"messageQueue"`
 }
 
@@ -3498,6 +3516,7 @@ func (v *messageQueueGetResponse) GetMessageQueue() MessageQueueResult { return 
 
 // messageQueuePlansGetResponse is returned by messageQueuePlansGet on success.
 type messageQueuePlansGetResponse struct {
+	// Cost: complexity = 100, multipliers = [], defaultMultiplier = null
 	MessageQueuePlans []MessageQueuePlanResult `json:"messageQueuePlans"`
 }
 
@@ -3508,6 +3527,7 @@ func (v *messageQueuePlansGetResponse) GetMessageQueuePlans() []MessageQueuePlan
 
 // messageQueueUserCredentialsGetResponse is returned by messageQueueUserCredentialsGet on success.
 type messageQueueUserCredentialsGetResponse struct {
+	// Cost: complexity = 750, multipliers = [], defaultMultiplier = null
 	MessageQueueUserCredentials MessageQueueUserCredentialsResult `json:"messageQueueUserCredentials"`
 }
 
@@ -3518,6 +3538,7 @@ func (v *messageQueueUserCredentialsGetResponse) GetMessageQueueUserCredentials(
 
 // messageQueueVersionsGetResponse is returned by messageQueueVersionsGet on success.
 type messageQueueVersionsGetResponse struct {
+	// Cost: complexity = 100, multipliers = [], defaultMultiplier = null
 	MessageQueueVersions []MessageQueueVersionResult `json:"messageQueueVersions"`
 }
 
@@ -3528,6 +3549,7 @@ func (v *messageQueueVersionsGetResponse) GetMessageQueueVersions() []MessageQue
 
 // messageQueuesGetResponse is returned by messageQueuesGet on success.
 type messageQueuesGetResponse struct {
+	// Cost: complexity = 100, multipliers = [], defaultMultiplier = null
 	MessageQueues []MessageQueueResult `json:"messageQueues"`
 }
 
@@ -3630,6 +3652,7 @@ func (v *modifyCloudDatabaseClusterUserCloudDatabaseClusterUserModifyDatabaseUse
 
 // modifyCloudDatabaseClusterUserResponse is returned by modifyCloudDatabaseClusterUser on success.
 type modifyCloudDatabaseClusterUserResponse struct {
+	// Cost: complexity = 100, multipliers = [], defaultMultiplier = null
 	CloudDatabaseClusterUserModify modifyCloudDatabaseClusterUserCloudDatabaseClusterUserModifyDatabaseUser `json:"cloudDatabaseClusterUserModify"`
 }
 
@@ -3640,6 +3663,7 @@ func (v *modifyCloudDatabaseClusterUserResponse) GetCloudDatabaseClusterUserModi
 
 // namespaceCreateResponse is returned by namespaceCreate on success.
 type namespaceCreateResponse struct {
+	// Cost: complexity = 100, multipliers = [], defaultMultiplier = null
 	NamespaceCreate NamespaceResult `json:"namespaceCreate"`
 }
 
@@ -3648,6 +3672,7 @@ func (v *namespaceCreateResponse) GetNamespaceCreate() NamespaceResult { return 
 
 // namespaceDeleteResponse is returned by namespaceDelete on success.
 type namespaceDeleteResponse struct {
+	// Cost: complexity = 100, multipliers = [], defaultMultiplier = null
 	NamespaceDelete bool `json:"namespaceDelete"`
 }
 
@@ -3752,6 +3777,7 @@ func (v *namespaceListByNameNamespace) __premarshalJSON() (*__premarshalnamespac
 
 // namespaceListByNameResponse is returned by namespaceListByName on success.
 type namespaceListByNameResponse struct {
+	// Cost: complexity = 100, multipliers = [], defaultMultiplier = null
 	Namespace namespaceListByNameNamespace `json:"namespace"`
 }
 
@@ -3858,6 +3884,7 @@ func (v *namespaceListNamespacesNamespace) __premarshalJSON() (*__premarshalname
 
 // namespaceListResponse is returned by namespaceList on success.
 type namespaceListResponse struct {
+	// Cost: complexity = 100, multipliers = [], defaultMultiplier = null
 	Namespaces []namespaceListNamespacesNamespace `json:"namespaces"`
 }
 
@@ -3868,6 +3895,7 @@ func (v *namespaceListResponse) GetNamespaces() []namespaceListNamespacesNamespa
 
 // registryCreateResponse is returned by registryCreate on success.
 type registryCreateResponse struct {
+	// Cost: complexity = 100, multipliers = [], defaultMultiplier = null
 	RegistryConnectionCreate RegistryResult `json:"registryConnectionCreate"`
 }
 
@@ -3878,6 +3906,7 @@ func (v *registryCreateResponse) GetRegistryConnectionCreate() RegistryResult {
 
 // registryDeleteResponse is returned by registryDelete on success.
 type registryDeleteResponse struct {
+	// Cost: complexity = 100, multipliers = [], defaultMultiplier = null
 	RegistryConnectionDelete bool `json:"registryConnectionDelete"`
 }
 
@@ -3984,6 +4013,7 @@ func (v *registryListNamespacePrivateRegistriesPrivateRegistry) __premarshalJSON
 
 // registryListResponse is returned by registryList on success.
 type registryListResponse struct {
+	// Cost: complexity = 100, multipliers = [], defaultMultiplier = null
 	Namespace registryListNamespace `json:"namespace"`
 }
 
@@ -3992,6 +4022,7 @@ func (v *registryListResponse) GetNamespace() registryListNamespace { return v.N
 
 // volumeCreateResponse is returned by volumeCreate on success.
 type volumeCreateResponse struct {
+	// Cost: complexity = 100, multipliers = [], defaultMultiplier = null
 	VolumeCreate VolumeResult `json:"volumeCreate"`
 }
 
@@ -4000,6 +4031,7 @@ func (v *volumeCreateResponse) GetVolumeCreate() VolumeResult { return v.VolumeC
 
 // volumeDeleteResponse is returned by volumeDelete on success.
 type volumeDeleteResponse struct {
+	// Cost: complexity = 100, multipliers = [], defaultMultiplier = null
 	VolumeDelete bool `json:"volumeDelete"`
 }
 
@@ -4008,6 +4040,7 @@ func (v *volumeDeleteResponse) GetVolumeDelete() bool { return v.VolumeDelete }
 
 // volumeIncreaseResponse is returned by volumeIncrease on success.
 type volumeIncreaseResponse struct {
+	// Cost: complexity = 100, multipliers = [], defaultMultiplier = null
 	VolumeIncrease VolumeResult `json:"volumeIncrease"`
 }
 
@@ -4116,6 +4149,7 @@ func (v *volumeListNamespaceVolumesVolume) __premarshalJSON() (*__premarshalvolu
 
 // volumeListResponse is returned by volumeList on success.
 type volumeListResponse struct {
+	// Cost: complexity = 100, multipliers = [], defaultMultiplier = null
 	Namespace volumeListNamespace `json:"namespace"`
 }
 
@@ -5667,7 +5701,7 @@ func messageQueueCreate(
 
 // The mutation executed by messageQueueDelete.
 const messageQueueDelete_Operation = `
-mutation messageQueueDelete ($messageQueueInput: ResourceNameInput!) {
+mutation messageQueueDelete ($messageQueueInput: MessageQueueResourceInput!) {
 	messageQueueDelete(messageQueue: $messageQueueInput)
 }
 `
@@ -5675,7 +5709,7 @@ mutation messageQueueDelete ($messageQueueInput: ResourceNameInput!) {
 func messageQueueDelete(
 	ctx_ context.Context,
 	client_ graphql.Client,
-	messageQueueInput ResourceNameInput,
+	messageQueueInput MessageQueueResourceInput,
 ) (data_ *messageQueueDeleteResponse, err_ error) {
 	req_ := &graphql.Request{
 		OpName: "messageQueueDelete",

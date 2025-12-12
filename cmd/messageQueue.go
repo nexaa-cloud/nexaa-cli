@@ -89,6 +89,18 @@ var createMessageQueueCmd = &cobra.Command{
 			}
 		}
 
+		if allowlistStr == "" {
+			var allowListDefault []api.AllowListInput
+			allowListDefault = append(allowListDefault, api.AllowListInput{
+				Ip:    "0.0.0.0/0",
+				State: api.StatePresent,
+			}, api.AllowListInput{
+				Ip:    "::/0",
+				State: api.StatePresent,
+			})
+			allowList = allowListDefault
+		}
+
 		input := api.MessageQueueCreateInput{
 			Name:      name,
 			Namespace: namespace,
@@ -119,7 +131,7 @@ var deleteMessageQueueCmd = &cobra.Command{
 
 		client := api.NewClient()
 
-		input := api.ResourceNameInput{
+		input := api.MessageQueueResourceInput{
 			Name:      name,
 			Namespace: namespace,
 		}
