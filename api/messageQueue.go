@@ -31,7 +31,7 @@ func (client *Client) MessageQueueCreate(input MessageQueueCreateInput) (Message
 	return resp.GetMessageQueueCreate(), nil
 }
 
-func (client *Client) MessageQueueDelete(input ResourceNameInput) (bool, error) {
+func (client *Client) MessageQueueDelete(input MessageQueueResourceInput) (bool, error) {
 	resp, err := messageQueueDelete(context.Background(), *client.client, input)
 	if err != nil {
 		return false, err
