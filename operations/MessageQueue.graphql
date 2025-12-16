@@ -1,0 +1,93 @@
+fragment MessageQueueResult on MessageQueue {
+  id
+  locked
+  name
+  state
+  namespace {
+    name
+  }
+  adminUser {
+    name
+    role
+    status
+  }
+}
+
+fragment MessageQueuePlanResult on MessageQueuePlan {
+  cpu(unit: CPU)
+  group
+  id
+  memory(unit: GB)
+  name
+  price {
+    amount
+    currency
+  }
+  replicas
+  storage(unit: GB)
+}
+
+fragment MessageQueueVersionResult on MessageQueueSpec {
+  patchLevelVersion
+  type
+  version
+}
+
+fragment MessageQueueUserCredentialsResult on MessageQueueUser {
+  name
+  dsn
+  password
+  role
+  status
+}
+
+query messageQueuesGet {
+  # @genqlient(flatten: true)
+  messageQueues {
+    ...MessageQueueResult
+  }
+}
+
+query messageQueueGet($messageQueueInput: MessageQueueResourceInput!) {
+  # @genqlient(flatten: true)
+  messageQueue(messageQueue: $messageQueueInput) {
+    ...MessageQueueResult
+  }
+}
+
+mutation messageQueueCreate($messageQueueInput: MessageQueueCreateInput!) {
+  # @genqlient(flatten: true)
+  messageQueueCreate(messageQueue: $messageQueueInput) {
+    ...MessageQueueResult
+  }
+}
+mutation messageQueueDelete($messageQueueInput: MessageQueueResourceInput!) {
+  messageQueueDelete(messageQueue: $messageQueueInput)
+}
+
+query messageQueuePlansGet {
+  # @genqlient(flatten: true)
+  messageQueuePlans {
+    ...MessageQueuePlanResult
+  }
+}
+
+query messageQueueVersionsGet {
+  # @genqlient(flatten: true)
+  messageQueueVersions {
+    ...MessageQueueVersionResult
+  }
+}
+
+query messageQueueUserCredentialsGet(
+  $messageQueueInput: MessageQueueResourceInput!
+  $username: String!
+) {
+  # @genqlient(flatten: true)
+  messageQueueUserCredentials(
+    messageQueue: $messageQueueInput
+    username: $username
+  ) {
+    ...MessageQueueUserCredentialsResult
+  }
+}

@@ -9,6 +9,18 @@ import (
 	"github.com/Khan/genqlient/graphql"
 )
 
+type AllowListInput struct {
+	// IP address or a CIDR including the subnet
+	Ip    string `json:"ip"`
+	State State  `json:"state"`
+}
+
+// GetIp returns AllowListInput.Ip, and is useful for accessing the field via an interface.
+func (v *AllowListInput) GetIp() string { return v.Ip }
+
+// GetState returns AllowListInput.State, and is useful for accessing the field via an interface.
+func (v *AllowListInput) GetState() State { return v.State }
+
 type AutoScalingInput struct {
 	Replicas ReplicasInput             `json:"replicas"`
 	Triggers []AutoScalingTriggerInput `json:"triggers"`
@@ -1657,6 +1669,193 @@ type ManualScalingInput struct {
 // GetReplicas returns ManualScalingInput.Replicas, and is useful for accessing the field via an interface.
 func (v *ManualScalingInput) GetReplicas() int { return v.Replicas }
 
+type MessageQueueCreateInput struct {
+	Name      string                `json:"name"`
+	Namespace string                `json:"namespace"`
+	Plan      string                `json:"plan"`
+	Spec      MessageQueueSpecInput `json:"spec"`
+	AllowList []AllowListInput      `json:"allowList"`
+}
+
+// GetName returns MessageQueueCreateInput.Name, and is useful for accessing the field via an interface.
+func (v *MessageQueueCreateInput) GetName() string { return v.Name }
+
+// GetNamespace returns MessageQueueCreateInput.Namespace, and is useful for accessing the field via an interface.
+func (v *MessageQueueCreateInput) GetNamespace() string { return v.Namespace }
+
+// GetPlan returns MessageQueueCreateInput.Plan, and is useful for accessing the field via an interface.
+func (v *MessageQueueCreateInput) GetPlan() string { return v.Plan }
+
+// GetSpec returns MessageQueueCreateInput.Spec, and is useful for accessing the field via an interface.
+func (v *MessageQueueCreateInput) GetSpec() MessageQueueSpecInput { return v.Spec }
+
+// GetAllowList returns MessageQueueCreateInput.AllowList, and is useful for accessing the field via an interface.
+func (v *MessageQueueCreateInput) GetAllowList() []AllowListInput { return v.AllowList }
+
+// MessageQueuePlanResult includes the GraphQL fields of MessageQueuePlan requested by the fragment MessageQueuePlanResult.
+type MessageQueuePlanResult struct {
+	Cpu      float64                     `json:"cpu"`
+	Group    string                      `json:"group"`
+	Id       string                      `json:"id"`
+	Memory   float64                     `json:"memory"`
+	Name     string                      `json:"name"`
+	Price    MessageQueuePlanResultPrice `json:"price"`
+	Replicas int                         `json:"replicas"`
+	Storage  float64                     `json:"storage"`
+}
+
+// GetCpu returns MessageQueuePlanResult.Cpu, and is useful for accessing the field via an interface.
+func (v *MessageQueuePlanResult) GetCpu() float64 { return v.Cpu }
+
+// GetGroup returns MessageQueuePlanResult.Group, and is useful for accessing the field via an interface.
+func (v *MessageQueuePlanResult) GetGroup() string { return v.Group }
+
+// GetId returns MessageQueuePlanResult.Id, and is useful for accessing the field via an interface.
+func (v *MessageQueuePlanResult) GetId() string { return v.Id }
+
+// GetMemory returns MessageQueuePlanResult.Memory, and is useful for accessing the field via an interface.
+func (v *MessageQueuePlanResult) GetMemory() float64 { return v.Memory }
+
+// GetName returns MessageQueuePlanResult.Name, and is useful for accessing the field via an interface.
+func (v *MessageQueuePlanResult) GetName() string { return v.Name }
+
+// GetPrice returns MessageQueuePlanResult.Price, and is useful for accessing the field via an interface.
+func (v *MessageQueuePlanResult) GetPrice() MessageQueuePlanResultPrice { return v.Price }
+
+// GetReplicas returns MessageQueuePlanResult.Replicas, and is useful for accessing the field via an interface.
+func (v *MessageQueuePlanResult) GetReplicas() int { return v.Replicas }
+
+// GetStorage returns MessageQueuePlanResult.Storage, and is useful for accessing the field via an interface.
+func (v *MessageQueuePlanResult) GetStorage() float64 { return v.Storage }
+
+// MessageQueuePlanResultPrice includes the requested fields of the GraphQL type Price.
+type MessageQueuePlanResultPrice struct {
+	Amount   *int    `json:"amount"`
+	Currency *string `json:"currency"`
+}
+
+// GetAmount returns MessageQueuePlanResultPrice.Amount, and is useful for accessing the field via an interface.
+func (v *MessageQueuePlanResultPrice) GetAmount() *int { return v.Amount }
+
+// GetCurrency returns MessageQueuePlanResultPrice.Currency, and is useful for accessing the field via an interface.
+func (v *MessageQueuePlanResultPrice) GetCurrency() *string { return v.Currency }
+
+type MessageQueueResourceInput struct {
+	Name      string `json:"name"`
+	Namespace string `json:"namespace"`
+}
+
+// GetName returns MessageQueueResourceInput.Name, and is useful for accessing the field via an interface.
+func (v *MessageQueueResourceInput) GetName() string { return v.Name }
+
+// GetNamespace returns MessageQueueResourceInput.Namespace, and is useful for accessing the field via an interface.
+func (v *MessageQueueResourceInput) GetNamespace() string { return v.Namespace }
+
+// MessageQueueResult includes the GraphQL fields of MessageQueue requested by the fragment MessageQueueResult.
+type MessageQueueResult struct {
+	Id        string                                       `json:"id"`
+	Locked    bool                                         `json:"locked"`
+	Name      string                                       `json:"name"`
+	State     string                                       `json:"state"`
+	Namespace MessageQueueResultNamespace                  `json:"namespace"`
+	AdminUser *MessageQueueResultAdminUserMessageQueueUser `json:"adminUser"`
+}
+
+// GetId returns MessageQueueResult.Id, and is useful for accessing the field via an interface.
+func (v *MessageQueueResult) GetId() string { return v.Id }
+
+// GetLocked returns MessageQueueResult.Locked, and is useful for accessing the field via an interface.
+func (v *MessageQueueResult) GetLocked() bool { return v.Locked }
+
+// GetName returns MessageQueueResult.Name, and is useful for accessing the field via an interface.
+func (v *MessageQueueResult) GetName() string { return v.Name }
+
+// GetState returns MessageQueueResult.State, and is useful for accessing the field via an interface.
+func (v *MessageQueueResult) GetState() string { return v.State }
+
+// GetNamespace returns MessageQueueResult.Namespace, and is useful for accessing the field via an interface.
+func (v *MessageQueueResult) GetNamespace() MessageQueueResultNamespace { return v.Namespace }
+
+// GetAdminUser returns MessageQueueResult.AdminUser, and is useful for accessing the field via an interface.
+func (v *MessageQueueResult) GetAdminUser() *MessageQueueResultAdminUserMessageQueueUser {
+	return v.AdminUser
+}
+
+// MessageQueueResultAdminUserMessageQueueUser includes the requested fields of the GraphQL type MessageQueueUser.
+type MessageQueueResultAdminUserMessageQueueUser struct {
+	Name   string `json:"name"`
+	Role   string `json:"role"`
+	Status string `json:"status"`
+}
+
+// GetName returns MessageQueueResultAdminUserMessageQueueUser.Name, and is useful for accessing the field via an interface.
+func (v *MessageQueueResultAdminUserMessageQueueUser) GetName() string { return v.Name }
+
+// GetRole returns MessageQueueResultAdminUserMessageQueueUser.Role, and is useful for accessing the field via an interface.
+func (v *MessageQueueResultAdminUserMessageQueueUser) GetRole() string { return v.Role }
+
+// GetStatus returns MessageQueueResultAdminUserMessageQueueUser.Status, and is useful for accessing the field via an interface.
+func (v *MessageQueueResultAdminUserMessageQueueUser) GetStatus() string { return v.Status }
+
+// MessageQueueResultNamespace includes the requested fields of the GraphQL type Namespace.
+type MessageQueueResultNamespace struct {
+	Name string `json:"name"`
+}
+
+// GetName returns MessageQueueResultNamespace.Name, and is useful for accessing the field via an interface.
+func (v *MessageQueueResultNamespace) GetName() string { return v.Name }
+
+type MessageQueueSpecInput struct {
+	Type    string `json:"type"`
+	Version string `json:"version"`
+}
+
+// GetType returns MessageQueueSpecInput.Type, and is useful for accessing the field via an interface.
+func (v *MessageQueueSpecInput) GetType() string { return v.Type }
+
+// GetVersion returns MessageQueueSpecInput.Version, and is useful for accessing the field via an interface.
+func (v *MessageQueueSpecInput) GetVersion() string { return v.Version }
+
+// MessageQueueUserCredentialsResult includes the GraphQL fields of MessageQueueUser requested by the fragment MessageQueueUserCredentialsResult.
+type MessageQueueUserCredentialsResult struct {
+	Name     string `json:"name"`
+	Dsn      string `json:"dsn"`
+	Password string `json:"password"`
+	Role     string `json:"role"`
+	Status   string `json:"status"`
+}
+
+// GetName returns MessageQueueUserCredentialsResult.Name, and is useful for accessing the field via an interface.
+func (v *MessageQueueUserCredentialsResult) GetName() string { return v.Name }
+
+// GetDsn returns MessageQueueUserCredentialsResult.Dsn, and is useful for accessing the field via an interface.
+func (v *MessageQueueUserCredentialsResult) GetDsn() string { return v.Dsn }
+
+// GetPassword returns MessageQueueUserCredentialsResult.Password, and is useful for accessing the field via an interface.
+func (v *MessageQueueUserCredentialsResult) GetPassword() string { return v.Password }
+
+// GetRole returns MessageQueueUserCredentialsResult.Role, and is useful for accessing the field via an interface.
+func (v *MessageQueueUserCredentialsResult) GetRole() string { return v.Role }
+
+// GetStatus returns MessageQueueUserCredentialsResult.Status, and is useful for accessing the field via an interface.
+func (v *MessageQueueUserCredentialsResult) GetStatus() string { return v.Status }
+
+// MessageQueueVersionResult includes the GraphQL fields of MessageQueueSpec requested by the fragment MessageQueueVersionResult.
+type MessageQueueVersionResult struct {
+	PatchLevelVersion string `json:"patchLevelVersion"`
+	Type              string `json:"type"`
+	Version           string `json:"version"`
+}
+
+// GetPatchLevelVersion returns MessageQueueVersionResult.PatchLevelVersion, and is useful for accessing the field via an interface.
+func (v *MessageQueueVersionResult) GetPatchLevelVersion() string { return v.PatchLevelVersion }
+
+// GetType returns MessageQueueVersionResult.Type, and is useful for accessing the field via an interface.
+func (v *MessageQueueVersionResult) GetType() string { return v.Type }
+
+// GetVersion returns MessageQueueVersionResult.Version, and is useful for accessing the field via an interface.
+func (v *MessageQueueVersionResult) GetVersion() string { return v.Version }
+
 type MountInput struct {
 	// Path to mount the volume in the container.
 	Path   string           `json:"path"`
@@ -2172,6 +2371,50 @@ func (v *__getCloudDatabaseClusterUsersInput) GetCloudDatabaseCluster() CloudDat
 	return v.CloudDatabaseCluster
 }
 
+// __messageQueueCreateInput is used internally by genqlient
+type __messageQueueCreateInput struct {
+	MessageQueueInput MessageQueueCreateInput `json:"messageQueueInput"`
+}
+
+// GetMessageQueueInput returns __messageQueueCreateInput.MessageQueueInput, and is useful for accessing the field via an interface.
+func (v *__messageQueueCreateInput) GetMessageQueueInput() MessageQueueCreateInput {
+	return v.MessageQueueInput
+}
+
+// __messageQueueDeleteInput is used internally by genqlient
+type __messageQueueDeleteInput struct {
+	MessageQueueInput MessageQueueResourceInput `json:"messageQueueInput"`
+}
+
+// GetMessageQueueInput returns __messageQueueDeleteInput.MessageQueueInput, and is useful for accessing the field via an interface.
+func (v *__messageQueueDeleteInput) GetMessageQueueInput() MessageQueueResourceInput {
+	return v.MessageQueueInput
+}
+
+// __messageQueueGetInput is used internally by genqlient
+type __messageQueueGetInput struct {
+	MessageQueueInput MessageQueueResourceInput `json:"messageQueueInput"`
+}
+
+// GetMessageQueueInput returns __messageQueueGetInput.MessageQueueInput, and is useful for accessing the field via an interface.
+func (v *__messageQueueGetInput) GetMessageQueueInput() MessageQueueResourceInput {
+	return v.MessageQueueInput
+}
+
+// __messageQueueUserCredentialsGetInput is used internally by genqlient
+type __messageQueueUserCredentialsGetInput struct {
+	MessageQueueInput MessageQueueResourceInput `json:"messageQueueInput"`
+	Username          string                    `json:"username"`
+}
+
+// GetMessageQueueInput returns __messageQueueUserCredentialsGetInput.MessageQueueInput, and is useful for accessing the field via an interface.
+func (v *__messageQueueUserCredentialsGetInput) GetMessageQueueInput() MessageQueueResourceInput {
+	return v.MessageQueueInput
+}
+
+// GetUsername returns __messageQueueUserCredentialsGetInput.Username, and is useful for accessing the field via an interface.
+func (v *__messageQueueUserCredentialsGetInput) GetUsername() string { return v.Username }
+
 // __modifyCloudDatabaseClusterUserInput is used internally by genqlient
 type __modifyCloudDatabaseClusterUserInput struct {
 	UserInput CloudDatabaseClusterUserModifyInput `json:"userInput"`
@@ -2272,6 +2515,7 @@ func (v *__volumeListInput) GetNamespaceName() string { return v.NamespaceName }
 
 // cloudDatabaseClusterCreateResponse is returned by cloudDatabaseClusterCreate on success.
 type cloudDatabaseClusterCreateResponse struct {
+	// Cost: complexity = 100, multipliers = [], defaultMultiplier = null
 	CloudDatabaseClusterCreate CloudDatabaseClusterResult `json:"cloudDatabaseClusterCreate"`
 }
 
@@ -2352,6 +2596,7 @@ func (v *cloudDatabaseClusterDatabaseCreateCloudDatabaseClusterDatabaseCreateDat
 
 // cloudDatabaseClusterDatabaseCreateResponse is returned by cloudDatabaseClusterDatabaseCreate on success.
 type cloudDatabaseClusterDatabaseCreateResponse struct {
+	// Cost: complexity = 100, multipliers = [], defaultMultiplier = null
 	CloudDatabaseClusterDatabaseCreate cloudDatabaseClusterDatabaseCreateCloudDatabaseClusterDatabaseCreateDatabase `json:"cloudDatabaseClusterDatabaseCreate"`
 }
 
@@ -2362,6 +2607,7 @@ func (v *cloudDatabaseClusterDatabaseCreateResponse) GetCloudDatabaseClusterData
 
 // cloudDatabaseClusterDatabaseDeleteResponse is returned by cloudDatabaseClusterDatabaseDelete on success.
 type cloudDatabaseClusterDatabaseDeleteResponse struct {
+	// Cost: complexity = 100, multipliers = [], defaultMultiplier = null
 	CloudDatabaseClusterDatabaseDelete bool `json:"cloudDatabaseClusterDatabaseDelete"`
 }
 
@@ -2372,6 +2618,7 @@ func (v *cloudDatabaseClusterDatabaseDeleteResponse) GetCloudDatabaseClusterData
 
 // cloudDatabaseClusterDeleteResponse is returned by cloudDatabaseClusterDelete on success.
 type cloudDatabaseClusterDeleteResponse struct {
+	// Cost: complexity = 100, multipliers = [], defaultMultiplier = null
 	CloudDatabaseClusterDelete bool `json:"cloudDatabaseClusterDelete"`
 }
 
@@ -2382,6 +2629,7 @@ func (v *cloudDatabaseClusterDeleteResponse) GetCloudDatabaseClusterDelete() boo
 
 // cloudDatabaseClusterModifyResponse is returned by cloudDatabaseClusterModify on success.
 type cloudDatabaseClusterModifyResponse struct {
+	// Cost: complexity = 100, multipliers = [], defaultMultiplier = null
 	CloudDatabaseClusterModify CloudDatabaseClusterResult `json:"cloudDatabaseClusterModify"`
 }
 
@@ -2392,6 +2640,7 @@ func (v *cloudDatabaseClusterModifyResponse) GetCloudDatabaseClusterModify() Clo
 
 // clusterPlansResponse is returned by clusterPlans on success.
 type clusterPlansResponse struct {
+	// Cost: complexity = 100, multipliers = [], defaultMultiplier = null
 	CloudDatabaseClusterPlans []CloudDatabaseClusterPlan `json:"cloudDatabaseClusterPlans"`
 }
 
@@ -2402,6 +2651,7 @@ func (v *clusterPlansResponse) GetCloudDatabaseClusterPlans() []CloudDatabaseClu
 
 // clusterVersionsResponse is returned by clusterVersions on success.
 type clusterVersionsResponse struct {
+	// Cost: complexity = 100, multipliers = [], defaultMultiplier = null
 	CloudDatabaseClusterVersions []CloudDatabaseClusterSpec `json:"cloudDatabaseClusterVersions"`
 }
 
@@ -2412,6 +2662,7 @@ func (v *clusterVersionsResponse) GetCloudDatabaseClusterVersions() []CloudDatab
 
 // containerByNameResponse is returned by containerByName on success.
 type containerByNameResponse struct {
+	// Cost: complexity = 100, multipliers = [], defaultMultiplier = null
 	Container ContainerResult `json:"container"`
 }
 
@@ -2420,6 +2671,7 @@ func (v *containerByNameResponse) GetContainer() ContainerResult { return v.Cont
 
 // containerCreateResponse is returned by containerCreate on success.
 type containerCreateResponse struct {
+	// Cost: complexity = 100, multipliers = [], defaultMultiplier = null
 	ContainerCreate ContainerResult `json:"containerCreate"`
 }
 
@@ -2428,6 +2680,7 @@ func (v *containerCreateResponse) GetContainerCreate() ContainerResult { return 
 
 // containerDeleteResponse is returned by containerDelete on success.
 type containerDeleteResponse struct {
+	// Cost: complexity = 100, multipliers = [], defaultMultiplier = null
 	ContainerDelete bool `json:"containerDelete"`
 }
 
@@ -2436,6 +2689,7 @@ func (v *containerDeleteResponse) GetContainerDelete() bool { return v.Container
 
 // containerJobByNameResponse is returned by containerJobByName on success.
 type containerJobByNameResponse struct {
+	// Cost: complexity = 100, multipliers = [], defaultMultiplier = null
 	ContainerJob ContainerJobResult `json:"containerJob"`
 }
 
@@ -2444,6 +2698,7 @@ func (v *containerJobByNameResponse) GetContainerJob() ContainerJobResult { retu
 
 // containerJobCreateResponse is returned by containerJobCreate on success.
 type containerJobCreateResponse struct {
+	// Cost: complexity = 100, multipliers = [], defaultMultiplier = null
 	ContainerJobCreate ContainerJobResult `json:"containerJobCreate"`
 }
 
@@ -2454,6 +2709,7 @@ func (v *containerJobCreateResponse) GetContainerJobCreate() ContainerJobResult 
 
 // containerJobDeleteResponse is returned by containerJobDelete on success.
 type containerJobDeleteResponse struct {
+	// Cost: complexity = 100, multipliers = [], defaultMultiplier = null
 	ContainerJobDelete bool `json:"containerJobDelete"`
 }
 
@@ -2622,6 +2878,7 @@ func (v *containerJobListNamespaceContainerJobsContainerJob) __premarshalJSON() 
 
 // containerJobListResponse is returned by containerJobList on success.
 type containerJobListResponse struct {
+	// Cost: complexity = 100, multipliers = [], defaultMultiplier = null
 	Namespace containerJobListNamespace `json:"namespace"`
 }
 
@@ -2630,6 +2887,7 @@ func (v *containerJobListResponse) GetNamespace() containerJobListNamespace { re
 
 // containerJobModifyResponse is returned by containerJobModify on success.
 type containerJobModifyResponse struct {
+	// Cost: complexity = 100, multipliers = [], defaultMultiplier = null
 	ContainerJobModify ContainerJobResult `json:"containerJobModify"`
 }
 
@@ -2824,6 +3082,7 @@ func (v *containerListNamespaceContainersContainer) __premarshalJSON() (*__prema
 
 // containerListResponse is returned by containerList on success.
 type containerListResponse struct {
+	// Cost: complexity = 100, multipliers = [], defaultMultiplier = null
 	Namespace containerListNamespace `json:"namespace"`
 }
 
@@ -2832,6 +3091,7 @@ func (v *containerListResponse) GetNamespace() containerListNamespace { return v
 
 // containerModifyResponse is returned by containerModify on success.
 type containerModifyResponse struct {
+	// Cost: complexity = 100, multipliers = [], defaultMultiplier = null
 	ContainerModify ContainerResult `json:"containerModify"`
 }
 
@@ -2840,6 +3100,7 @@ func (v *containerModifyResponse) GetContainerModify() ContainerResult { return 
 
 // createCloudDatabaseClusterDatabaseResponse is returned by createCloudDatabaseClusterDatabase on success.
 type createCloudDatabaseClusterDatabaseResponse struct {
+	// Cost: complexity = 100, multipliers = [], defaultMultiplier = null
 	CloudDatabaseClusterDatabaseCreate CloudDatabaseClusterDatabaseResult `json:"cloudDatabaseClusterDatabaseCreate"`
 }
 
@@ -2944,6 +3205,7 @@ func (v *createCloudDatabaseClusterUserCloudDatabaseClusterUserCreateDatabaseUse
 
 // createCloudDatabaseClusterUserResponse is returned by createCloudDatabaseClusterUser on success.
 type createCloudDatabaseClusterUserResponse struct {
+	// Cost: complexity = 100, multipliers = [], defaultMultiplier = null
 	CloudDatabaseClusterUserCreate createCloudDatabaseClusterUserCloudDatabaseClusterUserCreateDatabaseUser `json:"cloudDatabaseClusterUserCreate"`
 }
 
@@ -2954,6 +3216,7 @@ func (v *createCloudDatabaseClusterUserResponse) GetCloudDatabaseClusterUserCrea
 
 // deleteCloudDatabaseClusterDatabaseResponse is returned by deleteCloudDatabaseClusterDatabase on success.
 type deleteCloudDatabaseClusterDatabaseResponse struct {
+	// Cost: complexity = 100, multipliers = [], defaultMultiplier = null
 	CloudDatabaseClusterDatabaseDelete bool `json:"cloudDatabaseClusterDatabaseDelete"`
 }
 
@@ -2964,6 +3227,7 @@ func (v *deleteCloudDatabaseClusterDatabaseResponse) GetCloudDatabaseClusterData
 
 // deleteCloudDatabaseClusterUserResponse is returned by deleteCloudDatabaseClusterUser on success.
 type deleteCloudDatabaseClusterUserResponse struct {
+	// Cost: complexity = 100, multipliers = [], defaultMultiplier = null
 	CloudDatabaseClusterUserDelete bool `json:"cloudDatabaseClusterUserDelete"`
 }
 
@@ -3054,6 +3318,7 @@ func (v *getCloudDatabaseClusterDatabasesCloudDatabaseClusterDatabasesDatabase) 
 
 // getCloudDatabaseClusterDatabasesResponse is returned by getCloudDatabaseClusterDatabases on success.
 type getCloudDatabaseClusterDatabasesResponse struct {
+	// Cost: complexity = 100, multipliers = [], defaultMultiplier = null
 	CloudDatabaseCluster getCloudDatabaseClusterDatabasesCloudDatabaseCluster `json:"cloudDatabaseCluster"`
 }
 
@@ -3064,6 +3329,7 @@ func (v *getCloudDatabaseClusterDatabasesResponse) GetCloudDatabaseCluster() get
 
 // getCloudDatabaseClusterResponse is returned by getCloudDatabaseCluster on success.
 type getCloudDatabaseClusterResponse struct {
+	// Cost: complexity = 100, multipliers = [], defaultMultiplier = null
 	CloudDatabaseCluster CloudDatabaseClusterResult `json:"cloudDatabaseCluster"`
 }
 
@@ -3084,6 +3350,7 @@ func (v *getCloudDatabaseClusterUserCredentialsCloudDatabaseClusterUserCredentia
 
 // getCloudDatabaseClusterUserCredentialsResponse is returned by getCloudDatabaseClusterUserCredentials on success.
 type getCloudDatabaseClusterUserCredentialsResponse struct {
+	// Cost: complexity = 750, multipliers = [], defaultMultiplier = null
 	CloudDatabaseClusterUserCredentials getCloudDatabaseClusterUserCredentialsCloudDatabaseClusterUserCredentialsDatabaseUser `json:"cloudDatabaseClusterUserCredentials"`
 }
 
@@ -3198,6 +3465,7 @@ func (v *getCloudDatabaseClusterUsersCloudDatabaseClusterUsersDatabaseUser) __pr
 
 // getCloudDatabaseClusterUsersResponse is returned by getCloudDatabaseClusterUsers on success.
 type getCloudDatabaseClusterUsersResponse struct {
+	// Cost: complexity = 100, multipliers = [], defaultMultiplier = null
 	CloudDatabaseCluster getCloudDatabaseClusterUsersCloudDatabaseCluster `json:"cloudDatabaseCluster"`
 }
 
@@ -3208,6 +3476,7 @@ func (v *getCloudDatabaseClusterUsersResponse) GetCloudDatabaseCluster() getClou
 
 // getCloudDatabaseClustersResponse is returned by getCloudDatabaseClusters on success.
 type getCloudDatabaseClustersResponse struct {
+	// Cost: complexity = 100, multipliers = [], defaultMultiplier = null
 	CloudDatabaseClusters []CloudDatabaseClusterResult `json:"cloudDatabaseClusters"`
 }
 
@@ -3215,6 +3484,77 @@ type getCloudDatabaseClustersResponse struct {
 func (v *getCloudDatabaseClustersResponse) GetCloudDatabaseClusters() []CloudDatabaseClusterResult {
 	return v.CloudDatabaseClusters
 }
+
+// messageQueueCreateResponse is returned by messageQueueCreate on success.
+type messageQueueCreateResponse struct {
+	// Cost: complexity = 100, multipliers = [], defaultMultiplier = null
+	MessageQueueCreate MessageQueueResult `json:"messageQueueCreate"`
+}
+
+// GetMessageQueueCreate returns messageQueueCreateResponse.MessageQueueCreate, and is useful for accessing the field via an interface.
+func (v *messageQueueCreateResponse) GetMessageQueueCreate() MessageQueueResult {
+	return v.MessageQueueCreate
+}
+
+// messageQueueDeleteResponse is returned by messageQueueDelete on success.
+type messageQueueDeleteResponse struct {
+	// Cost: complexity = 100, multipliers = [], defaultMultiplier = null
+	MessageQueueDelete bool `json:"messageQueueDelete"`
+}
+
+// GetMessageQueueDelete returns messageQueueDeleteResponse.MessageQueueDelete, and is useful for accessing the field via an interface.
+func (v *messageQueueDeleteResponse) GetMessageQueueDelete() bool { return v.MessageQueueDelete }
+
+// messageQueueGetResponse is returned by messageQueueGet on success.
+type messageQueueGetResponse struct {
+	// Cost: complexity = 100, multipliers = [], defaultMultiplier = null
+	MessageQueue MessageQueueResult `json:"messageQueue"`
+}
+
+// GetMessageQueue returns messageQueueGetResponse.MessageQueue, and is useful for accessing the field via an interface.
+func (v *messageQueueGetResponse) GetMessageQueue() MessageQueueResult { return v.MessageQueue }
+
+// messageQueuePlansGetResponse is returned by messageQueuePlansGet on success.
+type messageQueuePlansGetResponse struct {
+	// Cost: complexity = 100, multipliers = [], defaultMultiplier = null
+	MessageQueuePlans []MessageQueuePlanResult `json:"messageQueuePlans"`
+}
+
+// GetMessageQueuePlans returns messageQueuePlansGetResponse.MessageQueuePlans, and is useful for accessing the field via an interface.
+func (v *messageQueuePlansGetResponse) GetMessageQueuePlans() []MessageQueuePlanResult {
+	return v.MessageQueuePlans
+}
+
+// messageQueueUserCredentialsGetResponse is returned by messageQueueUserCredentialsGet on success.
+type messageQueueUserCredentialsGetResponse struct {
+	// Cost: complexity = 750, multipliers = [], defaultMultiplier = null
+	MessageQueueUserCredentials MessageQueueUserCredentialsResult `json:"messageQueueUserCredentials"`
+}
+
+// GetMessageQueueUserCredentials returns messageQueueUserCredentialsGetResponse.MessageQueueUserCredentials, and is useful for accessing the field via an interface.
+func (v *messageQueueUserCredentialsGetResponse) GetMessageQueueUserCredentials() MessageQueueUserCredentialsResult {
+	return v.MessageQueueUserCredentials
+}
+
+// messageQueueVersionsGetResponse is returned by messageQueueVersionsGet on success.
+type messageQueueVersionsGetResponse struct {
+	// Cost: complexity = 100, multipliers = [], defaultMultiplier = null
+	MessageQueueVersions []MessageQueueVersionResult `json:"messageQueueVersions"`
+}
+
+// GetMessageQueueVersions returns messageQueueVersionsGetResponse.MessageQueueVersions, and is useful for accessing the field via an interface.
+func (v *messageQueueVersionsGetResponse) GetMessageQueueVersions() []MessageQueueVersionResult {
+	return v.MessageQueueVersions
+}
+
+// messageQueuesGetResponse is returned by messageQueuesGet on success.
+type messageQueuesGetResponse struct {
+	// Cost: complexity = 100, multipliers = [], defaultMultiplier = null
+	MessageQueues []MessageQueueResult `json:"messageQueues"`
+}
+
+// GetMessageQueues returns messageQueuesGetResponse.MessageQueues, and is useful for accessing the field via an interface.
+func (v *messageQueuesGetResponse) GetMessageQueues() []MessageQueueResult { return v.MessageQueues }
 
 // modifyCloudDatabaseClusterUserCloudDatabaseClusterUserModifyDatabaseUser includes the requested fields of the GraphQL type DatabaseUser.
 type modifyCloudDatabaseClusterUserCloudDatabaseClusterUserModifyDatabaseUser struct {
@@ -3312,6 +3652,7 @@ func (v *modifyCloudDatabaseClusterUserCloudDatabaseClusterUserModifyDatabaseUse
 
 // modifyCloudDatabaseClusterUserResponse is returned by modifyCloudDatabaseClusterUser on success.
 type modifyCloudDatabaseClusterUserResponse struct {
+	// Cost: complexity = 100, multipliers = [], defaultMultiplier = null
 	CloudDatabaseClusterUserModify modifyCloudDatabaseClusterUserCloudDatabaseClusterUserModifyDatabaseUser `json:"cloudDatabaseClusterUserModify"`
 }
 
@@ -3322,6 +3663,7 @@ func (v *modifyCloudDatabaseClusterUserResponse) GetCloudDatabaseClusterUserModi
 
 // namespaceCreateResponse is returned by namespaceCreate on success.
 type namespaceCreateResponse struct {
+	// Cost: complexity = 100, multipliers = [], defaultMultiplier = null
 	NamespaceCreate NamespaceResult `json:"namespaceCreate"`
 }
 
@@ -3330,6 +3672,7 @@ func (v *namespaceCreateResponse) GetNamespaceCreate() NamespaceResult { return 
 
 // namespaceDeleteResponse is returned by namespaceDelete on success.
 type namespaceDeleteResponse struct {
+	// Cost: complexity = 100, multipliers = [], defaultMultiplier = null
 	NamespaceDelete bool `json:"namespaceDelete"`
 }
 
@@ -3434,6 +3777,7 @@ func (v *namespaceListByNameNamespace) __premarshalJSON() (*__premarshalnamespac
 
 // namespaceListByNameResponse is returned by namespaceListByName on success.
 type namespaceListByNameResponse struct {
+	// Cost: complexity = 100, multipliers = [], defaultMultiplier = null
 	Namespace namespaceListByNameNamespace `json:"namespace"`
 }
 
@@ -3540,6 +3884,7 @@ func (v *namespaceListNamespacesNamespace) __premarshalJSON() (*__premarshalname
 
 // namespaceListResponse is returned by namespaceList on success.
 type namespaceListResponse struct {
+	// Cost: complexity = 100, multipliers = [], defaultMultiplier = null
 	Namespaces []namespaceListNamespacesNamespace `json:"namespaces"`
 }
 
@@ -3550,6 +3895,7 @@ func (v *namespaceListResponse) GetNamespaces() []namespaceListNamespacesNamespa
 
 // registryCreateResponse is returned by registryCreate on success.
 type registryCreateResponse struct {
+	// Cost: complexity = 100, multipliers = [], defaultMultiplier = null
 	RegistryConnectionCreate RegistryResult `json:"registryConnectionCreate"`
 }
 
@@ -3560,6 +3906,7 @@ func (v *registryCreateResponse) GetRegistryConnectionCreate() RegistryResult {
 
 // registryDeleteResponse is returned by registryDelete on success.
 type registryDeleteResponse struct {
+	// Cost: complexity = 100, multipliers = [], defaultMultiplier = null
 	RegistryConnectionDelete bool `json:"registryConnectionDelete"`
 }
 
@@ -3666,6 +4013,7 @@ func (v *registryListNamespacePrivateRegistriesPrivateRegistry) __premarshalJSON
 
 // registryListResponse is returned by registryList on success.
 type registryListResponse struct {
+	// Cost: complexity = 100, multipliers = [], defaultMultiplier = null
 	Namespace registryListNamespace `json:"namespace"`
 }
 
@@ -3674,6 +4022,7 @@ func (v *registryListResponse) GetNamespace() registryListNamespace { return v.N
 
 // volumeCreateResponse is returned by volumeCreate on success.
 type volumeCreateResponse struct {
+	// Cost: complexity = 100, multipliers = [], defaultMultiplier = null
 	VolumeCreate VolumeResult `json:"volumeCreate"`
 }
 
@@ -3682,6 +4031,7 @@ func (v *volumeCreateResponse) GetVolumeCreate() VolumeResult { return v.VolumeC
 
 // volumeDeleteResponse is returned by volumeDelete on success.
 type volumeDeleteResponse struct {
+	// Cost: complexity = 100, multipliers = [], defaultMultiplier = null
 	VolumeDelete bool `json:"volumeDelete"`
 }
 
@@ -3690,6 +4040,7 @@ func (v *volumeDeleteResponse) GetVolumeDelete() bool { return v.VolumeDelete }
 
 // volumeIncreaseResponse is returned by volumeIncrease on success.
 type volumeIncreaseResponse struct {
+	// Cost: complexity = 100, multipliers = [], defaultMultiplier = null
 	VolumeIncrease VolumeResult `json:"volumeIncrease"`
 }
 
@@ -3798,6 +4149,7 @@ func (v *volumeListNamespaceVolumesVolume) __premarshalJSON() (*__premarshalvolu
 
 // volumeListResponse is returned by volumeList on success.
 type volumeListResponse struct {
+	// Cost: complexity = 100, multipliers = [], defaultMultiplier = null
 	Namespace volumeListNamespace `json:"namespace"`
 }
 
@@ -4836,7 +5188,6 @@ fragment ContainerMounts on Mount {
 }
 `
 
-// @genqlien(omitempty: true)
 func containerModify(
 	ctx_ context.Context,
 	client_ graphql.Client,
@@ -5289,6 +5640,299 @@ func getCloudDatabaseClusters(
 	}
 
 	data_ = &getCloudDatabaseClustersResponse{}
+	resp_ := &graphql.Response{Data: data_}
+
+	err_ = client_.MakeRequest(
+		ctx_,
+		req_,
+		resp_,
+	)
+
+	return data_, err_
+}
+
+// The mutation executed by messageQueueCreate.
+const messageQueueCreate_Operation = `
+mutation messageQueueCreate ($messageQueueInput: MessageQueueCreateInput!) {
+	messageQueueCreate(messageQueue: $messageQueueInput) {
+		... MessageQueueResult
+	}
+}
+fragment MessageQueueResult on MessageQueue {
+	id
+	locked
+	name
+	state
+	namespace {
+		name
+	}
+	adminUser {
+		name
+		role
+		status
+	}
+}
+`
+
+func messageQueueCreate(
+	ctx_ context.Context,
+	client_ graphql.Client,
+	messageQueueInput MessageQueueCreateInput,
+) (data_ *messageQueueCreateResponse, err_ error) {
+	req_ := &graphql.Request{
+		OpName: "messageQueueCreate",
+		Query:  messageQueueCreate_Operation,
+		Variables: &__messageQueueCreateInput{
+			MessageQueueInput: messageQueueInput,
+		},
+	}
+
+	data_ = &messageQueueCreateResponse{}
+	resp_ := &graphql.Response{Data: data_}
+
+	err_ = client_.MakeRequest(
+		ctx_,
+		req_,
+		resp_,
+	)
+
+	return data_, err_
+}
+
+// The mutation executed by messageQueueDelete.
+const messageQueueDelete_Operation = `
+mutation messageQueueDelete ($messageQueueInput: MessageQueueResourceInput!) {
+	messageQueueDelete(messageQueue: $messageQueueInput)
+}
+`
+
+func messageQueueDelete(
+	ctx_ context.Context,
+	client_ graphql.Client,
+	messageQueueInput MessageQueueResourceInput,
+) (data_ *messageQueueDeleteResponse, err_ error) {
+	req_ := &graphql.Request{
+		OpName: "messageQueueDelete",
+		Query:  messageQueueDelete_Operation,
+		Variables: &__messageQueueDeleteInput{
+			MessageQueueInput: messageQueueInput,
+		},
+	}
+
+	data_ = &messageQueueDeleteResponse{}
+	resp_ := &graphql.Response{Data: data_}
+
+	err_ = client_.MakeRequest(
+		ctx_,
+		req_,
+		resp_,
+	)
+
+	return data_, err_
+}
+
+// The query executed by messageQueueGet.
+const messageQueueGet_Operation = `
+query messageQueueGet ($messageQueueInput: MessageQueueResourceInput!) {
+	messageQueue(messageQueue: $messageQueueInput) {
+		... MessageQueueResult
+	}
+}
+fragment MessageQueueResult on MessageQueue {
+	id
+	locked
+	name
+	state
+	namespace {
+		name
+	}
+	adminUser {
+		name
+		role
+		status
+	}
+}
+`
+
+func messageQueueGet(
+	ctx_ context.Context,
+	client_ graphql.Client,
+	messageQueueInput MessageQueueResourceInput,
+) (data_ *messageQueueGetResponse, err_ error) {
+	req_ := &graphql.Request{
+		OpName: "messageQueueGet",
+		Query:  messageQueueGet_Operation,
+		Variables: &__messageQueueGetInput{
+			MessageQueueInput: messageQueueInput,
+		},
+	}
+
+	data_ = &messageQueueGetResponse{}
+	resp_ := &graphql.Response{Data: data_}
+
+	err_ = client_.MakeRequest(
+		ctx_,
+		req_,
+		resp_,
+	)
+
+	return data_, err_
+}
+
+// The query executed by messageQueuePlansGet.
+const messageQueuePlansGet_Operation = `
+query messageQueuePlansGet {
+	messageQueuePlans {
+		... MessageQueuePlanResult
+	}
+}
+fragment MessageQueuePlanResult on MessageQueuePlan {
+	cpu(unit: CPU)
+	group
+	id
+	memory(unit: GB)
+	name
+	price {
+		amount
+		currency
+	}
+	replicas
+	storage(unit: GB)
+}
+`
+
+func messageQueuePlansGet(
+	ctx_ context.Context,
+	client_ graphql.Client,
+) (data_ *messageQueuePlansGetResponse, err_ error) {
+	req_ := &graphql.Request{
+		OpName: "messageQueuePlansGet",
+		Query:  messageQueuePlansGet_Operation,
+	}
+
+	data_ = &messageQueuePlansGetResponse{}
+	resp_ := &graphql.Response{Data: data_}
+
+	err_ = client_.MakeRequest(
+		ctx_,
+		req_,
+		resp_,
+	)
+
+	return data_, err_
+}
+
+// The query executed by messageQueueUserCredentialsGet.
+const messageQueueUserCredentialsGet_Operation = `
+query messageQueueUserCredentialsGet ($messageQueueInput: MessageQueueResourceInput!, $username: String!) {
+	messageQueueUserCredentials(messageQueue: $messageQueueInput, username: $username) {
+		... MessageQueueUserCredentialsResult
+	}
+}
+fragment MessageQueueUserCredentialsResult on MessageQueueUser {
+	name
+	dsn
+	password
+	role
+	status
+}
+`
+
+func messageQueueUserCredentialsGet(
+	ctx_ context.Context,
+	client_ graphql.Client,
+	messageQueueInput MessageQueueResourceInput,
+	username string,
+) (data_ *messageQueueUserCredentialsGetResponse, err_ error) {
+	req_ := &graphql.Request{
+		OpName: "messageQueueUserCredentialsGet",
+		Query:  messageQueueUserCredentialsGet_Operation,
+		Variables: &__messageQueueUserCredentialsGetInput{
+			MessageQueueInput: messageQueueInput,
+			Username:          username,
+		},
+	}
+
+	data_ = &messageQueueUserCredentialsGetResponse{}
+	resp_ := &graphql.Response{Data: data_}
+
+	err_ = client_.MakeRequest(
+		ctx_,
+		req_,
+		resp_,
+	)
+
+	return data_, err_
+}
+
+// The query executed by messageQueueVersionsGet.
+const messageQueueVersionsGet_Operation = `
+query messageQueueVersionsGet {
+	messageQueueVersions {
+		... MessageQueueVersionResult
+	}
+}
+fragment MessageQueueVersionResult on MessageQueueSpec {
+	patchLevelVersion
+	type
+	version
+}
+`
+
+func messageQueueVersionsGet(
+	ctx_ context.Context,
+	client_ graphql.Client,
+) (data_ *messageQueueVersionsGetResponse, err_ error) {
+	req_ := &graphql.Request{
+		OpName: "messageQueueVersionsGet",
+		Query:  messageQueueVersionsGet_Operation,
+	}
+
+	data_ = &messageQueueVersionsGetResponse{}
+	resp_ := &graphql.Response{Data: data_}
+
+	err_ = client_.MakeRequest(
+		ctx_,
+		req_,
+		resp_,
+	)
+
+	return data_, err_
+}
+
+// The query executed by messageQueuesGet.
+const messageQueuesGet_Operation = `
+query messageQueuesGet {
+	messageQueues {
+		... MessageQueueResult
+	}
+}
+fragment MessageQueueResult on MessageQueue {
+	id
+	locked
+	name
+	state
+	namespace {
+		name
+	}
+	adminUser {
+		name
+		role
+		status
+	}
+}
+`
+
+func messageQueuesGet(
+	ctx_ context.Context,
+	client_ graphql.Client,
+) (data_ *messageQueuesGetResponse, err_ error) {
+	req_ := &graphql.Request{
+		OpName: "messageQueuesGet",
+		Query:  messageQueuesGet_Operation,
+	}
+
+	data_ = &messageQueuesGetResponse{}
 	resp_ := &graphql.Response{Data: data_}
 
 	err_ = client_.MakeRequest(

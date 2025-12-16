@@ -13,6 +13,14 @@ type Address {
   streetNameAndHouseNumber: String!
 }
 
+input AllowListInput {
+  "IP address or a CIDR including the subnet"
+  ip: String!
+
+  ""
+  state: State! = PRESENT
+}
+
 type AuditLog {
   account: Account
   changeSet: [AuditLogChange!]!
@@ -707,6 +715,11 @@ enum ContainerType {
   DEFAULT
 }
 
+enum CpuUnit {
+  mCPU
+  CPU
+}
+
 input CreateContainerInput {
   ""
   namespaceId: Int!
@@ -942,6 +955,89 @@ input ManualScalingInput {
   replicas: Int!
 }
 
+type MessageQueue {
+  adminUser: MessageQueueUser
+  id: String!
+  ingress: MessageQueueIngress!
+  locked: Boolean!
+  name: String!
+  namespace: Namespace!
+  state: String!
+}
+
+input MessageQueueCreateInput {
+  ""
+  name: String!
+
+  ""
+  namespace: String!
+
+  ""
+  plan: String!
+
+  ""
+  spec: MessageQueueSpecInput!
+
+  ""
+  allowList: [AllowListInput!]!
+}
+
+type MessageQueueIngress {
+  allowList: [String!]
+  domainName: String!
+  id: String!
+  status: Status!
+  tlsEnabled: Boolean!
+}
+
+type MessageQueuePlan {
+  benchmark: MessageQueuePlanBenchmark
+  cpu(unit: CpuUnit = CPU): Float!
+  group: String!
+  id: String!
+  memory(unit: Unit = GB): Float!
+  name: String!
+  price: Price!
+  replicas: Int!
+  storage(unit: Unit = GB): Float!
+}
+
+type MessageQueuePlanBenchmark {
+  connections: Int!
+  maximumMessageRate: Int!
+  minimumMessageRate: Int!
+}
+
+input MessageQueueResourceInput {
+  ""
+  name: String!
+
+  ""
+  namespace: String!
+}
+
+type MessageQueueSpec {
+  patchLevelVersion: String!
+  type: String!
+  version: String!
+}
+
+input MessageQueueSpecInput {
+  ""
+  type: String!
+
+  ""
+  version: String!
+}
+
+type MessageQueueUser {
+  dsn: String!
+  name: String!
+  password: String!
+  role: String!
+  status: String!
+}
+
 type Mount {
   path: String!
   volume: Volume!
@@ -976,32 +1072,143 @@ input MountVolumeInput {
 }
 
 type Mutation {
-  addPrivateRegistry(namespaceId: Int!, name: String!, source: String!, username: String!, password: String!, verify: Boolean = true): Boolean! @deprecated(reason: "use `registryCreate` mutation")
+  """
+  
+  Cost: complexity = 100, multipliers = [], defaultMultiplier = null
+  """
+  addPrivateRegistry(namespaceId: Int!, name: String!, source: String!, username: String!, password: String!, verify: Boolean = true): Boolean! @deprecated(reason: "use `registryConnectionCreate` mutation")
+
+  """
+  
+  Cost: complexity = 100, multipliers = [], defaultMultiplier = null
+  """
   cloudDatabaseClusterCreate(cloudDatabaseClusterInput: CloudDatabaseClusterCreateInput): CloudDatabaseCluster!
+
+  """
+  
+  Cost: complexity = 100, multipliers = [], defaultMultiplier = null
+  """
   cloudDatabaseClusterDatabaseCreate(databaseInput: CloudDatabaseClusterDatabaseCreateInput): Database!
+
+  """
+  
+  Cost: complexity = 100, multipliers = [], defaultMultiplier = null
+  """
   cloudDatabaseClusterDatabaseDelete(databaseInput: CloudDatabaseClusterDatabaseResourceInput!): Boolean!
+
+  """
+  
+  Cost: complexity = 100, multipliers = [], defaultMultiplier = null
+  """
   cloudDatabaseClusterDelete(cloudDatabase: CloudDatabaseClusterResourceInput!): Boolean!
+
+  """
+  
+  Cost: complexity = 100, multipliers = [], defaultMultiplier = null
+  """
   cloudDatabaseClusterModify(cloudDatabaseClusterInput: CloudDatabaseClusterModifyInput): CloudDatabaseCluster!
+
+  """
+  
+  Cost: complexity = 100, multipliers = [], defaultMultiplier = null
+  """
   cloudDatabaseClusterUserCreate(userInput: CloudDatabaseClusterUserCreateInput): DatabaseUser!
+
+  """
+  
+  Cost: complexity = 100, multipliers = [], defaultMultiplier = null
+  """
   cloudDatabaseClusterUserDelete(userInput: CloudDatabaseClusterUserResourceInput!): Boolean!
+
+  """
+  
+  Cost: complexity = 100, multipliers = [], defaultMultiplier = null
+  """
   cloudDatabaseClusterUserModify(userInput: CloudDatabaseClusterUserModifyInput): DatabaseUser!
+
+  """
+  
+  Cost: complexity = 100, multipliers = [], defaultMultiplier = null
+  """
   containerCreate(containerInput: ContainerCreateInput): Container!
+
+  """
+  
+  Cost: complexity = 100, multipliers = [], defaultMultiplier = null
+  """
   containerDelete(container: ContainerDeleteInput!): Boolean!
+
+  """
+  
+  Cost: complexity = 100, multipliers = [], defaultMultiplier = null
+  """
   containerJobCreate(scheduledJob: ContainerJobCreateInput!): ContainerJob!
+
+  """
+  
+  Cost: complexity = 100, multipliers = [], defaultMultiplier = null
+  """
   containerJobDelete(scheduledJob: ResourceNameInput!): Boolean!
+
+  """
+  
+  Cost: complexity = 100, multipliers = [], defaultMultiplier = null
+  """
   containerJobModify(scheduledJob: ContainerJobModifyInput): ContainerJob!
+
+  """
+  
+  Cost: complexity = 100, multipliers = [], defaultMultiplier = null
+  """
   containerModify(containerInput: ContainerModifyInput): Container!
-  createCloudDatabase(customerId: Int!, name: String!, username: String!, version: String!, nodeType: String!, password: String!, location: String!, whitelist: [String!]! = []): Boolean!
+
+  """
+  
+  Cost: complexity = 100, multipliers = [], defaultMultiplier = null
+  """
+  createCloudDatabase(customerId: Int!, name: String!, username: String!, version: String!, nodeType: String!, password: String!, location: String!, whitelist: [String!]! = []): Boolean! @deprecated(reason: "Use `createCloudDatabaseCluster` mutation instead")
+
+  """
+  
+  Cost: complexity = 100, multipliers = [], defaultMultiplier = null
+  """
   createContainer(containerInput: CreateContainerInput!): Boolean! @deprecated(reason: "use `containerCreate` mutation instead")
+
+  """
+  
+  Cost: complexity = 100, multipliers = [], defaultMultiplier = null
+  """
   createNamespace(name: String!, customerId: Int = null, description: String = null, pricingPlanId: Int = 2, resourceSpecificationId: Int = null): Boolean! @deprecated(reason: "use `namespaceCreate` mutation")
+
+  """
+  
+  Cost: complexity = 100, multipliers = [], defaultMultiplier = null
+  """
   createVolume(namespaceId: Int!, name: String!, size: Int!): Volume @deprecated(reason: "use `volumeCreate` mutation")
+
+  """
+  
+  Cost: complexity = 100, multipliers = [], defaultMultiplier = null
+  """
   deleteContainer(containerId: Int!): Boolean! @deprecated(reason: "use `containerDelete` mutation instead")
+
+  """
+  
+  Cost: complexity = 100, multipliers = [], defaultMultiplier = null
+  """
   deleteNamespace(id: Int!): Boolean! @deprecated(reason: "use `namespaceDelete` mutation")
+
+  """
+  
+  Cost: complexity = 100, multipliers = [], defaultMultiplier = null
+  """
   deletePrivateRegistry(privateRegistryId: Int!): Boolean! @deprecated(reason: "use `registryConnectionDelete` mutation instead")
 
   """
   Deletes a volume.
   Volumes can be deleted if they are not mounted to any container.
+  
+  Cost: complexity = 100, multipliers = [], defaultMultiplier = null
   """
   deleteVolume(namespaceId: NamespaceId!, volumeId: Int = null, volumeName: String = null): Boolean! @deprecated(reason: "use `volumeDelete` mutation")
 
@@ -1009,16 +1216,81 @@ type Mutation {
   Increases the size of a volume.
   Volumes sizes can only be increased. Increase of volume will not be possible if the volume state is locked.
   We do increase volumes on the fly, so the volume will be increased without any downtime.
+  
+  Cost: complexity = 100, multipliers = [], defaultMultiplier = null
   """
   increaseVolume(namespaceId: NamespaceId!, name: String!, size: Int!): Volume! @deprecated(reason: "use `volumeIncrease` mutation")
 
+  """
+  
+  Cost: complexity = 100, multipliers = [], defaultMultiplier = null
+  """
+  messageQueueCreate(messageQueue: MessageQueueCreateInput!): MessageQueue!
+
+  """
+  
+  Cost: complexity = 100, multipliers = [], defaultMultiplier = null
+  """
+  messageQueueDelete(messageQueue: MessageQueueResourceInput!): Boolean!
+
+  """
+  
+  Cost: complexity = 100, multipliers = [], defaultMultiplier = null
+  """
+  messageQueueModify(messageQueue: CloudDatabaseClusterModifyInput): MessageQueue!
+
+  """
+  
+  Cost: complexity = 100, multipliers = [], defaultMultiplier = null
+  """
+  messageQueueUserModify(userInput: CloudDatabaseClusterUserModifyInput): MessageQueueUser!
+
+  """
+  
+  Cost: complexity = 100, multipliers = [], defaultMultiplier = null
+  """
   modifyContainer(containerInput: ConfigureContainerInput!): Boolean! @deprecated(reason: "use `containerModify` mutation instead")
+
+  """
+  
+  Cost: complexity = 100, multipliers = [], defaultMultiplier = null
+  """
   namespaceCreate(namespaceInput: NamespaceCreateInput!): Namespace!
+
+  """
+  
+  Cost: complexity = 100, multipliers = [], defaultMultiplier = null
+  """
   namespaceDelete(namespace: DeleteNamespaceInput!): Boolean!
+
+  """
+  
+  Cost: complexity = 100, multipliers = [], defaultMultiplier = null
+  """
   registryConnectionCreate(registryInput: RegistryCreateInput!): PrivateRegistry!
+
+  """
+  
+  Cost: complexity = 100, multipliers = [], defaultMultiplier = null
+  """
   registryConnectionDelete(registryConnection: DeleteRegistryConnectionInput!): Boolean!
+
+  """
+  
+  Cost: complexity = 100, multipliers = [], defaultMultiplier = null
+  """
   volumeCreate(volumeInput: VolumeCreateInput): Volume!
+
+  """
+  
+  Cost: complexity = 100, multipliers = [], defaultMultiplier = null
+  """
   volumeDelete(volume: VolumeResourceInput!): Boolean!
+
+  """
+  
+  Cost: complexity = 100, multipliers = [], defaultMultiplier = null
+  """
   volumeIncrease(volumeInput: VolumeModifyInput): Volume!
 }
 
@@ -1031,6 +1303,7 @@ type Namespace {
   description: String!
   id(legacy: Boolean = true): ID!
   internalName: String! @deprecated(reason: "this field will be removed in the future. There is no replacement")
+  messageQueues: [MessageQueue!]!
   modifiedAt: DateTime
   name: String!
   pricingPlan: PricingPlan!
@@ -1103,29 +1376,165 @@ type Query {
   """
   Returns the current user account.
   This query will return the account of the currents api user.
+  
+  Cost: complexity = 100, multipliers = [], defaultMultiplier = null
   """
   account: Account
 
+  """
+  
+  Cost: complexity = 100, multipliers = [], defaultMultiplier = null
+  """
   auditLogs(customerId: ID!, filter: AuditLogFilterInput = null): [AuditLog]!
+
+  """
+  
+  Cost: complexity = 100, multipliers = [], defaultMultiplier = null
+  """
   cloudDatabase(id: ID!): CloudDatabase
+
+  """
+  
+  Cost: complexity = 100, multipliers = [], defaultMultiplier = null
+  """
   cloudDatabaseCluster(cloudDatabase: CloudDatabaseClusterResourceInput!): CloudDatabaseCluster!
+
+  """
+  
+  Cost: complexity = 100, multipliers = [], defaultMultiplier = null
+  """
   cloudDatabaseClusterPlans: [Plan!]!
+
+  """
+  
+  Cost: complexity = 750, multipliers = [], defaultMultiplier = null
+  """
   cloudDatabaseClusterUserCredentials(cloudDatabase: CloudDatabaseClusterResourceInput!, username: String!): DatabaseUser!
+
+  """
+  
+  Cost: complexity = 100, multipliers = [], defaultMultiplier = null
+  """
   cloudDatabaseClusterVersions: [Spec!]!
+
+  """
+  
+  Cost: complexity = 100, multipliers = [], defaultMultiplier = null
+  """
   cloudDatabaseClusters: [CloudDatabaseCluster!]!
+
+  """
+  
+  Cost: complexity = 100, multipliers = [], defaultMultiplier = null
+  """
   cloudDatabases: [CloudDatabase!]!
+
+  """
+  
+  Cost: complexity = 100, multipliers = [], defaultMultiplier = null
+  """
   container(id: ID = null, containerResourceInput: ContainerResourceInput = null): Container!
+
+  """
+  
+  Cost: complexity = 100, multipliers = [], defaultMultiplier = null
+  """
   containerJob(namespace: String!, name: String!): ContainerJob!
+
+  """
+  
+  Cost: complexity = 100, multipliers = [], defaultMultiplier = null
+  """
   databaseVersions: [DatabaseVersion!]!
+
+  """
+  
+  Cost: complexity = 100, multipliers = [], defaultMultiplier = null
+  """
   locations: [Location!]!
+
+  """
+  
+  Cost: complexity = 100, multipliers = [], defaultMultiplier = null
+  """
+  messageQueue(messageQueue: MessageQueueResourceInput!): MessageQueue!
+
+  """
+  
+  Cost: complexity = 100, multipliers = [], defaultMultiplier = null
+  """
+  messageQueuePlans: [MessageQueuePlan!]!
+
+  """
+  
+  Cost: complexity = 750, multipliers = [], defaultMultiplier = null
+  """
+  messageQueueUserCredentials(messageQueue: MessageQueueResourceInput!, username: String!): MessageQueueUser!
+
+  """
+  
+  Cost: complexity = 100, multipliers = [], defaultMultiplier = null
+  """
+  messageQueueVersions: [MessageQueueSpec!]!
+
+  """
+  
+  Cost: complexity = 100, multipliers = [], defaultMultiplier = null
+  """
+  messageQueues: [MessageQueue!]!
+
+  """
+  
+  Cost: complexity = 100, multipliers = [], defaultMultiplier = null
+  """
   namespace(id: ID = null, name: String = null): Namespace!
+
+  """
+  
+  Cost: complexity = 100, multipliers = [], defaultMultiplier = null
+  """
   namespaces: [Namespace!]!
+
+  """
+  
+  Cost: complexity = 100, multipliers = [], defaultMultiplier = null
+  """
   nodeType(id: String!): NodeType!
+
+  """
+  
+  Cost: complexity = 100, multipliers = [], defaultMultiplier = null
+  """
   nodeTypes(numberOfNodes: Int = null): [NodeType!]!
+
+  """
+  
+  Cost: complexity = 100, multipliers = [], defaultMultiplier = null
+  """
   pricingPlans: [PricingPlan!]!
+
+  """
+  
+  Cost: complexity = 100, multipliers = [], defaultMultiplier = null
+  """
   privateRegistries(namespaceId: ID = null, namespace: String = null): [PrivateRegistry!]!
+
+  """
+  
+  Cost: complexity = 100, multipliers = [], defaultMultiplier = null
+  """
   resourceSpecifications(kind: String!): [ResourceSpecification!]!
+
+  """
+  
+  Cost: complexity = 100, multipliers = [], defaultMultiplier = null
+  """
   volume(id: ID!): Volume
+
+  """
+  
+  Cost: complexity = 100, multipliers = [], defaultMultiplier = null
+  """
   volumes(namespaceId: Int!): [Volume!]!
 }
 
@@ -1195,6 +1604,20 @@ type Spec {
 enum State {
   PRESENT
   ABSENT
+}
+
+enum Status {
+  UNPROVISIONED
+  CREATE_REQUESTED
+  CREATING
+  CREATED
+  UPDATING
+  UPDATED
+  ON_HOLD
+  FAILED
+  DELETE_PENDING
+  DELETE_REQUESTED
+  DELETING
 }
 
 type Subscription {

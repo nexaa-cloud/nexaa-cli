@@ -72,4 +72,5 @@ func init() {
 	rootCmd.AddCommand(loginCmd)
 	rootCmd.AddCommand(volumeCmd)
 	rootCmd.AddCommand(resourcesCmd)
+	rootCmd.AddCommand(messageQueueCmd)
 }
