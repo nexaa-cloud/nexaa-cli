@@ -56,12 +56,13 @@ var AllAutoScalingType = []AutoScalingType{
 }
 
 type CloudDatabaseClusterCreateInput struct {
-	Name      string                        `json:"name"`
-	Namespace string                        `json:"namespace"`
-	Spec      CloudDatabaseClusterSpecInput `json:"spec"`
-	Plan      string                        `json:"plan"`
-	Databases []DatabaseInput               `json:"databases"`
-	Users     []DatabaseUserInput           `json:"users"`
+	Name               string                        `json:"name"`
+	Namespace          string                        `json:"namespace"`
+	Spec               CloudDatabaseClusterSpecInput `json:"spec"`
+	Plan               string                        `json:"plan"`
+	Databases          []DatabaseInput               `json:"databases"`
+	Users              []DatabaseUserInput           `json:"users"`
+	ExternalConnection *ExternalConnectionInput      `json:"externalConnection"`
 }
 
 // GetName returns CloudDatabaseClusterCreateInput.Name, and is useful for accessing the field via an interface.
@@ -81,6 +82,11 @@ func (v *CloudDatabaseClusterCreateInput) GetDatabases() []DatabaseInput { retur
 
 // GetUsers returns CloudDatabaseClusterCreateInput.Users, and is useful for accessing the field via an interface.
 func (v *CloudDatabaseClusterCreateInput) GetUsers() []DatabaseUserInput { return v.Users }
+
+// GetExternalConnection returns CloudDatabaseClusterCreateInput.ExternalConnection, and is useful for accessing the field via an interface.
+func (v *CloudDatabaseClusterCreateInput) GetExternalConnection() *ExternalConnectionInput {
+	return v.ExternalConnection
+}
 
 type CloudDatabaseClusterDatabaseCreateInput struct {
 	Cluster  CloudDatabaseClusterResourceInput `json:"cluster"`
@@ -125,10 +131,11 @@ func (v *CloudDatabaseClusterDatabaseResult) GetDescription() *string { return v
 func (v *CloudDatabaseClusterDatabaseResult) GetStatus() string { return v.Status }
 
 type CloudDatabaseClusterModifyInput struct {
-	Name      string              `json:"name"`
-	Namespace string              `json:"namespace"`
-	Databases []DatabaseInput     `json:"databases"`
-	Users     []DatabaseUserInput `json:"users"`
+	Name               string                   `json:"name"`
+	Namespace          string                   `json:"namespace"`
+	Databases          []DatabaseInput          `json:"databases"`
+	Users              []DatabaseUserInput      `json:"users"`
+	ExternalConnection *ExternalConnectionInput `json:"externalConnection"`
 }
 
 // GetName returns CloudDatabaseClusterModifyInput.Name, and is useful for accessing the field via an interface.
@@ -142,6 +149,11 @@ func (v *CloudDatabaseClusterModifyInput) GetDatabases() []DatabaseInput { retur
 
 // GetUsers returns CloudDatabaseClusterModifyInput.Users, and is useful for accessing the field via an interface.
 func (v *CloudDatabaseClusterModifyInput) GetUsers() []DatabaseUserInput { return v.Users }
+
+// GetExternalConnection returns CloudDatabaseClusterModifyInput.ExternalConnection, and is useful for accessing the field via an interface.
+func (v *CloudDatabaseClusterModifyInput) GetExternalConnection() *ExternalConnectionInput {
+	return v.ExternalConnection
+}
 
 // CloudDatabaseClusterPlan includes the GraphQL fields of Plan requested by the fragment CloudDatabaseClusterPlan.
 type CloudDatabaseClusterPlan struct {
@@ -200,17 +212,18 @@ func (v *CloudDatabaseClusterResourceInput) GetNamespace() string { return v.Nam
 
 // CloudDatabaseClusterResult includes the GraphQL fields of CloudDatabaseCluster requested by the fragment CloudDatabaseClusterResult.
 type CloudDatabaseClusterResult struct {
-	Id        string                                           `json:"id"`
-	Databases []CloudDatabaseClusterResultDatabasesDatabase    `json:"databases"`
-	Name      string                                           `json:"name"`
-	Hostname  string                                           `json:"hostname"`
-	Namespace CloudDatabaseClusterResultNamespace              `json:"namespace"`
-	Plan      CloudDatabaseClusterResultPlan                   `json:"plan"`
-	Spec      CloudDatabaseClusterResultSpec                   `json:"spec"`
-	Users     []CloudDatabaseClusterResultUsersDatabaseUser    `json:"users"`
-	AdminUser *CloudDatabaseClusterResultAdminUserDatabaseUser `json:"adminUser"`
-	State     string                                           `json:"state"`
-	Locked    bool                                             `json:"locked"`
+	Id                 string                                           `json:"id"`
+	Databases          []CloudDatabaseClusterResultDatabasesDatabase    `json:"databases"`
+	Name               string                                           `json:"name"`
+	Hostname           string                                           `json:"hostname"`
+	Namespace          CloudDatabaseClusterResultNamespace              `json:"namespace"`
+	Plan               CloudDatabaseClusterResultPlan                   `json:"plan"`
+	Spec               CloudDatabaseClusterResultSpec                   `json:"spec"`
+	Users              []CloudDatabaseClusterResultUsersDatabaseUser    `json:"users"`
+	AdminUser          *CloudDatabaseClusterResultAdminUserDatabaseUser `json:"adminUser"`
+	ExternalConnection *CloudDatabaseClusterResultExternalConnection    `json:"externalConnection"`
+	State              string                                           `json:"state"`
+	Locked             bool                                             `json:"locked"`
 }
 
 // GetId returns CloudDatabaseClusterResult.Id, and is useful for accessing the field via an interface.
@@ -246,6 +259,11 @@ func (v *CloudDatabaseClusterResult) GetUsers() []CloudDatabaseClusterResultUser
 // GetAdminUser returns CloudDatabaseClusterResult.AdminUser, and is useful for accessing the field via an interface.
 func (v *CloudDatabaseClusterResult) GetAdminUser() *CloudDatabaseClusterResultAdminUserDatabaseUser {
 	return v.AdminUser
+}
+
+// GetExternalConnection returns CloudDatabaseClusterResult.ExternalConnection, and is useful for accessing the field via an interface.
+func (v *CloudDatabaseClusterResult) GetExternalConnection() *CloudDatabaseClusterResultExternalConnection {
+	return v.ExternalConnection
 }
 
 // GetState returns CloudDatabaseClusterResult.State, and is useful for accessing the field via an interface.
@@ -415,6 +433,76 @@ func (v *CloudDatabaseClusterResultDatabasesDatabase) __premarshalJSON() (*__pre
 	retval.Name = v.CloudDatabaseClusterDatabaseResult.Name
 	retval.Description = v.CloudDatabaseClusterDatabaseResult.Description
 	retval.Status = v.CloudDatabaseClusterDatabaseResult.Status
+	return &retval, nil
+}
+
+// CloudDatabaseClusterResultExternalConnection includes the requested fields of the GraphQL type ExternalConnection.
+type CloudDatabaseClusterResultExternalConnection struct {
+	ExternalConnectionResult `json:"-"`
+}
+
+// GetIpv4 returns CloudDatabaseClusterResultExternalConnection.Ipv4, and is useful for accessing the field via an interface.
+func (v *CloudDatabaseClusterResultExternalConnection) GetIpv4() string {
+	return v.ExternalConnectionResult.Ipv4
+}
+
+// GetIpv6 returns CloudDatabaseClusterResultExternalConnection.Ipv6, and is useful for accessing the field via an interface.
+func (v *CloudDatabaseClusterResultExternalConnection) GetIpv6() string {
+	return v.ExternalConnectionResult.Ipv6
+}
+
+// GetPorts returns CloudDatabaseClusterResultExternalConnection.Ports, and is useful for accessing the field via an interface.
+func (v *CloudDatabaseClusterResultExternalConnection) GetPorts() []ExternalConnectionResultPortsExternalConnectionPort {
+	return v.ExternalConnectionResult.Ports
+}
+
+func (v *CloudDatabaseClusterResultExternalConnection) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*CloudDatabaseClusterResultExternalConnection
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.CloudDatabaseClusterResultExternalConnection = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	err = json.Unmarshal(
+		b, &v.ExternalConnectionResult)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+type __premarshalCloudDatabaseClusterResultExternalConnection struct {
+	Ipv4 string `json:"ipv4"`
+
+	Ipv6 string `json:"ipv6"`
+
+	Ports []ExternalConnectionResultPortsExternalConnectionPort `json:"ports"`
+}
+
+func (v *CloudDatabaseClusterResultExternalConnection) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *CloudDatabaseClusterResultExternalConnection) __premarshalJSON() (*__premarshalCloudDatabaseClusterResultExternalConnection, error) {
+	var retval __premarshalCloudDatabaseClusterResultExternalConnection
+
+	retval.Ipv4 = v.ExternalConnectionResult.Ipv4
+	retval.Ipv6 = v.ExternalConnectionResult.Ipv6
+	retval.Ports = v.ExternalConnectionResult.Ports
 	return &retval, nil
 }
 
@@ -1627,6 +1715,80 @@ func (v *EnvironmentVariableResult) GetValue() *string { return v.Value }
 
 // GetSecret returns EnvironmentVariableResult.Secret, and is useful for accessing the field via an interface.
 func (v *EnvironmentVariableResult) GetSecret() bool { return v.Secret }
+
+type ExternalConnectionInput struct {
+	SharedIp bool                          `json:"sharedIp"`
+	State    State                         `json:"state"`
+	Ports    []ExternalConnectionPortInput `json:"ports"`
+}
+
+// GetSharedIp returns ExternalConnectionInput.SharedIp, and is useful for accessing the field via an interface.
+func (v *ExternalConnectionInput) GetSharedIp() bool { return v.SharedIp }
+
+// GetState returns ExternalConnectionInput.State, and is useful for accessing the field via an interface.
+func (v *ExternalConnectionInput) GetState() State { return v.State }
+
+// GetPorts returns ExternalConnectionInput.Ports, and is useful for accessing the field via an interface.
+func (v *ExternalConnectionInput) GetPorts() []ExternalConnectionPortInput { return v.Ports }
+
+type ExternalConnectionPortInput struct {
+	ExternalPort *int             `json:"externalPort"`
+	State        State            `json:"state"`
+	AllowList    []AllowListInput `json:"allowList"`
+}
+
+// GetExternalPort returns ExternalConnectionPortInput.ExternalPort, and is useful for accessing the field via an interface.
+func (v *ExternalConnectionPortInput) GetExternalPort() *int { return v.ExternalPort }
+
+// GetState returns ExternalConnectionPortInput.State, and is useful for accessing the field via an interface.
+func (v *ExternalConnectionPortInput) GetState() State { return v.State }
+
+// GetAllowList returns ExternalConnectionPortInput.AllowList, and is useful for accessing the field via an interface.
+func (v *ExternalConnectionPortInput) GetAllowList() []AllowListInput { return v.AllowList }
+
+// ExternalConnectionResult includes the GraphQL fields of ExternalConnection requested by the fragment ExternalConnectionResult.
+type ExternalConnectionResult struct {
+	Ipv4  string                                                `json:"ipv4"`
+	Ipv6  string                                                `json:"ipv6"`
+	Ports []ExternalConnectionResultPortsExternalConnectionPort `json:"ports"`
+}
+
+// GetIpv4 returns ExternalConnectionResult.Ipv4, and is useful for accessing the field via an interface.
+func (v *ExternalConnectionResult) GetIpv4() string { return v.Ipv4 }
+
+// GetIpv6 returns ExternalConnectionResult.Ipv6, and is useful for accessing the field via an interface.
+func (v *ExternalConnectionResult) GetIpv6() string { return v.Ipv6 }
+
+// GetPorts returns ExternalConnectionResult.Ports, and is useful for accessing the field via an interface.
+func (v *ExternalConnectionResult) GetPorts() []ExternalConnectionResultPortsExternalConnectionPort {
+	return v.Ports
+}
+
+// ExternalConnectionResultPortsExternalConnectionPort includes the requested fields of the GraphQL type ExternalConnectionPort.
+type ExternalConnectionResultPortsExternalConnectionPort struct {
+	AllowList    []string `json:"allowList"`
+	ExternalPort int      `json:"externalPort"`
+	InternalPort *int     `json:"internalPort"`
+	Protocol     string   `json:"protocol"`
+}
+
+// GetAllowList returns ExternalConnectionResultPortsExternalConnectionPort.AllowList, and is useful for accessing the field via an interface.
+func (v *ExternalConnectionResultPortsExternalConnectionPort) GetAllowList() []string {
+	return v.AllowList
+}
+
+// GetExternalPort returns ExternalConnectionResultPortsExternalConnectionPort.ExternalPort, and is useful for accessing the field via an interface.
+func (v *ExternalConnectionResultPortsExternalConnectionPort) GetExternalPort() int {
+	return v.ExternalPort
+}
+
+// GetInternalPort returns ExternalConnectionResultPortsExternalConnectionPort.InternalPort, and is useful for accessing the field via an interface.
+func (v *ExternalConnectionResultPortsExternalConnectionPort) GetInternalPort() *int {
+	return v.InternalPort
+}
+
+// GetProtocol returns ExternalConnectionResultPortsExternalConnectionPort.Protocol, and is useful for accessing the field via an interface.
+func (v *ExternalConnectionResultPortsExternalConnectionPort) GetProtocol() string { return v.Protocol }
 
 type HealthCheckInput struct {
 	Port int    `json:"port"`
@@ -4195,6 +4357,9 @@ fragment CloudDatabaseClusterResult on CloudDatabaseCluster {
 	adminUser {
 		... CloudDatabaseClusterUserResult
 	}
+	externalConnection {
+		... ExternalConnectionResult
+	}
 	state
 	locked
 }
@@ -4213,6 +4378,16 @@ fragment CloudDatabaseClusterUserResult on DatabaseUser {
 	dsn
 	password
 	role
+}
+fragment ExternalConnectionResult on ExternalConnection {
+	ipv4
+	ipv6
+	ports {
+		allowList
+		externalPort
+		internalPort
+		protocol
+	}
 }
 `
 
@@ -4383,6 +4558,9 @@ fragment CloudDatabaseClusterResult on CloudDatabaseCluster {
 	adminUser {
 		... CloudDatabaseClusterUserResult
 	}
+	externalConnection {
+		... ExternalConnectionResult
+	}
 	state
 	locked
 }
@@ -4401,6 +4579,16 @@ fragment CloudDatabaseClusterUserResult on DatabaseUser {
 	dsn
 	password
 	role
+}
+fragment ExternalConnectionResult on ExternalConnection {
+	ipv4
+	ipv6
+	ports {
+		allowList
+		externalPort
+		internalPort
+		protocol
+	}
 }
 `
 
@@ -5400,6 +5588,9 @@ fragment CloudDatabaseClusterResult on CloudDatabaseCluster {
 	adminUser {
 		... CloudDatabaseClusterUserResult
 	}
+	externalConnection {
+		... ExternalConnectionResult
+	}
 	state
 	locked
 }
@@ -5418,6 +5609,16 @@ fragment CloudDatabaseClusterUserResult on DatabaseUser {
 	dsn
 	password
 	role
+}
+fragment ExternalConnectionResult on ExternalConnection {
+	ipv4
+	ipv6
+	ports {
+		allowList
+		externalPort
+		internalPort
+		protocol
+	}
 }
 `
 
@@ -5609,6 +5810,9 @@ fragment CloudDatabaseClusterResult on CloudDatabaseCluster {
 	adminUser {
 		... CloudDatabaseClusterUserResult
 	}
+	externalConnection {
+		... ExternalConnectionResult
+	}
 	state
 	locked
 }
@@ -5627,6 +5831,16 @@ fragment CloudDatabaseClusterUserResult on DatabaseUser {
 	dsn
 	password
 	role
+}
+fragment ExternalConnectionResult on ExternalConnection {
+	ipv4
+	ipv6
+	ports {
+		allowList
+		externalPort
+		internalPort
+		protocol
+	}
 }
 `
 

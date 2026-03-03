@@ -249,4 +249,7 @@ func init() {
 	getClusterDatabaseUserCredentialsCmd.MarkFlagRequired("namespace")
 	getClusterDatabaseUserCredentialsCmd.MarkFlagRequired("user")
 	cloudDatabaseClusterCmd.AddCommand(getClusterDatabaseUserCredentialsCmd)
+
+	//External Connection
+	cloudDatabaseClusterCmd.AddCommand(cloudDatabaseClusterEnableExternalConnectionCmd)
 }
