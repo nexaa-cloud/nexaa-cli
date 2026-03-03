@@ -814,7 +814,7 @@ input ExternalConnectionInput {
   state: State! = PRESENT
 
   ""
-  ports: [ExternalConnectionPortInput!]! = []
+  ports: [ExternalConnectionPortInput!] = []
 }
 
 type ExternalConnectionPort {

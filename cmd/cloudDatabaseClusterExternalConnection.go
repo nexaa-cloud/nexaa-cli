@@ -9,8 +9,8 @@ import (
 )
 
 var cloudDatabaseClusterEnableExternalConnectionCmd = &cobra.Command{
-	Use:     "external-connection",
-	Short:   "Enable or Disable external connection on a cloud database cluster",
+	Use:   "external-connection",
+	Short: "Enable or Disable external connection on a cloud database cluster",
 }
 
 var enableCloudDatabaseClusterExternalConnectionCmd = &cobra.Command{
@@ -20,20 +20,24 @@ var enableCloudDatabaseClusterExternalConnectionCmd = &cobra.Command{
 		namespace, _ := cmd.Flags().GetString("namespace")
 		clusterName, _ := cmd.Flags().GetString("cluster")
 		allowedIp, _ := cmd.Flags().GetStringArray("allowed-ip")
-		
+
 		allowList := make([]api.AllowListInput, 0)
-		for _, ip := range(allowedIp) {
-			allowList = append(allowList, api.AllowListInput{Ip:ip})
+		for _, ip := range allowedIp {
+			allowList = append(allowList, api.AllowListInput{Ip: ip, State: api.StatePresent})
 		}
 
 		resource := api.CloudDatabaseClusterModifyInput{
 			Name:      clusterName,
 			Namespace: namespace,
-			ExternalConnection: &api.ExternalConnectionInput {
+			ExternalConnection: &api.ExternalConnectionInput{
+				State:    api.StatePresent,
 				SharedIp: true,
-				Ports: []api.ExternalConnectionPortInput {
-					api.ExternalConnectionPortInput{AllowList: allowList},
-				} ,
+				Ports: []api.ExternalConnectionPortInput{
+					{
+						AllowList: allowList,
+						State:     api.StatePresent,
+					},
+				},
 			},
 		}
 
@@ -45,8 +49,8 @@ var enableCloudDatabaseClusterExternalConnectionCmd = &cobra.Command{
 			return
 		}
 		fmt.Printf("External connection enabled. Reachable at:\n")
-		fmt.Printf("Ipv4: %q:%q \n", cluster.ExternalConnection.Ipv4, cluster.ExternalConnection.Ports[0].ExternalPort)
-		fmt.Printf("Ipv6: %q:%q \n", cluster.ExternalConnection.Ipv6, cluster.ExternalConnection.Ports[0].ExternalPort)
+		fmt.Printf("Ipv4: %s:%d \n", cluster.ExternalConnection.Ipv4, cluster.ExternalConnection.Ports[0].ExternalPort)
+		fmt.Printf("Ipv6: %s:%d \n", cluster.ExternalConnection.Ipv6, cluster.ExternalConnection.Ports[0].ExternalPort)
 	},
 }
 
@@ -56,12 +60,13 @@ var disableCloudDatabaseClusterExternalConnectionCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		namespace, _ := cmd.Flags().GetString("namespace")
 		clusterName, _ := cmd.Flags().GetString("cluster")
-		
+
 		resource := api.CloudDatabaseClusterModifyInput{
 			Name:      clusterName,
 			Namespace: namespace,
-			ExternalConnection: &api.ExternalConnectionInput {
+			ExternalConnection: &api.ExternalConnectionInput{
 				State: api.StateAbsent,
+				Ports: []api.ExternalConnectionPortInput{},
 			},
 		}
 
@@ -72,7 +77,7 @@ var disableCloudDatabaseClusterExternalConnectionCmd = &cobra.Command{
 			log.Fatalf("Failed to disable external connection in cluster %q/%q: %v", namespace, clusterName, err)
 			return
 		}
-		fmt.Printf("External connection disabled in: %q/%q. \n", cluster.Namespace.Name, cluster.Name)
+		fmt.Printf("External connection disabled in: %s/%s. \n", cluster.Namespace.Name, cluster.Name)
 	},
 }
 
@@ -87,6 +92,6 @@ func init() {
 	disableCloudDatabaseClusterExternalConnectionCmd.Flags().String("namespace", "", "Namespace")
 	disableCloudDatabaseClusterExternalConnectionCmd.Flags().String("cluster", "", "Name of the cluster")
 	disableCloudDatabaseClusterExternalConnectionCmd.MarkFlagRequired("namespace")
-	disableCloudDatabaseClusterExternalConnectionCmd.MarkFlagRequired("cluster")	
-	cloudDatabaseClusterEnableExternalConnectionCmd.AddCommand(disableCloudDatabaseClusterExternalConnectionCmd)	
+	disableCloudDatabaseClusterExternalConnectionCmd.MarkFlagRequired("cluster")
+	cloudDatabaseClusterEnableExternalConnectionCmd.AddCommand(disableCloudDatabaseClusterExternalConnectionCmd)
 }
