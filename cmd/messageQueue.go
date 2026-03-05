@@ -275,4 +275,6 @@ func init() {
 	listAdminUserCredentialsCmd.MarkFlagRequired("name")
 	listAdminUserCredentialsCmd.MarkFlagRequired("username")
 	messageQueueCmd.AddCommand(listAdminUserCredentialsCmd)
+
+	messageQueueCmd.AddCommand(messageQueueEnableExternalConnectionCmd)
 }

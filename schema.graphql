@@ -88,10 +88,64 @@ type CloudDatabase {
   whitelist: [String!]!
 }
 
+"""
+Enable this feature to get recommendations on how to improve your database usage.
+
+The tool will be providing you settings on a cluster level to tune your database, provide recommendations for
+missing indexes and more.
+
+Database clusters will be analyzed once a day.
+"""
+input CloudDatabaseAdvisorInput {
+  "Set this field to `true` to enable recommendations on how to improve your database usage."
+  enabled: Boolean! = false
+}
+
+type CloudDatabaseAdvisory implements CloudDatabaseAdvisoryInterface {
+  createdAt: String!
+  identifier: String!
+  message: String!
+}
+
+interface CloudDatabaseAdvisoryInterface {
+  createdAt: String!
+  identifier: String!
+  message: String!
+}
+
+type CloudDatabaseAdvisoryMissingIndex implements CloudDatabaseAdvisoryInterface {
+  createdAt: String!
+  databaseName: String!
+  identifier: String!
+  message: String!
+}
+
+enum CloudDatabaseAdvisoryType {
+  MissingIndex
+  SettingSuggestion
+}
+
 type CloudDatabaseCluster {
   adminUser: DatabaseUser
+
+  """
+  
+  Cost: complexity = 10, multipliers = [type], defaultMultiplier = null
+  """
+  advisories(type: CloudDatabaseAdvisoryType = null): [CloudDatabaseAdvisoryInterface!]!
+
   databases: [Database!]!
   externalConnection: ExternalConnection
+
+  """
+  Returns the features available on a cluster.
+  Features are extra functionality or capabilities for database clusters.
+  They are opt-in and provide extra services for your database.
+  
+  Cost: complexity = 10, multipliers = [], defaultMultiplier = null
+  """
+  features: [CloudDatabaseClusterFeature!]!
+
   hostname: String!
   id: String!
   locked: Boolean!
@@ -104,6 +158,17 @@ type CloudDatabaseCluster {
   users: [DatabaseUser!]!
 }
 
+type CloudDatabaseClusterAdvisor implements CloudDatabaseClusterFeature {
+  enabled: Boolean!
+  status: String!
+}
+
+"""
+Input for create cloud database cluster.
+ 
+A database cluster is accessible from within the namespace your created it in.
+There is no limit on the number of users, or database.
+"""
 input CloudDatabaseClusterCreateInput {
   ""
   name: String!
@@ -122,6 +187,9 @@ input CloudDatabaseClusterCreateInput {
 
   ""
   users: [DatabaseUserInput!] = null
+
+  ""
+  advisor: CloudDatabaseAdvisorInput = null
 
   ""
   externalConnection: ExternalConnectionInput = null
@@ -143,6 +211,22 @@ input CloudDatabaseClusterDatabaseResourceInput {
   name: String!
 }
 
+interface CloudDatabaseClusterFeature {
+  enabled: Boolean!
+  status: String!
+}
+
+type CloudDatabaseClusterFeatureImpl implements CloudDatabaseClusterFeature {
+  enabled: Boolean!
+  status: String!
+}
+
+"""
+Input for create cloud database cluster.
+ 
+A database cluster is accessible from within the namespace your created it in.
+There is no limit on the number of users, or database.
+"""
 input CloudDatabaseClusterModifyInput {
   ""
   name: String!
@@ -155,6 +239,9 @@ input CloudDatabaseClusterModifyInput {
 
   ""
   users: [DatabaseUserInput!]
+
+  ""
+  advisor: CloudDatabaseAdvisorInput
 
   ""
   externalConnection: ExternalConnectionInput
@@ -207,6 +294,7 @@ type Container {
   containerType: ContainerType! @deprecated(reason: "use `type` instead")
   createdAt: DateTime!
   deletedAt: DateTime @deprecated(reason: "this field will be removed in the future, and doesn't have a replacement")
+  endpoints: [ContainerEndpoint!]!
   entrypoint: [String!]
   environmentVariables: [EnvironmentVariable!]!
   healthCheck: HealthCheck
@@ -308,6 +396,15 @@ input ContainerDeleteInput {
 
   ""
   namespace: String!
+}
+
+type ContainerEndpoint {
+  allowList: [String!]!
+  containerPort: Int!
+  id: String!
+  ipv4Address: String!
+  ipv6Address: String!
+  port: Int!
 }
 
 type ContainerJob {
@@ -775,6 +872,14 @@ input DeleteRegistryConnectionInput {
   namespace: String!
 }
 
+type Endpoint {
+  allowList: [String!]!
+  id: String!
+  ipv4Address: String!
+  ipv6Address: String!
+  port: Int!
+}
+
 type EnvironmentVariable {
   id: ID! @deprecated(reason: "environment variables are identified by name")
   name: String!
@@ -814,7 +919,7 @@ input ExternalConnectionInput {
   state: State! = PRESENT
 
   ""
-  ports: [ExternalConnectionPortInput!] = []
+  ports: [ExternalConnectionPortInput!]! = []
 }
 
 type ExternalConnectionPort {
@@ -886,6 +991,7 @@ input ManualScalingInput {
 
 type MessageQueue {
   adminUser: MessageQueueUser
+  externalConnection: ExternalConnection
   id: String!
   ingress: MessageQueueIngress!
   locked: Boolean!
@@ -911,6 +1017,9 @@ input MessageQueueCreateInput {
 
   ""
   allowList: [AllowListInput!]!
+
+  ""
+  externalConnection: ExternalConnectionInput = null
 }
 
 type MessageQueueIngress {
@@ -919,6 +1028,20 @@ type MessageQueueIngress {
   id: String!
   status: Status!
   tlsEnabled: Boolean!
+}
+
+input MessageQueueModifyInput {
+  ""
+  name: String!
+
+  ""
+  namespace: String!
+
+  ""
+  allowList: [AllowListInput!]
+
+  ""
+  externalConnection: ExternalConnectionInput
 }
 
 type MessageQueuePlan {
@@ -1138,7 +1261,7 @@ type Mutation {
   
   Cost: complexity = 100, multipliers = [], defaultMultiplier = null
   """
-  messageQueueCreate(messageQueue: MessageQueueCreateInput!): MessageQueue!
+  messageQueueCreate(messageQueue: MessageQueueCreateInput): MessageQueue!
 
   """
   
@@ -1150,7 +1273,7 @@ type Mutation {
   
   Cost: complexity = 100, multipliers = [], defaultMultiplier = null
   """
-  messageQueueModify(messageQueue: MessageQueueCreateInput!): MessageQueue!
+  messageQueueModify(messageQueue: MessageQueueModifyInput): MessageQueue!
 
   """
   
@@ -1582,4 +1705,3 @@ input VolumeResourceInput {
   ""
   namespace: String!
 }
-

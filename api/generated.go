@@ -55,6 +55,24 @@ var AllAutoScalingType = []AutoScalingType{
 	AutoScalingTypeCpu,
 }
 
+// Enable this feature to get recommendations on how to improve your database usage.
+//
+// The tool will be providing you settings on a cluster level to tune your database, provide recommendations for
+// missing indexes and more.
+//
+// Database clusters will be analyzed once a day.
+type CloudDatabaseAdvisorInput struct {
+	// Set this field to `true` to enable recommendations on how to improve your database usage.
+	Enabled bool `json:"enabled"`
+}
+
+// GetEnabled returns CloudDatabaseAdvisorInput.Enabled, and is useful for accessing the field via an interface.
+func (v *CloudDatabaseAdvisorInput) GetEnabled() bool { return v.Enabled }
+
+// Input for create cloud database cluster.
+//
+// A database cluster is accessible from within the namespace your created it in.
+// There is no limit on the number of users, or database.
 type CloudDatabaseClusterCreateInput struct {
 	Name               string                        `json:"name"`
 	Namespace          string                        `json:"namespace"`
@@ -62,6 +80,7 @@ type CloudDatabaseClusterCreateInput struct {
 	Plan               string                        `json:"plan"`
 	Databases          []DatabaseInput               `json:"databases"`
 	Users              []DatabaseUserInput           `json:"users"`
+	Advisor            *CloudDatabaseAdvisorInput    `json:"advisor"`
 	ExternalConnection *ExternalConnectionInput      `json:"externalConnection"`
 }
 
@@ -82,6 +101,9 @@ func (v *CloudDatabaseClusterCreateInput) GetDatabases() []DatabaseInput { retur
 
 // GetUsers returns CloudDatabaseClusterCreateInput.Users, and is useful for accessing the field via an interface.
 func (v *CloudDatabaseClusterCreateInput) GetUsers() []DatabaseUserInput { return v.Users }
+
+// GetAdvisor returns CloudDatabaseClusterCreateInput.Advisor, and is useful for accessing the field via an interface.
+func (v *CloudDatabaseClusterCreateInput) GetAdvisor() *CloudDatabaseAdvisorInput { return v.Advisor }
 
 // GetExternalConnection returns CloudDatabaseClusterCreateInput.ExternalConnection, and is useful for accessing the field via an interface.
 func (v *CloudDatabaseClusterCreateInput) GetExternalConnection() *ExternalConnectionInput {
@@ -130,12 +152,17 @@ func (v *CloudDatabaseClusterDatabaseResult) GetDescription() *string { return v
 // GetStatus returns CloudDatabaseClusterDatabaseResult.Status, and is useful for accessing the field via an interface.
 func (v *CloudDatabaseClusterDatabaseResult) GetStatus() string { return v.Status }
 
+// Input for create cloud database cluster.
+//
+// A database cluster is accessible from within the namespace your created it in.
+// There is no limit on the number of users, or database.
 type CloudDatabaseClusterModifyInput struct {
-	Name               string                   `json:"name"`
-	Namespace          string                   `json:"namespace"`
-	Databases          []DatabaseInput          `json:"databases"`
-	Users              []DatabaseUserInput      `json:"users"`
-	ExternalConnection *ExternalConnectionInput `json:"externalConnection"`
+	Name               string                     `json:"name"`
+	Namespace          string                     `json:"namespace"`
+	Databases          []DatabaseInput            `json:"databases"`
+	Users              []DatabaseUserInput        `json:"users"`
+	Advisor            *CloudDatabaseAdvisorInput `json:"advisor"`
+	ExternalConnection *ExternalConnectionInput   `json:"externalConnection"`
 }
 
 // GetName returns CloudDatabaseClusterModifyInput.Name, and is useful for accessing the field via an interface.
@@ -149,6 +176,9 @@ func (v *CloudDatabaseClusterModifyInput) GetDatabases() []DatabaseInput { retur
 
 // GetUsers returns CloudDatabaseClusterModifyInput.Users, and is useful for accessing the field via an interface.
 func (v *CloudDatabaseClusterModifyInput) GetUsers() []DatabaseUserInput { return v.Users }
+
+// GetAdvisor returns CloudDatabaseClusterModifyInput.Advisor, and is useful for accessing the field via an interface.
+func (v *CloudDatabaseClusterModifyInput) GetAdvisor() *CloudDatabaseAdvisorInput { return v.Advisor }
 
 // GetExternalConnection returns CloudDatabaseClusterModifyInput.ExternalConnection, and is useful for accessing the field via an interface.
 func (v *CloudDatabaseClusterModifyInput) GetExternalConnection() *ExternalConnectionInput {
@@ -1832,11 +1862,12 @@ type ManualScalingInput struct {
 func (v *ManualScalingInput) GetReplicas() int { return v.Replicas }
 
 type MessageQueueCreateInput struct {
-	Name      string                `json:"name"`
-	Namespace string                `json:"namespace"`
-	Plan      string                `json:"plan"`
-	Spec      MessageQueueSpecInput `json:"spec"`
-	AllowList []AllowListInput      `json:"allowList"`
+	Name               string                   `json:"name"`
+	Namespace          string                   `json:"namespace"`
+	Plan               string                   `json:"plan"`
+	Spec               MessageQueueSpecInput    `json:"spec"`
+	AllowList          []AllowListInput         `json:"allowList"`
+	ExternalConnection *ExternalConnectionInput `json:"externalConnection"`
 }
 
 // GetName returns MessageQueueCreateInput.Name, and is useful for accessing the field via an interface.
@@ -1853,6 +1884,32 @@ func (v *MessageQueueCreateInput) GetSpec() MessageQueueSpecInput { return v.Spe
 
 // GetAllowList returns MessageQueueCreateInput.AllowList, and is useful for accessing the field via an interface.
 func (v *MessageQueueCreateInput) GetAllowList() []AllowListInput { return v.AllowList }
+
+// GetExternalConnection returns MessageQueueCreateInput.ExternalConnection, and is useful for accessing the field via an interface.
+func (v *MessageQueueCreateInput) GetExternalConnection() *ExternalConnectionInput {
+	return v.ExternalConnection
+}
+
+type MessageQueueModifyInput struct {
+	Name               string                   `json:"name"`
+	Namespace          string                   `json:"namespace"`
+	AllowList          []AllowListInput         `json:"allowList"`
+	ExternalConnection *ExternalConnectionInput `json:"externalConnection"`
+}
+
+// GetName returns MessageQueueModifyInput.Name, and is useful for accessing the field via an interface.
+func (v *MessageQueueModifyInput) GetName() string { return v.Name }
+
+// GetNamespace returns MessageQueueModifyInput.Namespace, and is useful for accessing the field via an interface.
+func (v *MessageQueueModifyInput) GetNamespace() string { return v.Namespace }
+
+// GetAllowList returns MessageQueueModifyInput.AllowList, and is useful for accessing the field via an interface.
+func (v *MessageQueueModifyInput) GetAllowList() []AllowListInput { return v.AllowList }
+
+// GetExternalConnection returns MessageQueueModifyInput.ExternalConnection, and is useful for accessing the field via an interface.
+func (v *MessageQueueModifyInput) GetExternalConnection() *ExternalConnectionInput {
+	return v.ExternalConnection
+}
 
 // MessageQueuePlanResult includes the GraphQL fields of MessageQueuePlan requested by the fragment MessageQueuePlanResult.
 type MessageQueuePlanResult struct {
@@ -1915,12 +1972,13 @@ func (v *MessageQueueResourceInput) GetNamespace() string { return v.Namespace }
 
 // MessageQueueResult includes the GraphQL fields of MessageQueue requested by the fragment MessageQueueResult.
 type MessageQueueResult struct {
-	Id        string                                       `json:"id"`
-	Locked    bool                                         `json:"locked"`
-	Name      string                                       `json:"name"`
-	State     string                                       `json:"state"`
-	Namespace MessageQueueResultNamespace                  `json:"namespace"`
-	AdminUser *MessageQueueResultAdminUserMessageQueueUser `json:"adminUser"`
+	Id                 string                                       `json:"id"`
+	Locked             bool                                         `json:"locked"`
+	Name               string                                       `json:"name"`
+	State              string                                       `json:"state"`
+	Namespace          MessageQueueResultNamespace                  `json:"namespace"`
+	AdminUser          *MessageQueueResultAdminUserMessageQueueUser `json:"adminUser"`
+	ExternalConnection *MessageQueueResultExternalConnection        `json:"externalConnection"`
 }
 
 // GetId returns MessageQueueResult.Id, and is useful for accessing the field via an interface.
@@ -1943,6 +2001,11 @@ func (v *MessageQueueResult) GetAdminUser() *MessageQueueResultAdminUserMessageQ
 	return v.AdminUser
 }
 
+// GetExternalConnection returns MessageQueueResult.ExternalConnection, and is useful for accessing the field via an interface.
+func (v *MessageQueueResult) GetExternalConnection() *MessageQueueResultExternalConnection {
+	return v.ExternalConnection
+}
+
 // MessageQueueResultAdminUserMessageQueueUser includes the requested fields of the GraphQL type MessageQueueUser.
 type MessageQueueResultAdminUserMessageQueueUser struct {
 	Name   string `json:"name"`
@@ -1958,6 +2021,76 @@ func (v *MessageQueueResultAdminUserMessageQueueUser) GetRole() string { return 
 
 // GetStatus returns MessageQueueResultAdminUserMessageQueueUser.Status, and is useful for accessing the field via an interface.
 func (v *MessageQueueResultAdminUserMessageQueueUser) GetStatus() string { return v.Status }
+
+// MessageQueueResultExternalConnection includes the requested fields of the GraphQL type ExternalConnection.
+type MessageQueueResultExternalConnection struct {
+	ExternalConnectionResult `json:"-"`
+}
+
+// GetIpv4 returns MessageQueueResultExternalConnection.Ipv4, and is useful for accessing the field via an interface.
+func (v *MessageQueueResultExternalConnection) GetIpv4() string {
+	return v.ExternalConnectionResult.Ipv4
+}
+
+// GetIpv6 returns MessageQueueResultExternalConnection.Ipv6, and is useful for accessing the field via an interface.
+func (v *MessageQueueResultExternalConnection) GetIpv6() string {
+	return v.ExternalConnectionResult.Ipv6
+}
+
+// GetPorts returns MessageQueueResultExternalConnection.Ports, and is useful for accessing the field via an interface.
+func (v *MessageQueueResultExternalConnection) GetPorts() []ExternalConnectionResultPortsExternalConnectionPort {
+	return v.ExternalConnectionResult.Ports
+}
+
+func (v *MessageQueueResultExternalConnection) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*MessageQueueResultExternalConnection
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.MessageQueueResultExternalConnection = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	err = json.Unmarshal(
+		b, &v.ExternalConnectionResult)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+type __premarshalMessageQueueResultExternalConnection struct {
+	Ipv4 string `json:"ipv4"`
+
+	Ipv6 string `json:"ipv6"`
+
+	Ports []ExternalConnectionResultPortsExternalConnectionPort `json:"ports"`
+}
+
+func (v *MessageQueueResultExternalConnection) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *MessageQueueResultExternalConnection) __premarshalJSON() (*__premarshalMessageQueueResultExternalConnection, error) {
+	var retval __premarshalMessageQueueResultExternalConnection
+
+	retval.Ipv4 = v.ExternalConnectionResult.Ipv4
+	retval.Ipv6 = v.ExternalConnectionResult.Ipv6
+	retval.Ports = v.ExternalConnectionResult.Ports
+	return &retval, nil
+}
 
 // MessageQueueResultNamespace includes the requested fields of the GraphQL type Namespace.
 type MessageQueueResultNamespace struct {
@@ -2560,6 +2693,16 @@ type __messageQueueGetInput struct {
 
 // GetMessageQueueInput returns __messageQueueGetInput.MessageQueueInput, and is useful for accessing the field via an interface.
 func (v *__messageQueueGetInput) GetMessageQueueInput() MessageQueueResourceInput {
+	return v.MessageQueueInput
+}
+
+// __messageQueueModifyInput is used internally by genqlient
+type __messageQueueModifyInput struct {
+	MessageQueueInput MessageQueueModifyInput `json:"messageQueueInput"`
+}
+
+// GetMessageQueueInput returns __messageQueueModifyInput.MessageQueueInput, and is useful for accessing the field via an interface.
+func (v *__messageQueueModifyInput) GetMessageQueueInput() MessageQueueModifyInput {
 	return v.MessageQueueInput
 }
 
@@ -3675,6 +3818,17 @@ type messageQueueGetResponse struct {
 
 // GetMessageQueue returns messageQueueGetResponse.MessageQueue, and is useful for accessing the field via an interface.
 func (v *messageQueueGetResponse) GetMessageQueue() MessageQueueResult { return v.MessageQueue }
+
+// messageQueueModifyResponse is returned by messageQueueModify on success.
+type messageQueueModifyResponse struct {
+	// Cost: complexity = 100, multipliers = [], defaultMultiplier = null
+	MessageQueueModify MessageQueueResult `json:"messageQueueModify"`
+}
+
+// GetMessageQueueModify returns messageQueueModifyResponse.MessageQueueModify, and is useful for accessing the field via an interface.
+func (v *messageQueueModifyResponse) GetMessageQueueModify() MessageQueueResult {
+	return v.MessageQueueModify
+}
 
 // messageQueuePlansGetResponse is returned by messageQueuePlansGet on success.
 type messageQueuePlansGetResponse struct {
@@ -5885,6 +6039,19 @@ fragment MessageQueueResult on MessageQueue {
 		role
 		status
 	}
+	externalConnection {
+		... ExternalConnectionResult
+	}
+}
+fragment ExternalConnectionResult on ExternalConnection {
+	ipv4
+	ipv6
+	ports {
+		allowList
+		externalPort
+		internalPort
+		protocol
+	}
 }
 `
 
@@ -5965,6 +6132,19 @@ fragment MessageQueueResult on MessageQueue {
 		role
 		status
 	}
+	externalConnection {
+		... ExternalConnectionResult
+	}
+}
+fragment ExternalConnectionResult on ExternalConnection {
+	ipv4
+	ipv6
+	ports {
+		allowList
+		externalPort
+		internalPort
+		protocol
+	}
 }
 `
 
@@ -5982,6 +6162,67 @@ func messageQueueGet(
 	}
 
 	data_ = &messageQueueGetResponse{}
+	resp_ := &graphql.Response{Data: data_}
+
+	err_ = client_.MakeRequest(
+		ctx_,
+		req_,
+		resp_,
+	)
+
+	return data_, err_
+}
+
+// The mutation executed by messageQueueModify.
+const messageQueueModify_Operation = `
+mutation messageQueueModify ($messageQueueInput: MessageQueueModifyInput!) {
+	messageQueueModify(messageQueue: $messageQueueInput) {
+		... MessageQueueResult
+	}
+}
+fragment MessageQueueResult on MessageQueue {
+	id
+	locked
+	name
+	state
+	namespace {
+		name
+	}
+	adminUser {
+		name
+		role
+		status
+	}
+	externalConnection {
+		... ExternalConnectionResult
+	}
+}
+fragment ExternalConnectionResult on ExternalConnection {
+	ipv4
+	ipv6
+	ports {
+		allowList
+		externalPort
+		internalPort
+		protocol
+	}
+}
+`
+
+func messageQueueModify(
+	ctx_ context.Context,
+	client_ graphql.Client,
+	messageQueueInput MessageQueueModifyInput,
+) (data_ *messageQueueModifyResponse, err_ error) {
+	req_ := &graphql.Request{
+		OpName: "messageQueueModify",
+		Query:  messageQueueModify_Operation,
+		Variables: &__messageQueueModifyInput{
+			MessageQueueInput: messageQueueInput,
+		},
+	}
+
+	data_ = &messageQueueModifyResponse{}
 	resp_ := &graphql.Response{Data: data_}
 
 	err_ = client_.MakeRequest(
@@ -6133,6 +6374,19 @@ fragment MessageQueueResult on MessageQueue {
 		name
 		role
 		status
+	}
+	externalConnection {
+		... ExternalConnectionResult
+	}
+}
+fragment ExternalConnectionResult on ExternalConnection {
+	ipv4
+	ipv6
+	ports {
+		allowList
+		externalPort
+		internalPort
+		protocol
 	}
 }
 `

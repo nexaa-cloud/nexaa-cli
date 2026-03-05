@@ -11,6 +11,9 @@ fragment MessageQueueResult on MessageQueue {
     role
     status
   }
+  externalConnection {
+    ...ExternalConnectionResult
+  }
 }
 
 fragment MessageQueuePlanResult on MessageQueuePlan {
@@ -61,6 +64,14 @@ mutation messageQueueCreate($messageQueueInput: MessageQueueCreateInput!) {
     ...MessageQueueResult
   }
 }
+
+mutation messageQueueModify($messageQueueInput: MessageQueueModifyInput!) {
+  # @genqlient(flatten: true)
+  messageQueueModify(messageQueue: $messageQueueInput) {
+    ...MessageQueueResult
+  }
+}
+
 mutation messageQueueDelete($messageQueueInput: MessageQueueResourceInput!) {
   messageQueueDelete(messageQueue: $messageQueueInput)
 }
