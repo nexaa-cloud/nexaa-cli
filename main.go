@@ -1,10 +1,8 @@
 package main
 
 import (
-	"crypto/tls"
 	"fmt"
 	"log"
-	"net/http"
 	"os"
 
 	"github.com/nexaa-cloud/nexaa-cli/cmd"
@@ -12,7 +10,6 @@ import (
 )
 
 func main() {
-	http.DefaultTransport.(*http.Transport).TLSClientConfig = &tls.Config{InsecureSkipVerify: true}
 	config.Initialize()
 
 	if err := config.LoadConfig(); err != nil {
