@@ -17,6 +17,9 @@ fragment MessageQueueResult on MessageQueue {
   spec {
     ...MessageQueueVersionResult
   }
+  ingress {
+    ...MessageQueueIngressResult
+  }
   externalConnection {
     ...ExternalConnectionResult
   }
@@ -34,6 +37,10 @@ fragment MessageQueuePlanResult on MessageQueuePlan {
   }
   replicas
   storage(unit: GB)
+}
+
+fragment MessageQueueIngressResult on MessageQueueIngress {
+  allowList
 }
 
 fragment MessageQueueVersionResult on MessageQueueSpec {
