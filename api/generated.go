@@ -1978,6 +1978,8 @@ type MessageQueueResult struct {
 	State              string                                       `json:"state"`
 	Namespace          MessageQueueResultNamespace                  `json:"namespace"`
 	AdminUser          *MessageQueueResultAdminUserMessageQueueUser `json:"adminUser"`
+	Plan               MessageQueueResultPlanMessageQueuePlan       `json:"plan"`
+	Spec               MessageQueueResultSpecMessageQueueSpec       `json:"spec"`
 	ExternalConnection *MessageQueueResultExternalConnection        `json:"externalConnection"`
 }
 
@@ -2000,6 +2002,12 @@ func (v *MessageQueueResult) GetNamespace() MessageQueueResultNamespace { return
 func (v *MessageQueueResult) GetAdminUser() *MessageQueueResultAdminUserMessageQueueUser {
 	return v.AdminUser
 }
+
+// GetPlan returns MessageQueueResult.Plan, and is useful for accessing the field via an interface.
+func (v *MessageQueueResult) GetPlan() MessageQueueResultPlanMessageQueuePlan { return v.Plan }
+
+// GetSpec returns MessageQueueResult.Spec, and is useful for accessing the field via an interface.
+func (v *MessageQueueResult) GetSpec() MessageQueueResultSpecMessageQueueSpec { return v.Spec }
 
 // GetExternalConnection returns MessageQueueResult.ExternalConnection, and is useful for accessing the field via an interface.
 func (v *MessageQueueResult) GetExternalConnection() *MessageQueueResultExternalConnection {
@@ -2099,6 +2107,184 @@ type MessageQueueResultNamespace struct {
 
 // GetName returns MessageQueueResultNamespace.Name, and is useful for accessing the field via an interface.
 func (v *MessageQueueResultNamespace) GetName() string { return v.Name }
+
+// MessageQueueResultPlanMessageQueuePlan includes the requested fields of the GraphQL type MessageQueuePlan.
+type MessageQueueResultPlanMessageQueuePlan struct {
+	MessageQueuePlanResult `json:"-"`
+}
+
+// GetCpu returns MessageQueueResultPlanMessageQueuePlan.Cpu, and is useful for accessing the field via an interface.
+func (v *MessageQueueResultPlanMessageQueuePlan) GetCpu() float64 {
+	return v.MessageQueuePlanResult.Cpu
+}
+
+// GetGroup returns MessageQueueResultPlanMessageQueuePlan.Group, and is useful for accessing the field via an interface.
+func (v *MessageQueueResultPlanMessageQueuePlan) GetGroup() string {
+	return v.MessageQueuePlanResult.Group
+}
+
+// GetId returns MessageQueueResultPlanMessageQueuePlan.Id, and is useful for accessing the field via an interface.
+func (v *MessageQueueResultPlanMessageQueuePlan) GetId() string { return v.MessageQueuePlanResult.Id }
+
+// GetMemory returns MessageQueueResultPlanMessageQueuePlan.Memory, and is useful for accessing the field via an interface.
+func (v *MessageQueueResultPlanMessageQueuePlan) GetMemory() float64 {
+	return v.MessageQueuePlanResult.Memory
+}
+
+// GetName returns MessageQueueResultPlanMessageQueuePlan.Name, and is useful for accessing the field via an interface.
+func (v *MessageQueueResultPlanMessageQueuePlan) GetName() string {
+	return v.MessageQueuePlanResult.Name
+}
+
+// GetPrice returns MessageQueueResultPlanMessageQueuePlan.Price, and is useful for accessing the field via an interface.
+func (v *MessageQueueResultPlanMessageQueuePlan) GetPrice() MessageQueuePlanResultPrice {
+	return v.MessageQueuePlanResult.Price
+}
+
+// GetReplicas returns MessageQueueResultPlanMessageQueuePlan.Replicas, and is useful for accessing the field via an interface.
+func (v *MessageQueueResultPlanMessageQueuePlan) GetReplicas() int {
+	return v.MessageQueuePlanResult.Replicas
+}
+
+// GetStorage returns MessageQueueResultPlanMessageQueuePlan.Storage, and is useful for accessing the field via an interface.
+func (v *MessageQueueResultPlanMessageQueuePlan) GetStorage() float64 {
+	return v.MessageQueuePlanResult.Storage
+}
+
+func (v *MessageQueueResultPlanMessageQueuePlan) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*MessageQueueResultPlanMessageQueuePlan
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.MessageQueueResultPlanMessageQueuePlan = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	err = json.Unmarshal(
+		b, &v.MessageQueuePlanResult)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+type __premarshalMessageQueueResultPlanMessageQueuePlan struct {
+	Cpu float64 `json:"cpu"`
+
+	Group string `json:"group"`
+
+	Id string `json:"id"`
+
+	Memory float64 `json:"memory"`
+
+	Name string `json:"name"`
+
+	Price MessageQueuePlanResultPrice `json:"price"`
+
+	Replicas int `json:"replicas"`
+
+	Storage float64 `json:"storage"`
+}
+
+func (v *MessageQueueResultPlanMessageQueuePlan) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *MessageQueueResultPlanMessageQueuePlan) __premarshalJSON() (*__premarshalMessageQueueResultPlanMessageQueuePlan, error) {
+	var retval __premarshalMessageQueueResultPlanMessageQueuePlan
+
+	retval.Cpu = v.MessageQueuePlanResult.Cpu
+	retval.Group = v.MessageQueuePlanResult.Group
+	retval.Id = v.MessageQueuePlanResult.Id
+	retval.Memory = v.MessageQueuePlanResult.Memory
+	retval.Name = v.MessageQueuePlanResult.Name
+	retval.Price = v.MessageQueuePlanResult.Price
+	retval.Replicas = v.MessageQueuePlanResult.Replicas
+	retval.Storage = v.MessageQueuePlanResult.Storage
+	return &retval, nil
+}
+
+// MessageQueueResultSpecMessageQueueSpec includes the requested fields of the GraphQL type MessageQueueSpec.
+type MessageQueueResultSpecMessageQueueSpec struct {
+	MessageQueueVersionResult `json:"-"`
+}
+
+// GetPatchLevelVersion returns MessageQueueResultSpecMessageQueueSpec.PatchLevelVersion, and is useful for accessing the field via an interface.
+func (v *MessageQueueResultSpecMessageQueueSpec) GetPatchLevelVersion() string {
+	return v.MessageQueueVersionResult.PatchLevelVersion
+}
+
+// GetType returns MessageQueueResultSpecMessageQueueSpec.Type, and is useful for accessing the field via an interface.
+func (v *MessageQueueResultSpecMessageQueueSpec) GetType() string {
+	return v.MessageQueueVersionResult.Type
+}
+
+// GetVersion returns MessageQueueResultSpecMessageQueueSpec.Version, and is useful for accessing the field via an interface.
+func (v *MessageQueueResultSpecMessageQueueSpec) GetVersion() string {
+	return v.MessageQueueVersionResult.Version
+}
+
+func (v *MessageQueueResultSpecMessageQueueSpec) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*MessageQueueResultSpecMessageQueueSpec
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.MessageQueueResultSpecMessageQueueSpec = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	err = json.Unmarshal(
+		b, &v.MessageQueueVersionResult)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+type __premarshalMessageQueueResultSpecMessageQueueSpec struct {
+	PatchLevelVersion string `json:"patchLevelVersion"`
+
+	Type string `json:"type"`
+
+	Version string `json:"version"`
+}
+
+func (v *MessageQueueResultSpecMessageQueueSpec) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *MessageQueueResultSpecMessageQueueSpec) __premarshalJSON() (*__premarshalMessageQueueResultSpecMessageQueueSpec, error) {
+	var retval __premarshalMessageQueueResultSpecMessageQueueSpec
+
+	retval.PatchLevelVersion = v.MessageQueueVersionResult.PatchLevelVersion
+	retval.Type = v.MessageQueueVersionResult.Type
+	retval.Version = v.MessageQueueVersionResult.Version
+	return &retval, nil
+}
 
 type MessageQueueSpecInput struct {
 	Type    string `json:"type"`
@@ -6039,9 +6225,33 @@ fragment MessageQueueResult on MessageQueue {
 		role
 		status
 	}
+	plan {
+		... MessageQueuePlanResult
+	}
+	spec {
+		... MessageQueueVersionResult
+	}
 	externalConnection {
 		... ExternalConnectionResult
 	}
+}
+fragment MessageQueuePlanResult on MessageQueuePlan {
+	cpu(unit: CPU)
+	group
+	id
+	memory(unit: GB)
+	name
+	price {
+		amount
+		currency
+	}
+	replicas
+	storage(unit: GB)
+}
+fragment MessageQueueVersionResult on MessageQueueSpec {
+	patchLevelVersion
+	type
+	version
 }
 fragment ExternalConnectionResult on ExternalConnection {
 	ipv4
@@ -6132,9 +6342,33 @@ fragment MessageQueueResult on MessageQueue {
 		role
 		status
 	}
+	plan {
+		... MessageQueuePlanResult
+	}
+	spec {
+		... MessageQueueVersionResult
+	}
 	externalConnection {
 		... ExternalConnectionResult
 	}
+}
+fragment MessageQueuePlanResult on MessageQueuePlan {
+	cpu(unit: CPU)
+	group
+	id
+	memory(unit: GB)
+	name
+	price {
+		amount
+		currency
+	}
+	replicas
+	storage(unit: GB)
+}
+fragment MessageQueueVersionResult on MessageQueueSpec {
+	patchLevelVersion
+	type
+	version
 }
 fragment ExternalConnectionResult on ExternalConnection {
 	ipv4
@@ -6193,9 +6427,33 @@ fragment MessageQueueResult on MessageQueue {
 		role
 		status
 	}
+	plan {
+		... MessageQueuePlanResult
+	}
+	spec {
+		... MessageQueueVersionResult
+	}
 	externalConnection {
 		... ExternalConnectionResult
 	}
+}
+fragment MessageQueuePlanResult on MessageQueuePlan {
+	cpu(unit: CPU)
+	group
+	id
+	memory(unit: GB)
+	name
+	price {
+		amount
+		currency
+	}
+	replicas
+	storage(unit: GB)
+}
+fragment MessageQueueVersionResult on MessageQueueSpec {
+	patchLevelVersion
+	type
+	version
 }
 fragment ExternalConnectionResult on ExternalConnection {
 	ipv4
@@ -6375,9 +6633,33 @@ fragment MessageQueueResult on MessageQueue {
 		role
 		status
 	}
+	plan {
+		... MessageQueuePlanResult
+	}
+	spec {
+		... MessageQueueVersionResult
+	}
 	externalConnection {
 		... ExternalConnectionResult
 	}
+}
+fragment MessageQueuePlanResult on MessageQueuePlan {
+	cpu(unit: CPU)
+	group
+	id
+	memory(unit: GB)
+	name
+	price {
+		amount
+		currency
+	}
+	replicas
+	storage(unit: GB)
+}
+fragment MessageQueueVersionResult on MessageQueueSpec {
+	patchLevelVersion
+	type
+	version
 }
 fragment ExternalConnectionResult on ExternalConnection {
 	ipv4
