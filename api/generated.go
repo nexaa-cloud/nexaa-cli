@@ -1890,6 +1890,14 @@ func (v *MessageQueueCreateInput) GetExternalConnection() *ExternalConnectionInp
 	return v.ExternalConnection
 }
 
+// MessageQueueIngressResult includes the GraphQL fields of MessageQueueIngress requested by the fragment MessageQueueIngressResult.
+type MessageQueueIngressResult struct {
+	AllowList []string `json:"allowList"`
+}
+
+// GetAllowList returns MessageQueueIngressResult.AllowList, and is useful for accessing the field via an interface.
+func (v *MessageQueueIngressResult) GetAllowList() []string { return v.AllowList }
+
 type MessageQueueModifyInput struct {
 	Name               string                   `json:"name"`
 	Namespace          string                   `json:"namespace"`
@@ -1980,6 +1988,7 @@ type MessageQueueResult struct {
 	AdminUser          *MessageQueueResultAdminUserMessageQueueUser `json:"adminUser"`
 	Plan               MessageQueueResultPlanMessageQueuePlan       `json:"plan"`
 	Spec               MessageQueueResultSpecMessageQueueSpec       `json:"spec"`
+	Ingress            MessageQueueResultIngressMessageQueueIngress `json:"ingress"`
 	ExternalConnection *MessageQueueResultExternalConnection        `json:"externalConnection"`
 }
 
@@ -2008,6 +2017,11 @@ func (v *MessageQueueResult) GetPlan() MessageQueueResultPlanMessageQueuePlan { 
 
 // GetSpec returns MessageQueueResult.Spec, and is useful for accessing the field via an interface.
 func (v *MessageQueueResult) GetSpec() MessageQueueResultSpecMessageQueueSpec { return v.Spec }
+
+// GetIngress returns MessageQueueResult.Ingress, and is useful for accessing the field via an interface.
+func (v *MessageQueueResult) GetIngress() MessageQueueResultIngressMessageQueueIngress {
+	return v.Ingress
+}
 
 // GetExternalConnection returns MessageQueueResult.ExternalConnection, and is useful for accessing the field via an interface.
 func (v *MessageQueueResult) GetExternalConnection() *MessageQueueResultExternalConnection {
@@ -2097,6 +2111,60 @@ func (v *MessageQueueResultExternalConnection) __premarshalJSON() (*__premarshal
 	retval.Ipv4 = v.ExternalConnectionResult.Ipv4
 	retval.Ipv6 = v.ExternalConnectionResult.Ipv6
 	retval.Ports = v.ExternalConnectionResult.Ports
+	return &retval, nil
+}
+
+// MessageQueueResultIngressMessageQueueIngress includes the requested fields of the GraphQL type MessageQueueIngress.
+type MessageQueueResultIngressMessageQueueIngress struct {
+	MessageQueueIngressResult `json:"-"`
+}
+
+// GetAllowList returns MessageQueueResultIngressMessageQueueIngress.AllowList, and is useful for accessing the field via an interface.
+func (v *MessageQueueResultIngressMessageQueueIngress) GetAllowList() []string {
+	return v.MessageQueueIngressResult.AllowList
+}
+
+func (v *MessageQueueResultIngressMessageQueueIngress) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*MessageQueueResultIngressMessageQueueIngress
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.MessageQueueResultIngressMessageQueueIngress = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	err = json.Unmarshal(
+		b, &v.MessageQueueIngressResult)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+type __premarshalMessageQueueResultIngressMessageQueueIngress struct {
+	AllowList []string `json:"allowList"`
+}
+
+func (v *MessageQueueResultIngressMessageQueueIngress) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *MessageQueueResultIngressMessageQueueIngress) __premarshalJSON() (*__premarshalMessageQueueResultIngressMessageQueueIngress, error) {
+	var retval __premarshalMessageQueueResultIngressMessageQueueIngress
+
+	retval.AllowList = v.MessageQueueIngressResult.AllowList
 	return &retval, nil
 }
 
@@ -6231,6 +6299,9 @@ fragment MessageQueueResult on MessageQueue {
 	spec {
 		... MessageQueueVersionResult
 	}
+	ingress {
+		... MessageQueueIngressResult
+	}
 	externalConnection {
 		... ExternalConnectionResult
 	}
@@ -6252,6 +6323,9 @@ fragment MessageQueueVersionResult on MessageQueueSpec {
 	patchLevelVersion
 	type
 	version
+}
+fragment MessageQueueIngressResult on MessageQueueIngress {
+	allowList
 }
 fragment ExternalConnectionResult on ExternalConnection {
 	ipv4
@@ -6348,6 +6422,9 @@ fragment MessageQueueResult on MessageQueue {
 	spec {
 		... MessageQueueVersionResult
 	}
+	ingress {
+		... MessageQueueIngressResult
+	}
 	externalConnection {
 		... ExternalConnectionResult
 	}
@@ -6369,6 +6446,9 @@ fragment MessageQueueVersionResult on MessageQueueSpec {
 	patchLevelVersion
 	type
 	version
+}
+fragment MessageQueueIngressResult on MessageQueueIngress {
+	allowList
 }
 fragment ExternalConnectionResult on ExternalConnection {
 	ipv4
@@ -6433,6 +6513,9 @@ fragment MessageQueueResult on MessageQueue {
 	spec {
 		... MessageQueueVersionResult
 	}
+	ingress {
+		... MessageQueueIngressResult
+	}
 	externalConnection {
 		... ExternalConnectionResult
 	}
@@ -6454,6 +6537,9 @@ fragment MessageQueueVersionResult on MessageQueueSpec {
 	patchLevelVersion
 	type
 	version
+}
+fragment MessageQueueIngressResult on MessageQueueIngress {
+	allowList
 }
 fragment ExternalConnectionResult on ExternalConnection {
 	ipv4
@@ -6639,6 +6725,9 @@ fragment MessageQueueResult on MessageQueue {
 	spec {
 		... MessageQueueVersionResult
 	}
+	ingress {
+		... MessageQueueIngressResult
+	}
 	externalConnection {
 		... ExternalConnectionResult
 	}
@@ -6660,6 +6749,9 @@ fragment MessageQueueVersionResult on MessageQueueSpec {
 	patchLevelVersion
 	type
 	version
+}
+fragment MessageQueueIngressResult on MessageQueueIngress {
+	allowList
 }
 fragment ExternalConnectionResult on ExternalConnection {
 	ipv4
