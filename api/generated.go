@@ -846,7 +846,8 @@ type ContainerCreateInput struct {
 	// Example: `echo "Hello $(NAME)"`.
 	//
 	// This field is defined in docker exec format. https://docs.docker.com/reference/dockerfile/#shell-and-exec-form
-	Command []string `json:"command"`
+	Command            []string                 `json:"command"`
+	ExternalConnection *ExternalConnectionInput `json:"externalConnection"`
 }
 
 // GetName returns ContainerCreateInput.Name, and is useful for accessing the field via an interface.
@@ -892,6 +893,11 @@ func (v *ContainerCreateInput) GetEntrypoint() []string { return v.Entrypoint }
 
 // GetCommand returns ContainerCreateInput.Command, and is useful for accessing the field via an interface.
 func (v *ContainerCreateInput) GetCommand() []string { return v.Command }
+
+// GetExternalConnection returns ContainerCreateInput.ExternalConnection, and is useful for accessing the field via an interface.
+func (v *ContainerCreateInput) GetExternalConnection() *ExternalConnectionInput {
+	return v.ExternalConnection
+}
 
 type ContainerJobCreateInput struct {
 	Name      string             `json:"name"`
@@ -1164,7 +1170,8 @@ type ContainerModifyInput struct {
 	// Example: `echo "Hello $(NAME)"`.
 	//
 	// This field is defined in docker exec format. https://docs.docker.com/reference/dockerfile/#shell-and-exec-form
-	Command []string `json:"command"`
+	Command            []string                 `json:"command"`
+	ExternalConnection *ExternalConnectionInput `json:"externalConnection"`
 }
 
 // GetName returns ContainerModifyInput.Name, and is useful for accessing the field via an interface.
@@ -1207,6 +1214,11 @@ func (v *ContainerModifyInput) GetEntrypoint() []string { return v.Entrypoint }
 
 // GetCommand returns ContainerModifyInput.Command, and is useful for accessing the field via an interface.
 func (v *ContainerModifyInput) GetCommand() []string { return v.Command }
+
+// GetExternalConnection returns ContainerModifyInput.ExternalConnection, and is useful for accessing the field via an interface.
+func (v *ContainerModifyInput) GetExternalConnection() *ExternalConnectionInput {
+	return v.ExternalConnection
+}
 
 // ContainerMounts includes the GraphQL fields of Mount requested by the fragment ContainerMounts.
 type ContainerMounts struct {
@@ -1480,23 +1492,24 @@ var AllContainerResources = []ContainerResources{
 
 // ContainerResult includes the GraphQL fields of Container requested by the fragment ContainerResult.
 type ContainerResult struct {
-	Name                 string                            `json:"name"`
-	Image                string                            `json:"image"`
-	PrivateRegistry      *ContainerResultPrivateRegistry   `json:"privateRegistry"`
-	Resources            ContainerResources                `json:"resources"`
-	Command              []string                          `json:"command"`
-	Entrypoint           []string                          `json:"entrypoint"`
-	EnvironmentVariables []EnvironmentVariableResult       `json:"environmentVariables"`
-	Ports                []string                          `json:"ports"`
-	Ingresses            []ContainerResultIngressesIngress `json:"ingresses"`
-	Mounts               []ContainerMounts                 `json:"mounts"`
-	HealthCheck          *ContainerResultHealthCheck       `json:"healthCheck"`
-	AvailableReplicas    int                               `json:"availableReplicas"`
-	NumberOfReplicas     int                               `json:"numberOfReplicas"`
-	AutoScaling          *ContainerResultAutoScaling       `json:"autoScaling"`
-	State                string                            `json:"state"`
-	Locked               bool                              `json:"locked"`
-	Type                 ContainerType                     `json:"type"`
+	Name                 string                             `json:"name"`
+	Image                string                             `json:"image"`
+	PrivateRegistry      *ContainerResultPrivateRegistry    `json:"privateRegistry"`
+	Resources            ContainerResources                 `json:"resources"`
+	Command              []string                           `json:"command"`
+	Entrypoint           []string                           `json:"entrypoint"`
+	EnvironmentVariables []EnvironmentVariableResult        `json:"environmentVariables"`
+	ExternalConnection   *ContainerResultExternalConnection `json:"externalConnection"`
+	Ports                []string                           `json:"ports"`
+	Ingresses            []ContainerResultIngressesIngress  `json:"ingresses"`
+	Mounts               []ContainerMounts                  `json:"mounts"`
+	HealthCheck          *ContainerResultHealthCheck        `json:"healthCheck"`
+	AvailableReplicas    int                                `json:"availableReplicas"`
+	NumberOfReplicas     int                                `json:"numberOfReplicas"`
+	AutoScaling          *ContainerResultAutoScaling        `json:"autoScaling"`
+	State                string                             `json:"state"`
+	Locked               bool                               `json:"locked"`
+	Type                 ContainerType                      `json:"type"`
 }
 
 // GetName returns ContainerResult.Name, and is useful for accessing the field via an interface.
@@ -1522,6 +1535,11 @@ func (v *ContainerResult) GetEntrypoint() []string { return v.Entrypoint }
 // GetEnvironmentVariables returns ContainerResult.EnvironmentVariables, and is useful for accessing the field via an interface.
 func (v *ContainerResult) GetEnvironmentVariables() []EnvironmentVariableResult {
 	return v.EnvironmentVariables
+}
+
+// GetExternalConnection returns ContainerResult.ExternalConnection, and is useful for accessing the field via an interface.
+func (v *ContainerResult) GetExternalConnection() *ContainerResultExternalConnection {
+	return v.ExternalConnection
 }
 
 // GetPorts returns ContainerResult.Ports, and is useful for accessing the field via an interface.
@@ -1593,6 +1611,72 @@ func (v *ContainerResultAutoScalingTriggersAutoScalingTrigger) GetType() string 
 
 // GetThreshold returns ContainerResultAutoScalingTriggersAutoScalingTrigger.Threshold, and is useful for accessing the field via an interface.
 func (v *ContainerResultAutoScalingTriggersAutoScalingTrigger) GetThreshold() int { return v.Threshold }
+
+// ContainerResultExternalConnection includes the requested fields of the GraphQL type ExternalConnection.
+type ContainerResultExternalConnection struct {
+	ExternalConnectionResult `json:"-"`
+}
+
+// GetIpv4 returns ContainerResultExternalConnection.Ipv4, and is useful for accessing the field via an interface.
+func (v *ContainerResultExternalConnection) GetIpv4() string { return v.ExternalConnectionResult.Ipv4 }
+
+// GetIpv6 returns ContainerResultExternalConnection.Ipv6, and is useful for accessing the field via an interface.
+func (v *ContainerResultExternalConnection) GetIpv6() string { return v.ExternalConnectionResult.Ipv6 }
+
+// GetPorts returns ContainerResultExternalConnection.Ports, and is useful for accessing the field via an interface.
+func (v *ContainerResultExternalConnection) GetPorts() []ExternalConnectionResultPortsExternalConnectionPort {
+	return v.ExternalConnectionResult.Ports
+}
+
+func (v *ContainerResultExternalConnection) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*ContainerResultExternalConnection
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.ContainerResultExternalConnection = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	err = json.Unmarshal(
+		b, &v.ExternalConnectionResult)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+type __premarshalContainerResultExternalConnection struct {
+	Ipv4 string `json:"ipv4"`
+
+	Ipv6 string `json:"ipv6"`
+
+	Ports []ExternalConnectionResultPortsExternalConnectionPort `json:"ports"`
+}
+
+func (v *ContainerResultExternalConnection) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *ContainerResultExternalConnection) __premarshalJSON() (*__premarshalContainerResultExternalConnection, error) {
+	var retval __premarshalContainerResultExternalConnection
+
+	retval.Ipv4 = v.ExternalConnectionResult.Ipv4
+	retval.Ipv6 = v.ExternalConnectionResult.Ipv6
+	retval.Ports = v.ExternalConnectionResult.Ports
+	return &retval, nil
+}
 
 // ContainerResultHealthCheck includes the requested fields of the GraphQL type HealthCheck.
 type ContainerResultHealthCheck struct {
@@ -1762,13 +1846,27 @@ func (v *ExternalConnectionInput) GetState() State { return v.State }
 func (v *ExternalConnectionInput) GetPorts() []ExternalConnectionPortInput { return v.Ports }
 
 type ExternalConnectionPortInput struct {
-	ExternalPort *int             `json:"externalPort"`
-	State        State            `json:"state"`
-	AllowList    []AllowListInput `json:"allowList"`
+	ExternalPort *int `json:"externalPort"`
+	// Internal port is only used for external connections of containers.
+	// For other resources, it's automatically selected
+	//
+	// See ports in `ContainerCreateInput` and `ContainerModifyInput`
+	InternalPort *int `json:"internalPort"`
+	// Protocol is only used for external connections of containers.
+	// For other resources, only TCP is allowed.
+	Protocol  Protocol         `json:"protocol"`
+	State     State            `json:"state"`
+	AllowList []AllowListInput `json:"allowList"`
 }
 
 // GetExternalPort returns ExternalConnectionPortInput.ExternalPort, and is useful for accessing the field via an interface.
 func (v *ExternalConnectionPortInput) GetExternalPort() *int { return v.ExternalPort }
+
+// GetInternalPort returns ExternalConnectionPortInput.InternalPort, and is useful for accessing the field via an interface.
+func (v *ExternalConnectionPortInput) GetInternalPort() *int { return v.InternalPort }
+
+// GetProtocol returns ExternalConnectionPortInput.Protocol, and is useful for accessing the field via an interface.
+func (v *ExternalConnectionPortInput) GetProtocol() Protocol { return v.Protocol }
 
 // GetState returns ExternalConnectionPortInput.State, and is useful for accessing the field via an interface.
 func (v *ExternalConnectionPortInput) GetState() State { return v.State }
@@ -1799,7 +1897,7 @@ type ExternalConnectionResultPortsExternalConnectionPort struct {
 	AllowList    []string `json:"allowList"`
 	ExternalPort int      `json:"externalPort"`
 	InternalPort *int     `json:"internalPort"`
-	Protocol     string   `json:"protocol"`
+	Protocol     Protocol `json:"protocol"`
 }
 
 // GetAllowList returns ExternalConnectionResultPortsExternalConnectionPort.AllowList, and is useful for accessing the field via an interface.
@@ -1818,7 +1916,9 @@ func (v *ExternalConnectionResultPortsExternalConnectionPort) GetInternalPort() 
 }
 
 // GetProtocol returns ExternalConnectionResultPortsExternalConnectionPort.Protocol, and is useful for accessing the field via an interface.
-func (v *ExternalConnectionResultPortsExternalConnectionPort) GetProtocol() string { return v.Protocol }
+func (v *ExternalConnectionResultPortsExternalConnectionPort) GetProtocol() Protocol {
+	return v.Protocol
+}
 
 type HealthCheckInput struct {
 	Port int    `json:"port"`
@@ -2524,6 +2624,18 @@ type NamespaceResultVolumesVolume struct {
 
 // GetName returns NamespaceResultVolumesVolume.Name, and is useful for accessing the field via an interface.
 func (v *NamespaceResultVolumesVolume) GetName() string { return v.Name }
+
+type Protocol string
+
+const (
+	ProtocolTcp Protocol = "TCP"
+	ProtocolUdp Protocol = "UDP"
+)
+
+var AllProtocol = []Protocol{
+	ProtocolTcp,
+	ProtocolUdp,
+}
 
 type RegistryCreateInput struct {
 	Namespace string `json:"namespace"`
@@ -3501,6 +3613,11 @@ func (v *containerListNamespaceContainersContainer) GetEnvironmentVariables() []
 	return v.ContainerResult.EnvironmentVariables
 }
 
+// GetExternalConnection returns containerListNamespaceContainersContainer.ExternalConnection, and is useful for accessing the field via an interface.
+func (v *containerListNamespaceContainersContainer) GetExternalConnection() *ContainerResultExternalConnection {
+	return v.ContainerResult.ExternalConnection
+}
+
 // GetPorts returns containerListNamespaceContainersContainer.Ports, and is useful for accessing the field via an interface.
 func (v *containerListNamespaceContainersContainer) GetPorts() []string {
 	return v.ContainerResult.Ports
@@ -3587,6 +3704,8 @@ type __premarshalcontainerListNamespaceContainersContainer struct {
 
 	EnvironmentVariables []EnvironmentVariableResult `json:"environmentVariables"`
 
+	ExternalConnection *ContainerResultExternalConnection `json:"externalConnection"`
+
 	Ports []string `json:"ports"`
 
 	Ingresses []ContainerResultIngressesIngress `json:"ingresses"`
@@ -3626,6 +3745,7 @@ func (v *containerListNamespaceContainersContainer) __premarshalJSON() (*__prema
 	retval.Command = v.ContainerResult.Command
 	retval.Entrypoint = v.ContainerResult.Entrypoint
 	retval.EnvironmentVariables = v.ContainerResult.EnvironmentVariables
+	retval.ExternalConnection = v.ContainerResult.ExternalConnection
 	retval.Ports = v.ContainerResult.Ports
 	retval.Ingresses = v.ContainerResult.Ingresses
 	retval.Mounts = v.ContainerResult.Mounts
@@ -5120,6 +5240,9 @@ fragment ContainerResult on Container {
 	environmentVariables {
 		... EnvironmentVariableResult
 	}
+	externalConnection {
+		... ExternalConnectionResult
+	}
 	ports
 	ingresses {
 		domainName
@@ -5155,6 +5278,16 @@ fragment EnvironmentVariableResult on EnvironmentVariable {
 	name
 	value
 	secret
+}
+fragment ExternalConnectionResult on ExternalConnection {
+	ipv4
+	ipv6
+	ports {
+		allowList
+		externalPort
+		internalPort
+		protocol
+	}
 }
 fragment ContainerMounts on Mount {
 	path
@@ -5211,6 +5344,9 @@ fragment ContainerResult on Container {
 	environmentVariables {
 		... EnvironmentVariableResult
 	}
+	externalConnection {
+		... ExternalConnectionResult
+	}
 	ports
 	ingresses {
 		domainName
@@ -5246,6 +5382,16 @@ fragment EnvironmentVariableResult on EnvironmentVariable {
 	name
 	value
 	secret
+}
+fragment ExternalConnectionResult on ExternalConnection {
+	ipv4
+	ipv6
+	ports {
+		allowList
+		externalPort
+		internalPort
+		protocol
+	}
 }
 fragment ContainerMounts on Mount {
 	path
@@ -5650,6 +5796,9 @@ fragment ContainerResult on Container {
 	environmentVariables {
 		... EnvironmentVariableResult
 	}
+	externalConnection {
+		... ExternalConnectionResult
+	}
 	ports
 	ingresses {
 		domainName
@@ -5685,6 +5834,16 @@ fragment EnvironmentVariableResult on EnvironmentVariable {
 	name
 	value
 	secret
+}
+fragment ExternalConnectionResult on ExternalConnection {
+	ipv4
+	ipv6
+	ports {
+		allowList
+		externalPort
+		internalPort
+		protocol
+	}
 }
 fragment ContainerMounts on Mount {
 	path
@@ -5739,6 +5898,9 @@ fragment ContainerResult on Container {
 	environmentVariables {
 		... EnvironmentVariableResult
 	}
+	externalConnection {
+		... ExternalConnectionResult
+	}
 	ports
 	ingresses {
 		domainName
@@ -5774,6 +5936,16 @@ fragment EnvironmentVariableResult on EnvironmentVariable {
 	name
 	value
 	secret
+}
+fragment ExternalConnectionResult on ExternalConnection {
+	ipv4
+	ipv6
+	ports {
+		allowList
+		externalPort
+		internalPort
+		protocol
+	}
 }
 fragment ContainerMounts on Mount {
 	path

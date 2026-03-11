@@ -105,13 +105,13 @@ var deleteCloudDatabaseClusterDatabaseCmd = &cobra.Command{
 
 func init() {
 
-	listCloudDatabaseClusterDatabasesCmd.Flags().String("namespace", "", "Name of the namespace cluster belongs to")
+	listCloudDatabaseClusterDatabasesCmd.Flags().StringP("namespace", "n", "", "Namespace")
 	listCloudDatabaseClusterDatabasesCmd.Flags().String("cluster", "", "Name of the cluster")
 	listCloudDatabaseClusterDatabasesCmd.MarkFlagRequired("namespace")
 	listCloudDatabaseClusterDatabasesCmd.MarkFlagRequired("cluster")
 	cloudDatabaseClusterDatabaseCmd.AddCommand(listCloudDatabaseClusterDatabasesCmd)
 
-	deleteCloudDatabaseClusterDatabaseCmd.Flags().String("namespace", "", "Name of the namespace cluster belongs to")
+	deleteCloudDatabaseClusterDatabaseCmd.Flags().StringP("namespace", "n", "", "Namespace")
 	deleteCloudDatabaseClusterDatabaseCmd.Flags().String("cluster", "", "Name of the cluster")
 	deleteCloudDatabaseClusterDatabaseCmd.Flags().String("name", "", "Name of the database we want to delete")
 	deleteCloudDatabaseClusterDatabaseCmd.MarkFlagRequired("namespace")
@@ -119,7 +119,7 @@ func init() {
 	deleteCloudDatabaseClusterDatabaseCmd.MarkFlagRequired("name")
 	cloudDatabaseClusterDatabaseCmd.AddCommand(deleteCloudDatabaseClusterDatabaseCmd)
 
-	createCloudDatabaseClusterDatabaseCmd.Flags().String("namespace", "", "Name of namespace to create the cluster in")
+	createCloudDatabaseClusterDatabaseCmd.Flags().StringP("namespace", "n", "", "Namespace")
 	createCloudDatabaseClusterDatabaseCmd.Flags().String("cluster", "", "Name of the cluster")
 	createCloudDatabaseClusterDatabaseCmd.Flags().String("name", "", "Name of the database we want to create")
 	createCloudDatabaseClusterDatabaseCmd.Flags().String("description", "", "Description of the database")

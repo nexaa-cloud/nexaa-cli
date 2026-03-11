@@ -17,7 +17,7 @@ var containerCmd = &cobra.Command{
 
 var getContainerCmd = &cobra.Command{
 	Use:   "get",
-	Short: "Get details of a container job",
+	Short: "Get details of a container",
 	Run: func(cmd *cobra.Command, args []string) {
 		namespace, _ := cmd.Flags().GetString("namespace")
 		name, _ := cmd.Flags().GetString("name")
@@ -251,7 +251,7 @@ var deleteContainerCmd = &cobra.Command{
 }
 
 func init() {
-	createContainerCmd.Flags().String("namespace", "", "Namespace")
+	createContainerCmd.Flags().StringP("namespace", "n", "", "Namespace")
 	createContainerCmd.Flags().String("name", "", "Name for the container")
 	createContainerCmd.Flags().String("image", "", "Container image")
 	createContainerCmd.Flags().String("resources", "", "Container resources")
@@ -264,7 +264,7 @@ func init() {
 	createContainerCmd.Flags().StringArray("command", []string{}, "Command to run in the container")
 	containerCmd.AddCommand(createContainerCmd)
 
-	createStarterContainerCmd.Flags().String("namespace", "", "Namespace")
+	createStarterContainerCmd.Flags().StringP("namespace", "n", "", "Namespace")
 	createStarterContainerCmd.Flags().String("name", "", "Name for the container")
 	createStarterContainerCmd.Flags().String("image", "", "Container image")
 	createStarterContainerCmd.Flags().StringArray("env", []string{}, "Container environment variables")
@@ -276,7 +276,7 @@ func init() {
 	createStarterContainerCmd.MarkFlagRequired("image")
 	containerCmd.AddCommand(createStarterContainerCmd)
 
-	modifyContainerCmd.Flags().String("namespace", "", "Namespace")
+	modifyContainerCmd.Flags().StringP("namespace", "n", "", "Namespace")
 	modifyContainerCmd.Flags().String("name", "", "Name for the container")
 	modifyContainerCmd.Flags().String("image", "", "Container image")
 	modifyContainerCmd.Flags().String("resources", "", "Container resources")
@@ -291,19 +291,21 @@ func init() {
 	modifyContainerCmd.MarkFlagRequired("name")
 	containerCmd.AddCommand(modifyContainerCmd)
 
-	listContainersCmd.Flags().String("namespace", "", "Namespace")
+	listContainersCmd.Flags().StringP("namespace", "n", "", "Namespace")
 	listContainersCmd.MarkFlagRequired("namespace")
 	containerCmd.AddCommand(listContainersCmd)
 
-	deleteContainerCmd.Flags().String("namespace", "", "Namespace")
+	deleteContainerCmd.Flags().StringP("namespace", "n", "", "Namespace")
 	deleteContainerCmd.Flags().String("name", "", "Name of this container")
 	deleteContainerCmd.MarkFlagRequired("namespace")
 	deleteContainerCmd.MarkFlagRequired("name")
 	containerCmd.AddCommand(deleteContainerCmd)
 
-	getContainerCmd.Flags().String("namespace", "", "Namespace")
+	getContainerCmd.Flags().StringP("namespace", "n", "", "Namespace")
 	getContainerCmd.Flags().String("name", "", "Name of the container")
 	getContainerCmd.MarkFlagRequired("namespace")
 	getContainerCmd.MarkFlagRequired("Name")
-	containerCmd.AddCommand(getContainerJobCmd)
+	containerCmd.AddCommand(getContainerCmd)
+
+	containerCmd.AddCommand(containerEnableExternalConnectionCmd)
 }

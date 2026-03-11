@@ -294,9 +294,9 @@ type Container {
   containerType: ContainerType! @deprecated(reason: "use `type` instead")
   createdAt: DateTime!
   deletedAt: DateTime @deprecated(reason: "this field will be removed in the future, and doesn't have a replacement")
-  endpoints: [ContainerEndpoint!]!
   entrypoint: [String!]
   environmentVariables: [EnvironmentVariable!]!
+  externalConnection: ExternalConnection
   healthCheck: HealthCheck
   id: ID!
   image: String!
@@ -388,6 +388,9 @@ input ContainerCreateInput {
   This field is defined in docker exec format. https://docs.docker.com/reference/dockerfile/#shell-and-exec-form
   """
   command: [String!]
+
+  ""
+  externalConnection: ExternalConnectionInput = null
 }
 
 input ContainerDeleteInput {
@@ -634,6 +637,9 @@ input ContainerModifyInput {
   This field is defined in docker exec format. https://docs.docker.com/reference/dockerfile/#shell-and-exec-form
   """
   command: [String!]
+
+  ""
+  externalConnection: ExternalConnectionInput
 }
 
 input ContainerResourceInput {
@@ -926,12 +932,26 @@ type ExternalConnectionPort {
   allowList: [String!]!
   externalPort: Int!
   internalPort: Int
-  protocol: String!
+  protocol: Protocol!
 }
 
 input ExternalConnectionPortInput {
   ""
   externalPort: Int = null
+
+  """
+  Internal port is only used for external connections of containers.
+  For other resources, it's automatically selected
+  
+  See ports in `ContainerCreateInput` and `ContainerModifyInput`
+  """
+  internalPort: Int = null
+
+  """
+  Protocol is only used for external connections of containers.
+  For other resources, only TCP is allowed.
+  """
+  protocol: Protocol! = TCP
 
   ""
   state: State! = PRESENT
@@ -1402,6 +1422,11 @@ type PrivateRegistry {
   username: String!
 }
 
+enum Protocol {
+  TCP
+  UDP
+}
+
 type Query {
   """
   Returns the current user account.
@@ -1705,3 +1730,4 @@ input VolumeResourceInput {
   ""
   namespace: String!
 }
+

@@ -227,7 +227,7 @@ func init() {
 
 	cloudDatabaseClusterCmd.AddCommand(listCloudDatabaseClustersCmd)
 
-	deleteCloudDatabaseClusterCmd.Flags().String("namespace", "", "Namespace")
+	deleteCloudDatabaseClusterCmd.Flags().StringP("namespace", "n", "", "Namespace")
 	deleteCloudDatabaseClusterCmd.Flags().String("name", "", "Name of the cluster")
 	deleteCloudDatabaseClusterCmd.MarkFlagRequired("namespace")
 	deleteCloudDatabaseClusterCmd.MarkFlagRequired("name")

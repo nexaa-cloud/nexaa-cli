@@ -234,14 +234,14 @@ func init() {
 	messageQueueCmd.AddCommand(listMessageQueuesCmd)
 
 	// Get command
-	getMessageQueueCmd.Flags().String("namespace", "", "Namespace")
+	getMessageQueueCmd.Flags().StringP("namespace", "n", "", "Namespace")
 	getMessageQueueCmd.Flags().String("name", "", "Name of the message queue")
 	getMessageQueueCmd.MarkFlagRequired("namespace")
 	getMessageQueueCmd.MarkFlagRequired("name")
 	messageQueueCmd.AddCommand(getMessageQueueCmd)
 
 	// Create command
-	createMessageQueueCmd.Flags().String("namespace", "", "Namespace")
+	createMessageQueueCmd.Flags().StringP("namespace", "n", "", "Namespace")
 	createMessageQueueCmd.Flags().String("name", "", "Name for the message queue")
 	createMessageQueueCmd.Flags().String("plan", "", "Plan ID for the message queue")
 	createMessageQueueCmd.Flags().String("type", "", "Type of the message queue (e.g., RabbitMQ)")
@@ -255,7 +255,7 @@ func init() {
 	messageQueueCmd.AddCommand(createMessageQueueCmd)
 
 	// Delete command
-	deleteMessageQueueCmd.Flags().String("namespace", "", "Namespace")
+	deleteMessageQueueCmd.Flags().StringP("namespace", "n", "", "Namespace")
 	deleteMessageQueueCmd.Flags().String("name", "", "Name of the message queue")
 	deleteMessageQueueCmd.MarkFlagRequired("namespace")
 	deleteMessageQueueCmd.MarkFlagRequired("name")
@@ -268,7 +268,7 @@ func init() {
 	messageQueueCmd.AddCommand(listMessageQueueVersionsCmd)
 
 	// Admin credentials command
-	listAdminUserCredentialsCmd.Flags().String("namespace", "", "Namespace name")
+	listAdminUserCredentialsCmd.Flags().StringP("namespace", "n", "", "Namespace")
 	listAdminUserCredentialsCmd.Flags().String("name", "", "Name of the message queue")
 	listAdminUserCredentialsCmd.Flags().String("username", "", "Admin username")
 	listAdminUserCredentialsCmd.MarkFlagRequired("namespace")

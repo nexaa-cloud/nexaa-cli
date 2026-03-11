@@ -82,14 +82,14 @@ var disableMessageQueueExternalConnectionCmd = &cobra.Command{
 }
 
 func init() {
-	enableMessageQueueExternalConnectionCmd.Flags().String("namespace", "", "Namespace")
+	enableMessageQueueExternalConnectionCmd.Flags().StringP("namespace", "n", "", "Namespace")
 	enableMessageQueueExternalConnectionCmd.Flags().String("cluster", "", "Name of the cluster")
 	enableMessageQueueExternalConnectionCmd.Flags().StringArray("allowed-ip", []string{"0.0.0.0/0", "::/0"}, "Allowed ip for the connection")
 	enableMessageQueueExternalConnectionCmd.MarkFlagRequired("namespace")
 	enableMessageQueueExternalConnectionCmd.MarkFlagRequired("cluster")
 	messageQueueEnableExternalConnectionCmd.AddCommand(enableMessageQueueExternalConnectionCmd)
 
-	disableMessageQueueExternalConnectionCmd.Flags().String("namespace", "", "Namespace")
+	disableMessageQueueExternalConnectionCmd.Flags().StringP("namespace", "n", "", "Namespace")
 	disableMessageQueueExternalConnectionCmd.Flags().String("cluster", "", "Name of the cluster")
 	disableMessageQueueExternalConnectionCmd.MarkFlagRequired("namespace")
 	disableMessageQueueExternalConnectionCmd.MarkFlagRequired("cluster")

@@ -205,7 +205,7 @@ var deleteContainerJobCmd = &cobra.Command{
 }
 
 func init() {
-	createContainerJobCmd.Flags().String("namespace", "", "Namespace")
+	createContainerJobCmd.Flags().StringP("namespace", "n", "", "Namespace")
 	createContainerJobCmd.Flags().String("name", "", "Name for this container job")
 	createContainerJobCmd.Flags().String("image", "", "Container job image")
 	createContainerJobCmd.Flags().String("resources", "", "Container job resources")
@@ -222,7 +222,7 @@ func init() {
 	createContainerJobCmd.MarkFlagRequired("schedule")
 	containerJobCmd.AddCommand(createContainerJobCmd)
 
-	modifyContainerJobCmd.Flags().String("namespace", "", "Namespace")
+	modifyContainerJobCmd.Flags().StringP("namespace", "n", "", "Namespace")
 	modifyContainerJobCmd.Flags().String("name", "", "Name for this container job")
 	modifyContainerJobCmd.Flags().String("image", "", "Container job image")
 	modifyContainerJobCmd.Flags().String("resources", "", "Container job resources")
@@ -237,17 +237,17 @@ func init() {
 	modifyContainerJobCmd.MarkFlagRequired("name")
 	containerJobCmd.AddCommand(modifyContainerJobCmd)
 
-	listContainerJobsCmd.Flags().String("namespace", "", "Namespace")
+	listContainerJobsCmd.Flags().StringP("namespace", "n", "", "Namespace")
 	listContainerJobsCmd.MarkFlagRequired("namespace")
 	containerJobCmd.AddCommand(listContainerJobsCmd)
 
-	deleteContainerJobCmd.Flags().String("namespace", "", "Namespace")
+	deleteContainerJobCmd.Flags().StringP("namespace", "n", "", "Namespace")
 	deleteContainerJobCmd.Flags().String("name", "", "Name of the containerjob")
 	deleteContainerJobCmd.MarkFlagRequired("namespace")
 	deleteContainerJobCmd.MarkFlagRequired("name")
 	containerJobCmd.AddCommand(deleteContainerJobCmd)
 
-	getContainerJobCmd.Flags().String("namespace", "", "Namespace")
+	getContainerJobCmd.Flags().StringP("namespace", "n", "", "Namespace")
 	getContainerJobCmd.Flags().String("name", "", "Name of the container job")
 	getContainerJobCmd.MarkFlagRequired("namespace")
 	getContainerJobCmd.MarkFlagRequired("Name")

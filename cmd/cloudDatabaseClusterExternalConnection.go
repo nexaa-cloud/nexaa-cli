@@ -82,14 +82,14 @@ var disableCloudDatabaseClusterExternalConnectionCmd = &cobra.Command{
 }
 
 func init() {
-	enableCloudDatabaseClusterExternalConnectionCmd.Flags().String("namespace", "", "Namespace")
+	enableCloudDatabaseClusterExternalConnectionCmd.Flags().StringP("namespace", "n", "", "Namespace")
 	enableCloudDatabaseClusterExternalConnectionCmd.Flags().String("cluster", "", "Name of the cluster")
 	enableCloudDatabaseClusterExternalConnectionCmd.Flags().StringArray("allowed-ip", []string{"0.0.0.0/0", "::/0"}, "Allowed ip for the connection")
 	enableCloudDatabaseClusterExternalConnectionCmd.MarkFlagRequired("namespace")
 	enableCloudDatabaseClusterExternalConnectionCmd.MarkFlagRequired("cluster")
 	cloudDatabaseClusterEnableExternalConnectionCmd.AddCommand(enableCloudDatabaseClusterExternalConnectionCmd)
 
-	disableCloudDatabaseClusterExternalConnectionCmd.Flags().String("namespace", "", "Namespace")
+	disableCloudDatabaseClusterExternalConnectionCmd.Flags().StringP("namespace", "n", "", "Namespace")
 	disableCloudDatabaseClusterExternalConnectionCmd.Flags().String("cluster", "", "Name of the cluster")
 	disableCloudDatabaseClusterExternalConnectionCmd.MarkFlagRequired("namespace")
 	disableCloudDatabaseClusterExternalConnectionCmd.MarkFlagRequired("cluster")
