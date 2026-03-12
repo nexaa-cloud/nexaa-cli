@@ -78,14 +78,14 @@ var enableContainerExternalConnectionCmd = &cobra.Command{
 
 		client := api.NewClient()
 
-		cluster, err := client.ContainerModify(resource)
+		container, err := client.ContainerModify(resource)
 		if err != nil {
 			log.Fatalf("Failed to enable external connection in cluster %q/%q: %v", namespace, containerName, err)
 			return
 		}
-		fmt.Printf("External connection enabled. Reachable at:\n")
-		fmt.Printf("Ipv4: %s:%d \n", cluster.ExternalConnection.Ipv4, cluster.ExternalConnection.Ports[0].ExternalPort)
-		fmt.Printf("Ipv6: %s:%d \n", cluster.ExternalConnection.Ipv6, cluster.ExternalConnection.Ports[0].ExternalPort)
+
+		fmt.Printf("External connection enabled.\n")
+		printConnections(container)
 	},
 }
 
@@ -130,13 +130,15 @@ var disableContainerExternalConnectionCmd = &cobra.Command{
 			}
 		}
 
-		_, err := client.ContainerModify(resource)
+		container, err := client.ContainerModify(resource)
 
 		if err != nil {
 			log.Fatalf("Failed to disable external connection in cluster %q/%q: %v", namespace, name, err)
 			return
 		}
 		fmt.Printf("External connection disabled in: %s/%s. \n", namespaceCmd, name)
+
+		printConnections(container)
 	},
 }
 
@@ -160,24 +162,28 @@ var listContainerExternalConnectionCmd = &cobra.Command{
 			return
 		}
 
-		writer := tabwriter.NewWriter(os.Stdout, 0, 0, 3, ' ', tabwriter.Debug)
-		fmt.Fprintln(writer, "IPV4\t IPV6\t EXTERNAL PORT\t INTERNAL PORT\t PROTOCOL\t ALLOWLIST\t")
-
-		for _, port := range container.ExternalConnection.Ports {
-			fmt.Fprintf(
-				writer,
-				"%s\t %s\t %d\t %d\t %s\t %s\n",
-				container.ExternalConnection.Ipv4,
-				container.ExternalConnection.Ipv4,
-				port.ExternalPort,
-				*port.InternalPort,
-				port.Protocol,
-				strings.Join(port.AllowList, ","),
-			)
-		}
-
-		writer.Flush()
+		printConnections(container)
 	},
+}
+
+func printConnections(container api.ContainerResult) {
+	writer := tabwriter.NewWriter(os.Stdout, 0, 0, 3, ' ', tabwriter.Debug)
+	fmt.Fprintln(writer, "IPV4\t IPV6\t EXTERNAL PORT\t INTERNAL PORT\t PROTOCOL\t ALLOWLIST\t")
+
+	for _, port := range container.ExternalConnection.Ports {
+		fmt.Fprintf(
+			writer,
+			"%s\t %s\t %d\t %d\t %s\t %s\n",
+			container.ExternalConnection.Ipv4,
+			container.ExternalConnection.Ipv4,
+			port.ExternalPort,
+			*port.InternalPort,
+			port.Protocol,
+			strings.Join(port.AllowList, ","),
+		)
+	}
+
+	writer.Flush()
 }
 
 func init() {
