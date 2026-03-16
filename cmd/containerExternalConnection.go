@@ -136,7 +136,7 @@ var disableContainerExternalConnectionCmd = &cobra.Command{
 			log.Fatalf("Failed to disable external connection in cluster %q/%q: %v", namespace, name, err)
 			return
 		}
-		fmt.Printf("External connection disabled in: %s/%s. \n", namespaceCmd, name)
+		fmt.Printf("External connection disabled in: %s/%s. \n", namespace, name)
 
 		printConnections(container)
 	},
