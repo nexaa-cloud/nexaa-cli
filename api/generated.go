@@ -55,13 +55,33 @@ var AllAutoScalingType = []AutoScalingType{
 	AutoScalingTypeCpu,
 }
 
+// Enable this feature to get recommendations on how to improve your database usage.
+//
+// The tool will be providing you settings on a cluster level to tune your database, provide recommendations for
+// missing indexes and more.
+//
+// Database clusters will be analyzed once a day.
+type CloudDatabaseAdvisorInput struct {
+	// Set this field to `true` to enable recommendations on how to improve your database usage.
+	Enabled bool `json:"enabled"`
+}
+
+// GetEnabled returns CloudDatabaseAdvisorInput.Enabled, and is useful for accessing the field via an interface.
+func (v *CloudDatabaseAdvisorInput) GetEnabled() bool { return v.Enabled }
+
+// Input for create cloud database cluster.
+//
+// A database cluster is accessible from within the namespace your created it in.
+// There is no limit on the number of users, or database.
 type CloudDatabaseClusterCreateInput struct {
-	Name      string                        `json:"name"`
-	Namespace string                        `json:"namespace"`
-	Spec      CloudDatabaseClusterSpecInput `json:"spec"`
-	Plan      string                        `json:"plan"`
-	Databases []DatabaseInput               `json:"databases"`
-	Users     []DatabaseUserInput           `json:"users"`
+	Name               string                        `json:"name"`
+	Namespace          string                        `json:"namespace"`
+	Spec               CloudDatabaseClusterSpecInput `json:"spec"`
+	Plan               string                        `json:"plan"`
+	Databases          []DatabaseInput               `json:"databases"`
+	Users              []DatabaseUserInput           `json:"users"`
+	Advisor            *CloudDatabaseAdvisorInput    `json:"advisor"`
+	ExternalConnection *ExternalConnectionInput      `json:"externalConnection"`
 }
 
 // GetName returns CloudDatabaseClusterCreateInput.Name, and is useful for accessing the field via an interface.
@@ -81,6 +101,14 @@ func (v *CloudDatabaseClusterCreateInput) GetDatabases() []DatabaseInput { retur
 
 // GetUsers returns CloudDatabaseClusterCreateInput.Users, and is useful for accessing the field via an interface.
 func (v *CloudDatabaseClusterCreateInput) GetUsers() []DatabaseUserInput { return v.Users }
+
+// GetAdvisor returns CloudDatabaseClusterCreateInput.Advisor, and is useful for accessing the field via an interface.
+func (v *CloudDatabaseClusterCreateInput) GetAdvisor() *CloudDatabaseAdvisorInput { return v.Advisor }
+
+// GetExternalConnection returns CloudDatabaseClusterCreateInput.ExternalConnection, and is useful for accessing the field via an interface.
+func (v *CloudDatabaseClusterCreateInput) GetExternalConnection() *ExternalConnectionInput {
+	return v.ExternalConnection
+}
 
 type CloudDatabaseClusterDatabaseCreateInput struct {
 	Cluster  CloudDatabaseClusterResourceInput `json:"cluster"`
@@ -124,11 +152,17 @@ func (v *CloudDatabaseClusterDatabaseResult) GetDescription() *string { return v
 // GetStatus returns CloudDatabaseClusterDatabaseResult.Status, and is useful for accessing the field via an interface.
 func (v *CloudDatabaseClusterDatabaseResult) GetStatus() string { return v.Status }
 
+// Input for create cloud database cluster.
+//
+// A database cluster is accessible from within the namespace your created it in.
+// There is no limit on the number of users, or database.
 type CloudDatabaseClusterModifyInput struct {
-	Name      string              `json:"name"`
-	Namespace string              `json:"namespace"`
-	Databases []DatabaseInput     `json:"databases"`
-	Users     []DatabaseUserInput `json:"users"`
+	Name               string                     `json:"name"`
+	Namespace          string                     `json:"namespace"`
+	Databases          []DatabaseInput            `json:"databases"`
+	Users              []DatabaseUserInput        `json:"users"`
+	Advisor            *CloudDatabaseAdvisorInput `json:"advisor"`
+	ExternalConnection *ExternalConnectionInput   `json:"externalConnection"`
 }
 
 // GetName returns CloudDatabaseClusterModifyInput.Name, and is useful for accessing the field via an interface.
@@ -142,6 +176,14 @@ func (v *CloudDatabaseClusterModifyInput) GetDatabases() []DatabaseInput { retur
 
 // GetUsers returns CloudDatabaseClusterModifyInput.Users, and is useful for accessing the field via an interface.
 func (v *CloudDatabaseClusterModifyInput) GetUsers() []DatabaseUserInput { return v.Users }
+
+// GetAdvisor returns CloudDatabaseClusterModifyInput.Advisor, and is useful for accessing the field via an interface.
+func (v *CloudDatabaseClusterModifyInput) GetAdvisor() *CloudDatabaseAdvisorInput { return v.Advisor }
+
+// GetExternalConnection returns CloudDatabaseClusterModifyInput.ExternalConnection, and is useful for accessing the field via an interface.
+func (v *CloudDatabaseClusterModifyInput) GetExternalConnection() *ExternalConnectionInput {
+	return v.ExternalConnection
+}
 
 // CloudDatabaseClusterPlan includes the GraphQL fields of Plan requested by the fragment CloudDatabaseClusterPlan.
 type CloudDatabaseClusterPlan struct {
@@ -200,17 +242,18 @@ func (v *CloudDatabaseClusterResourceInput) GetNamespace() string { return v.Nam
 
 // CloudDatabaseClusterResult includes the GraphQL fields of CloudDatabaseCluster requested by the fragment CloudDatabaseClusterResult.
 type CloudDatabaseClusterResult struct {
-	Id        string                                           `json:"id"`
-	Databases []CloudDatabaseClusterResultDatabasesDatabase    `json:"databases"`
-	Name      string                                           `json:"name"`
-	Hostname  string                                           `json:"hostname"`
-	Namespace CloudDatabaseClusterResultNamespace              `json:"namespace"`
-	Plan      CloudDatabaseClusterResultPlan                   `json:"plan"`
-	Spec      CloudDatabaseClusterResultSpec                   `json:"spec"`
-	Users     []CloudDatabaseClusterResultUsersDatabaseUser    `json:"users"`
-	AdminUser *CloudDatabaseClusterResultAdminUserDatabaseUser `json:"adminUser"`
-	State     string                                           `json:"state"`
-	Locked    bool                                             `json:"locked"`
+	Id                 string                                           `json:"id"`
+	Databases          []CloudDatabaseClusterResultDatabasesDatabase    `json:"databases"`
+	Name               string                                           `json:"name"`
+	Hostname           string                                           `json:"hostname"`
+	Namespace          CloudDatabaseClusterResultNamespace              `json:"namespace"`
+	Plan               CloudDatabaseClusterResultPlan                   `json:"plan"`
+	Spec               CloudDatabaseClusterResultSpec                   `json:"spec"`
+	Users              []CloudDatabaseClusterResultUsersDatabaseUser    `json:"users"`
+	AdminUser          *CloudDatabaseClusterResultAdminUserDatabaseUser `json:"adminUser"`
+	ExternalConnection *CloudDatabaseClusterResultExternalConnection    `json:"externalConnection"`
+	State              string                                           `json:"state"`
+	Locked             bool                                             `json:"locked"`
 }
 
 // GetId returns CloudDatabaseClusterResult.Id, and is useful for accessing the field via an interface.
@@ -246,6 +289,11 @@ func (v *CloudDatabaseClusterResult) GetUsers() []CloudDatabaseClusterResultUser
 // GetAdminUser returns CloudDatabaseClusterResult.AdminUser, and is useful for accessing the field via an interface.
 func (v *CloudDatabaseClusterResult) GetAdminUser() *CloudDatabaseClusterResultAdminUserDatabaseUser {
 	return v.AdminUser
+}
+
+// GetExternalConnection returns CloudDatabaseClusterResult.ExternalConnection, and is useful for accessing the field via an interface.
+func (v *CloudDatabaseClusterResult) GetExternalConnection() *CloudDatabaseClusterResultExternalConnection {
+	return v.ExternalConnection
 }
 
 // GetState returns CloudDatabaseClusterResult.State, and is useful for accessing the field via an interface.
@@ -415,6 +463,76 @@ func (v *CloudDatabaseClusterResultDatabasesDatabase) __premarshalJSON() (*__pre
 	retval.Name = v.CloudDatabaseClusterDatabaseResult.Name
 	retval.Description = v.CloudDatabaseClusterDatabaseResult.Description
 	retval.Status = v.CloudDatabaseClusterDatabaseResult.Status
+	return &retval, nil
+}
+
+// CloudDatabaseClusterResultExternalConnection includes the requested fields of the GraphQL type ExternalConnection.
+type CloudDatabaseClusterResultExternalConnection struct {
+	ExternalConnectionResult `json:"-"`
+}
+
+// GetIpv4 returns CloudDatabaseClusterResultExternalConnection.Ipv4, and is useful for accessing the field via an interface.
+func (v *CloudDatabaseClusterResultExternalConnection) GetIpv4() string {
+	return v.ExternalConnectionResult.Ipv4
+}
+
+// GetIpv6 returns CloudDatabaseClusterResultExternalConnection.Ipv6, and is useful for accessing the field via an interface.
+func (v *CloudDatabaseClusterResultExternalConnection) GetIpv6() string {
+	return v.ExternalConnectionResult.Ipv6
+}
+
+// GetPorts returns CloudDatabaseClusterResultExternalConnection.Ports, and is useful for accessing the field via an interface.
+func (v *CloudDatabaseClusterResultExternalConnection) GetPorts() []ExternalConnectionResultPortsExternalConnectionPort {
+	return v.ExternalConnectionResult.Ports
+}
+
+func (v *CloudDatabaseClusterResultExternalConnection) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*CloudDatabaseClusterResultExternalConnection
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.CloudDatabaseClusterResultExternalConnection = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	err = json.Unmarshal(
+		b, &v.ExternalConnectionResult)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+type __premarshalCloudDatabaseClusterResultExternalConnection struct {
+	Ipv4 string `json:"ipv4"`
+
+	Ipv6 string `json:"ipv6"`
+
+	Ports []ExternalConnectionResultPortsExternalConnectionPort `json:"ports"`
+}
+
+func (v *CloudDatabaseClusterResultExternalConnection) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *CloudDatabaseClusterResultExternalConnection) __premarshalJSON() (*__premarshalCloudDatabaseClusterResultExternalConnection, error) {
+	var retval __premarshalCloudDatabaseClusterResultExternalConnection
+
+	retval.Ipv4 = v.ExternalConnectionResult.Ipv4
+	retval.Ipv6 = v.ExternalConnectionResult.Ipv6
+	retval.Ports = v.ExternalConnectionResult.Ports
 	return &retval, nil
 }
 
@@ -728,7 +846,8 @@ type ContainerCreateInput struct {
 	// Example: `echo "Hello $(NAME)"`.
 	//
 	// This field is defined in docker exec format. https://docs.docker.com/reference/dockerfile/#shell-and-exec-form
-	Command []string `json:"command"`
+	Command            []string                 `json:"command"`
+	ExternalConnection *ExternalConnectionInput `json:"externalConnection"`
 }
 
 // GetName returns ContainerCreateInput.Name, and is useful for accessing the field via an interface.
@@ -774,6 +893,11 @@ func (v *ContainerCreateInput) GetEntrypoint() []string { return v.Entrypoint }
 
 // GetCommand returns ContainerCreateInput.Command, and is useful for accessing the field via an interface.
 func (v *ContainerCreateInput) GetCommand() []string { return v.Command }
+
+// GetExternalConnection returns ContainerCreateInput.ExternalConnection, and is useful for accessing the field via an interface.
+func (v *ContainerCreateInput) GetExternalConnection() *ExternalConnectionInput {
+	return v.ExternalConnection
+}
 
 type ContainerJobCreateInput struct {
 	Name      string             `json:"name"`
@@ -1046,7 +1170,8 @@ type ContainerModifyInput struct {
 	// Example: `echo "Hello $(NAME)"`.
 	//
 	// This field is defined in docker exec format. https://docs.docker.com/reference/dockerfile/#shell-and-exec-form
-	Command []string `json:"command"`
+	Command            []string                 `json:"command"`
+	ExternalConnection *ExternalConnectionInput `json:"externalConnection"`
 }
 
 // GetName returns ContainerModifyInput.Name, and is useful for accessing the field via an interface.
@@ -1089,6 +1214,11 @@ func (v *ContainerModifyInput) GetEntrypoint() []string { return v.Entrypoint }
 
 // GetCommand returns ContainerModifyInput.Command, and is useful for accessing the field via an interface.
 func (v *ContainerModifyInput) GetCommand() []string { return v.Command }
+
+// GetExternalConnection returns ContainerModifyInput.ExternalConnection, and is useful for accessing the field via an interface.
+func (v *ContainerModifyInput) GetExternalConnection() *ExternalConnectionInput {
+	return v.ExternalConnection
+}
 
 // ContainerMounts includes the GraphQL fields of Mount requested by the fragment ContainerMounts.
 type ContainerMounts struct {
@@ -1362,23 +1492,24 @@ var AllContainerResources = []ContainerResources{
 
 // ContainerResult includes the GraphQL fields of Container requested by the fragment ContainerResult.
 type ContainerResult struct {
-	Name                 string                            `json:"name"`
-	Image                string                            `json:"image"`
-	PrivateRegistry      *ContainerResultPrivateRegistry   `json:"privateRegistry"`
-	Resources            ContainerResources                `json:"resources"`
-	Command              []string                          `json:"command"`
-	Entrypoint           []string                          `json:"entrypoint"`
-	EnvironmentVariables []EnvironmentVariableResult       `json:"environmentVariables"`
-	Ports                []string                          `json:"ports"`
-	Ingresses            []ContainerResultIngressesIngress `json:"ingresses"`
-	Mounts               []ContainerMounts                 `json:"mounts"`
-	HealthCheck          *ContainerResultHealthCheck       `json:"healthCheck"`
-	AvailableReplicas    int                               `json:"availableReplicas"`
-	NumberOfReplicas     int                               `json:"numberOfReplicas"`
-	AutoScaling          *ContainerResultAutoScaling       `json:"autoScaling"`
-	State                string                            `json:"state"`
-	Locked               bool                              `json:"locked"`
-	Type                 ContainerType                     `json:"type"`
+	Name                 string                             `json:"name"`
+	Image                string                             `json:"image"`
+	PrivateRegistry      *ContainerResultPrivateRegistry    `json:"privateRegistry"`
+	Resources            ContainerResources                 `json:"resources"`
+	Command              []string                           `json:"command"`
+	Entrypoint           []string                           `json:"entrypoint"`
+	EnvironmentVariables []EnvironmentVariableResult        `json:"environmentVariables"`
+	ExternalConnection   *ContainerResultExternalConnection `json:"externalConnection"`
+	Ports                []string                           `json:"ports"`
+	Ingresses            []ContainerResultIngressesIngress  `json:"ingresses"`
+	Mounts               []ContainerMounts                  `json:"mounts"`
+	HealthCheck          *ContainerResultHealthCheck        `json:"healthCheck"`
+	AvailableReplicas    int                                `json:"availableReplicas"`
+	NumberOfReplicas     int                                `json:"numberOfReplicas"`
+	AutoScaling          *ContainerResultAutoScaling        `json:"autoScaling"`
+	State                string                             `json:"state"`
+	Locked               bool                               `json:"locked"`
+	Type                 ContainerType                      `json:"type"`
 }
 
 // GetName returns ContainerResult.Name, and is useful for accessing the field via an interface.
@@ -1404,6 +1535,11 @@ func (v *ContainerResult) GetEntrypoint() []string { return v.Entrypoint }
 // GetEnvironmentVariables returns ContainerResult.EnvironmentVariables, and is useful for accessing the field via an interface.
 func (v *ContainerResult) GetEnvironmentVariables() []EnvironmentVariableResult {
 	return v.EnvironmentVariables
+}
+
+// GetExternalConnection returns ContainerResult.ExternalConnection, and is useful for accessing the field via an interface.
+func (v *ContainerResult) GetExternalConnection() *ContainerResultExternalConnection {
+	return v.ExternalConnection
 }
 
 // GetPorts returns ContainerResult.Ports, and is useful for accessing the field via an interface.
@@ -1475,6 +1611,72 @@ func (v *ContainerResultAutoScalingTriggersAutoScalingTrigger) GetType() string 
 
 // GetThreshold returns ContainerResultAutoScalingTriggersAutoScalingTrigger.Threshold, and is useful for accessing the field via an interface.
 func (v *ContainerResultAutoScalingTriggersAutoScalingTrigger) GetThreshold() int { return v.Threshold }
+
+// ContainerResultExternalConnection includes the requested fields of the GraphQL type ExternalConnection.
+type ContainerResultExternalConnection struct {
+	ExternalConnectionResult `json:"-"`
+}
+
+// GetIpv4 returns ContainerResultExternalConnection.Ipv4, and is useful for accessing the field via an interface.
+func (v *ContainerResultExternalConnection) GetIpv4() string { return v.ExternalConnectionResult.Ipv4 }
+
+// GetIpv6 returns ContainerResultExternalConnection.Ipv6, and is useful for accessing the field via an interface.
+func (v *ContainerResultExternalConnection) GetIpv6() string { return v.ExternalConnectionResult.Ipv6 }
+
+// GetPorts returns ContainerResultExternalConnection.Ports, and is useful for accessing the field via an interface.
+func (v *ContainerResultExternalConnection) GetPorts() []ExternalConnectionResultPortsExternalConnectionPort {
+	return v.ExternalConnectionResult.Ports
+}
+
+func (v *ContainerResultExternalConnection) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*ContainerResultExternalConnection
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.ContainerResultExternalConnection = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	err = json.Unmarshal(
+		b, &v.ExternalConnectionResult)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+type __premarshalContainerResultExternalConnection struct {
+	Ipv4 string `json:"ipv4"`
+
+	Ipv6 string `json:"ipv6"`
+
+	Ports []ExternalConnectionResultPortsExternalConnectionPort `json:"ports"`
+}
+
+func (v *ContainerResultExternalConnection) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *ContainerResultExternalConnection) __premarshalJSON() (*__premarshalContainerResultExternalConnection, error) {
+	var retval __premarshalContainerResultExternalConnection
+
+	retval.Ipv4 = v.ExternalConnectionResult.Ipv4
+	retval.Ipv6 = v.ExternalConnectionResult.Ipv6
+	retval.Ports = v.ExternalConnectionResult.Ports
+	return &retval, nil
+}
 
 // ContainerResultHealthCheck includes the requested fields of the GraphQL type HealthCheck.
 type ContainerResultHealthCheck struct {
@@ -1628,6 +1830,96 @@ func (v *EnvironmentVariableResult) GetValue() *string { return v.Value }
 // GetSecret returns EnvironmentVariableResult.Secret, and is useful for accessing the field via an interface.
 func (v *EnvironmentVariableResult) GetSecret() bool { return v.Secret }
 
+type ExternalConnectionInput struct {
+	SharedIp bool                          `json:"sharedIp"`
+	State    State                         `json:"state"`
+	Ports    []ExternalConnectionPortInput `json:"ports"`
+}
+
+// GetSharedIp returns ExternalConnectionInput.SharedIp, and is useful for accessing the field via an interface.
+func (v *ExternalConnectionInput) GetSharedIp() bool { return v.SharedIp }
+
+// GetState returns ExternalConnectionInput.State, and is useful for accessing the field via an interface.
+func (v *ExternalConnectionInput) GetState() State { return v.State }
+
+// GetPorts returns ExternalConnectionInput.Ports, and is useful for accessing the field via an interface.
+func (v *ExternalConnectionInput) GetPorts() []ExternalConnectionPortInput { return v.Ports }
+
+type ExternalConnectionPortInput struct {
+	ExternalPort *int `json:"externalPort"`
+	// Internal port is only used for external connections of containers.
+	// For other resources, it's automatically selected
+	//
+	// See ports in `ContainerCreateInput` and `ContainerModifyInput`
+	InternalPort *int `json:"internalPort"`
+	// Protocol is only used for external connections of containers.
+	// For other resources, only TCP is allowed.
+	Protocol  Protocol         `json:"protocol"`
+	State     State            `json:"state"`
+	AllowList []AllowListInput `json:"allowList"`
+}
+
+// GetExternalPort returns ExternalConnectionPortInput.ExternalPort, and is useful for accessing the field via an interface.
+func (v *ExternalConnectionPortInput) GetExternalPort() *int { return v.ExternalPort }
+
+// GetInternalPort returns ExternalConnectionPortInput.InternalPort, and is useful for accessing the field via an interface.
+func (v *ExternalConnectionPortInput) GetInternalPort() *int { return v.InternalPort }
+
+// GetProtocol returns ExternalConnectionPortInput.Protocol, and is useful for accessing the field via an interface.
+func (v *ExternalConnectionPortInput) GetProtocol() Protocol { return v.Protocol }
+
+// GetState returns ExternalConnectionPortInput.State, and is useful for accessing the field via an interface.
+func (v *ExternalConnectionPortInput) GetState() State { return v.State }
+
+// GetAllowList returns ExternalConnectionPortInput.AllowList, and is useful for accessing the field via an interface.
+func (v *ExternalConnectionPortInput) GetAllowList() []AllowListInput { return v.AllowList }
+
+// ExternalConnectionResult includes the GraphQL fields of ExternalConnection requested by the fragment ExternalConnectionResult.
+type ExternalConnectionResult struct {
+	Ipv4  string                                                `json:"ipv4"`
+	Ipv6  string                                                `json:"ipv6"`
+	Ports []ExternalConnectionResultPortsExternalConnectionPort `json:"ports"`
+}
+
+// GetIpv4 returns ExternalConnectionResult.Ipv4, and is useful for accessing the field via an interface.
+func (v *ExternalConnectionResult) GetIpv4() string { return v.Ipv4 }
+
+// GetIpv6 returns ExternalConnectionResult.Ipv6, and is useful for accessing the field via an interface.
+func (v *ExternalConnectionResult) GetIpv6() string { return v.Ipv6 }
+
+// GetPorts returns ExternalConnectionResult.Ports, and is useful for accessing the field via an interface.
+func (v *ExternalConnectionResult) GetPorts() []ExternalConnectionResultPortsExternalConnectionPort {
+	return v.Ports
+}
+
+// ExternalConnectionResultPortsExternalConnectionPort includes the requested fields of the GraphQL type ExternalConnectionPort.
+type ExternalConnectionResultPortsExternalConnectionPort struct {
+	AllowList    []string `json:"allowList"`
+	ExternalPort int      `json:"externalPort"`
+	InternalPort *int     `json:"internalPort"`
+	Protocol     Protocol `json:"protocol"`
+}
+
+// GetAllowList returns ExternalConnectionResultPortsExternalConnectionPort.AllowList, and is useful for accessing the field via an interface.
+func (v *ExternalConnectionResultPortsExternalConnectionPort) GetAllowList() []string {
+	return v.AllowList
+}
+
+// GetExternalPort returns ExternalConnectionResultPortsExternalConnectionPort.ExternalPort, and is useful for accessing the field via an interface.
+func (v *ExternalConnectionResultPortsExternalConnectionPort) GetExternalPort() int {
+	return v.ExternalPort
+}
+
+// GetInternalPort returns ExternalConnectionResultPortsExternalConnectionPort.InternalPort, and is useful for accessing the field via an interface.
+func (v *ExternalConnectionResultPortsExternalConnectionPort) GetInternalPort() *int {
+	return v.InternalPort
+}
+
+// GetProtocol returns ExternalConnectionResultPortsExternalConnectionPort.Protocol, and is useful for accessing the field via an interface.
+func (v *ExternalConnectionResultPortsExternalConnectionPort) GetProtocol() Protocol {
+	return v.Protocol
+}
+
 type HealthCheckInput struct {
 	Port int    `json:"port"`
 	Path string `json:"path"`
@@ -1670,11 +1962,12 @@ type ManualScalingInput struct {
 func (v *ManualScalingInput) GetReplicas() int { return v.Replicas }
 
 type MessageQueueCreateInput struct {
-	Name      string                `json:"name"`
-	Namespace string                `json:"namespace"`
-	Plan      string                `json:"plan"`
-	Spec      MessageQueueSpecInput `json:"spec"`
-	AllowList []AllowListInput      `json:"allowList"`
+	Name               string                   `json:"name"`
+	Namespace          string                   `json:"namespace"`
+	Plan               string                   `json:"plan"`
+	Spec               MessageQueueSpecInput    `json:"spec"`
+	AllowList          []AllowListInput         `json:"allowList"`
+	ExternalConnection *ExternalConnectionInput `json:"externalConnection"`
 }
 
 // GetName returns MessageQueueCreateInput.Name, and is useful for accessing the field via an interface.
@@ -1691,6 +1984,40 @@ func (v *MessageQueueCreateInput) GetSpec() MessageQueueSpecInput { return v.Spe
 
 // GetAllowList returns MessageQueueCreateInput.AllowList, and is useful for accessing the field via an interface.
 func (v *MessageQueueCreateInput) GetAllowList() []AllowListInput { return v.AllowList }
+
+// GetExternalConnection returns MessageQueueCreateInput.ExternalConnection, and is useful for accessing the field via an interface.
+func (v *MessageQueueCreateInput) GetExternalConnection() *ExternalConnectionInput {
+	return v.ExternalConnection
+}
+
+// MessageQueueIngressResult includes the GraphQL fields of MessageQueueIngress requested by the fragment MessageQueueIngressResult.
+type MessageQueueIngressResult struct {
+	AllowList []string `json:"allowList"`
+}
+
+// GetAllowList returns MessageQueueIngressResult.AllowList, and is useful for accessing the field via an interface.
+func (v *MessageQueueIngressResult) GetAllowList() []string { return v.AllowList }
+
+type MessageQueueModifyInput struct {
+	Name               string                   `json:"name"`
+	Namespace          string                   `json:"namespace"`
+	AllowList          []AllowListInput         `json:"allowList"`
+	ExternalConnection *ExternalConnectionInput `json:"externalConnection"`
+}
+
+// GetName returns MessageQueueModifyInput.Name, and is useful for accessing the field via an interface.
+func (v *MessageQueueModifyInput) GetName() string { return v.Name }
+
+// GetNamespace returns MessageQueueModifyInput.Namespace, and is useful for accessing the field via an interface.
+func (v *MessageQueueModifyInput) GetNamespace() string { return v.Namespace }
+
+// GetAllowList returns MessageQueueModifyInput.AllowList, and is useful for accessing the field via an interface.
+func (v *MessageQueueModifyInput) GetAllowList() []AllowListInput { return v.AllowList }
+
+// GetExternalConnection returns MessageQueueModifyInput.ExternalConnection, and is useful for accessing the field via an interface.
+func (v *MessageQueueModifyInput) GetExternalConnection() *ExternalConnectionInput {
+	return v.ExternalConnection
+}
 
 // MessageQueuePlanResult includes the GraphQL fields of MessageQueuePlan requested by the fragment MessageQueuePlanResult.
 type MessageQueuePlanResult struct {
@@ -1753,12 +2080,16 @@ func (v *MessageQueueResourceInput) GetNamespace() string { return v.Namespace }
 
 // MessageQueueResult includes the GraphQL fields of MessageQueue requested by the fragment MessageQueueResult.
 type MessageQueueResult struct {
-	Id        string                                       `json:"id"`
-	Locked    bool                                         `json:"locked"`
-	Name      string                                       `json:"name"`
-	State     string                                       `json:"state"`
-	Namespace MessageQueueResultNamespace                  `json:"namespace"`
-	AdminUser *MessageQueueResultAdminUserMessageQueueUser `json:"adminUser"`
+	Id                 string                                       `json:"id"`
+	Locked             bool                                         `json:"locked"`
+	Name               string                                       `json:"name"`
+	State              string                                       `json:"state"`
+	Namespace          MessageQueueResultNamespace                  `json:"namespace"`
+	AdminUser          *MessageQueueResultAdminUserMessageQueueUser `json:"adminUser"`
+	Plan               MessageQueueResultPlanMessageQueuePlan       `json:"plan"`
+	Spec               MessageQueueResultSpecMessageQueueSpec       `json:"spec"`
+	Ingress            MessageQueueResultIngressMessageQueueIngress `json:"ingress"`
+	ExternalConnection *MessageQueueResultExternalConnection        `json:"externalConnection"`
 }
 
 // GetId returns MessageQueueResult.Id, and is useful for accessing the field via an interface.
@@ -1781,6 +2112,22 @@ func (v *MessageQueueResult) GetAdminUser() *MessageQueueResultAdminUserMessageQ
 	return v.AdminUser
 }
 
+// GetPlan returns MessageQueueResult.Plan, and is useful for accessing the field via an interface.
+func (v *MessageQueueResult) GetPlan() MessageQueueResultPlanMessageQueuePlan { return v.Plan }
+
+// GetSpec returns MessageQueueResult.Spec, and is useful for accessing the field via an interface.
+func (v *MessageQueueResult) GetSpec() MessageQueueResultSpecMessageQueueSpec { return v.Spec }
+
+// GetIngress returns MessageQueueResult.Ingress, and is useful for accessing the field via an interface.
+func (v *MessageQueueResult) GetIngress() MessageQueueResultIngressMessageQueueIngress {
+	return v.Ingress
+}
+
+// GetExternalConnection returns MessageQueueResult.ExternalConnection, and is useful for accessing the field via an interface.
+func (v *MessageQueueResult) GetExternalConnection() *MessageQueueResultExternalConnection {
+	return v.ExternalConnection
+}
+
 // MessageQueueResultAdminUserMessageQueueUser includes the requested fields of the GraphQL type MessageQueueUser.
 type MessageQueueResultAdminUserMessageQueueUser struct {
 	Name   string `json:"name"`
@@ -1797,6 +2144,130 @@ func (v *MessageQueueResultAdminUserMessageQueueUser) GetRole() string { return 
 // GetStatus returns MessageQueueResultAdminUserMessageQueueUser.Status, and is useful for accessing the field via an interface.
 func (v *MessageQueueResultAdminUserMessageQueueUser) GetStatus() string { return v.Status }
 
+// MessageQueueResultExternalConnection includes the requested fields of the GraphQL type ExternalConnection.
+type MessageQueueResultExternalConnection struct {
+	ExternalConnectionResult `json:"-"`
+}
+
+// GetIpv4 returns MessageQueueResultExternalConnection.Ipv4, and is useful for accessing the field via an interface.
+func (v *MessageQueueResultExternalConnection) GetIpv4() string {
+	return v.ExternalConnectionResult.Ipv4
+}
+
+// GetIpv6 returns MessageQueueResultExternalConnection.Ipv6, and is useful for accessing the field via an interface.
+func (v *MessageQueueResultExternalConnection) GetIpv6() string {
+	return v.ExternalConnectionResult.Ipv6
+}
+
+// GetPorts returns MessageQueueResultExternalConnection.Ports, and is useful for accessing the field via an interface.
+func (v *MessageQueueResultExternalConnection) GetPorts() []ExternalConnectionResultPortsExternalConnectionPort {
+	return v.ExternalConnectionResult.Ports
+}
+
+func (v *MessageQueueResultExternalConnection) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*MessageQueueResultExternalConnection
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.MessageQueueResultExternalConnection = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	err = json.Unmarshal(
+		b, &v.ExternalConnectionResult)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+type __premarshalMessageQueueResultExternalConnection struct {
+	Ipv4 string `json:"ipv4"`
+
+	Ipv6 string `json:"ipv6"`
+
+	Ports []ExternalConnectionResultPortsExternalConnectionPort `json:"ports"`
+}
+
+func (v *MessageQueueResultExternalConnection) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *MessageQueueResultExternalConnection) __premarshalJSON() (*__premarshalMessageQueueResultExternalConnection, error) {
+	var retval __premarshalMessageQueueResultExternalConnection
+
+	retval.Ipv4 = v.ExternalConnectionResult.Ipv4
+	retval.Ipv6 = v.ExternalConnectionResult.Ipv6
+	retval.Ports = v.ExternalConnectionResult.Ports
+	return &retval, nil
+}
+
+// MessageQueueResultIngressMessageQueueIngress includes the requested fields of the GraphQL type MessageQueueIngress.
+type MessageQueueResultIngressMessageQueueIngress struct {
+	MessageQueueIngressResult `json:"-"`
+}
+
+// GetAllowList returns MessageQueueResultIngressMessageQueueIngress.AllowList, and is useful for accessing the field via an interface.
+func (v *MessageQueueResultIngressMessageQueueIngress) GetAllowList() []string {
+	return v.MessageQueueIngressResult.AllowList
+}
+
+func (v *MessageQueueResultIngressMessageQueueIngress) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*MessageQueueResultIngressMessageQueueIngress
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.MessageQueueResultIngressMessageQueueIngress = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	err = json.Unmarshal(
+		b, &v.MessageQueueIngressResult)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+type __premarshalMessageQueueResultIngressMessageQueueIngress struct {
+	AllowList []string `json:"allowList"`
+}
+
+func (v *MessageQueueResultIngressMessageQueueIngress) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *MessageQueueResultIngressMessageQueueIngress) __premarshalJSON() (*__premarshalMessageQueueResultIngressMessageQueueIngress, error) {
+	var retval __premarshalMessageQueueResultIngressMessageQueueIngress
+
+	retval.AllowList = v.MessageQueueIngressResult.AllowList
+	return &retval, nil
+}
+
 // MessageQueueResultNamespace includes the requested fields of the GraphQL type Namespace.
 type MessageQueueResultNamespace struct {
 	Name string `json:"name"`
@@ -1804,6 +2275,184 @@ type MessageQueueResultNamespace struct {
 
 // GetName returns MessageQueueResultNamespace.Name, and is useful for accessing the field via an interface.
 func (v *MessageQueueResultNamespace) GetName() string { return v.Name }
+
+// MessageQueueResultPlanMessageQueuePlan includes the requested fields of the GraphQL type MessageQueuePlan.
+type MessageQueueResultPlanMessageQueuePlan struct {
+	MessageQueuePlanResult `json:"-"`
+}
+
+// GetCpu returns MessageQueueResultPlanMessageQueuePlan.Cpu, and is useful for accessing the field via an interface.
+func (v *MessageQueueResultPlanMessageQueuePlan) GetCpu() float64 {
+	return v.MessageQueuePlanResult.Cpu
+}
+
+// GetGroup returns MessageQueueResultPlanMessageQueuePlan.Group, and is useful for accessing the field via an interface.
+func (v *MessageQueueResultPlanMessageQueuePlan) GetGroup() string {
+	return v.MessageQueuePlanResult.Group
+}
+
+// GetId returns MessageQueueResultPlanMessageQueuePlan.Id, and is useful for accessing the field via an interface.
+func (v *MessageQueueResultPlanMessageQueuePlan) GetId() string { return v.MessageQueuePlanResult.Id }
+
+// GetMemory returns MessageQueueResultPlanMessageQueuePlan.Memory, and is useful for accessing the field via an interface.
+func (v *MessageQueueResultPlanMessageQueuePlan) GetMemory() float64 {
+	return v.MessageQueuePlanResult.Memory
+}
+
+// GetName returns MessageQueueResultPlanMessageQueuePlan.Name, and is useful for accessing the field via an interface.
+func (v *MessageQueueResultPlanMessageQueuePlan) GetName() string {
+	return v.MessageQueuePlanResult.Name
+}
+
+// GetPrice returns MessageQueueResultPlanMessageQueuePlan.Price, and is useful for accessing the field via an interface.
+func (v *MessageQueueResultPlanMessageQueuePlan) GetPrice() MessageQueuePlanResultPrice {
+	return v.MessageQueuePlanResult.Price
+}
+
+// GetReplicas returns MessageQueueResultPlanMessageQueuePlan.Replicas, and is useful for accessing the field via an interface.
+func (v *MessageQueueResultPlanMessageQueuePlan) GetReplicas() int {
+	return v.MessageQueuePlanResult.Replicas
+}
+
+// GetStorage returns MessageQueueResultPlanMessageQueuePlan.Storage, and is useful for accessing the field via an interface.
+func (v *MessageQueueResultPlanMessageQueuePlan) GetStorage() float64 {
+	return v.MessageQueuePlanResult.Storage
+}
+
+func (v *MessageQueueResultPlanMessageQueuePlan) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*MessageQueueResultPlanMessageQueuePlan
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.MessageQueueResultPlanMessageQueuePlan = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	err = json.Unmarshal(
+		b, &v.MessageQueuePlanResult)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+type __premarshalMessageQueueResultPlanMessageQueuePlan struct {
+	Cpu float64 `json:"cpu"`
+
+	Group string `json:"group"`
+
+	Id string `json:"id"`
+
+	Memory float64 `json:"memory"`
+
+	Name string `json:"name"`
+
+	Price MessageQueuePlanResultPrice `json:"price"`
+
+	Replicas int `json:"replicas"`
+
+	Storage float64 `json:"storage"`
+}
+
+func (v *MessageQueueResultPlanMessageQueuePlan) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *MessageQueueResultPlanMessageQueuePlan) __premarshalJSON() (*__premarshalMessageQueueResultPlanMessageQueuePlan, error) {
+	var retval __premarshalMessageQueueResultPlanMessageQueuePlan
+
+	retval.Cpu = v.MessageQueuePlanResult.Cpu
+	retval.Group = v.MessageQueuePlanResult.Group
+	retval.Id = v.MessageQueuePlanResult.Id
+	retval.Memory = v.MessageQueuePlanResult.Memory
+	retval.Name = v.MessageQueuePlanResult.Name
+	retval.Price = v.MessageQueuePlanResult.Price
+	retval.Replicas = v.MessageQueuePlanResult.Replicas
+	retval.Storage = v.MessageQueuePlanResult.Storage
+	return &retval, nil
+}
+
+// MessageQueueResultSpecMessageQueueSpec includes the requested fields of the GraphQL type MessageQueueSpec.
+type MessageQueueResultSpecMessageQueueSpec struct {
+	MessageQueueVersionResult `json:"-"`
+}
+
+// GetPatchLevelVersion returns MessageQueueResultSpecMessageQueueSpec.PatchLevelVersion, and is useful for accessing the field via an interface.
+func (v *MessageQueueResultSpecMessageQueueSpec) GetPatchLevelVersion() string {
+	return v.MessageQueueVersionResult.PatchLevelVersion
+}
+
+// GetType returns MessageQueueResultSpecMessageQueueSpec.Type, and is useful for accessing the field via an interface.
+func (v *MessageQueueResultSpecMessageQueueSpec) GetType() string {
+	return v.MessageQueueVersionResult.Type
+}
+
+// GetVersion returns MessageQueueResultSpecMessageQueueSpec.Version, and is useful for accessing the field via an interface.
+func (v *MessageQueueResultSpecMessageQueueSpec) GetVersion() string {
+	return v.MessageQueueVersionResult.Version
+}
+
+func (v *MessageQueueResultSpecMessageQueueSpec) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*MessageQueueResultSpecMessageQueueSpec
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.MessageQueueResultSpecMessageQueueSpec = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	err = json.Unmarshal(
+		b, &v.MessageQueueVersionResult)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+type __premarshalMessageQueueResultSpecMessageQueueSpec struct {
+	PatchLevelVersion string `json:"patchLevelVersion"`
+
+	Type string `json:"type"`
+
+	Version string `json:"version"`
+}
+
+func (v *MessageQueueResultSpecMessageQueueSpec) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *MessageQueueResultSpecMessageQueueSpec) __premarshalJSON() (*__premarshalMessageQueueResultSpecMessageQueueSpec, error) {
+	var retval __premarshalMessageQueueResultSpecMessageQueueSpec
+
+	retval.PatchLevelVersion = v.MessageQueueVersionResult.PatchLevelVersion
+	retval.Type = v.MessageQueueVersionResult.Type
+	retval.Version = v.MessageQueueVersionResult.Version
+	return &retval, nil
+}
 
 type MessageQueueSpecInput struct {
 	Type    string `json:"type"`
@@ -1975,6 +2624,18 @@ type NamespaceResultVolumesVolume struct {
 
 // GetName returns NamespaceResultVolumesVolume.Name, and is useful for accessing the field via an interface.
 func (v *NamespaceResultVolumesVolume) GetName() string { return v.Name }
+
+type Protocol string
+
+const (
+	ProtocolTcp Protocol = "TCP"
+	ProtocolUdp Protocol = "UDP"
+)
+
+var AllProtocol = []Protocol{
+	ProtocolTcp,
+	ProtocolUdp,
+}
 
 type RegistryCreateInput struct {
 	Namespace string `json:"namespace"`
@@ -2398,6 +3059,16 @@ type __messageQueueGetInput struct {
 
 // GetMessageQueueInput returns __messageQueueGetInput.MessageQueueInput, and is useful for accessing the field via an interface.
 func (v *__messageQueueGetInput) GetMessageQueueInput() MessageQueueResourceInput {
+	return v.MessageQueueInput
+}
+
+// __messageQueueModifyInput is used internally by genqlient
+type __messageQueueModifyInput struct {
+	MessageQueueInput MessageQueueModifyInput `json:"messageQueueInput"`
+}
+
+// GetMessageQueueInput returns __messageQueueModifyInput.MessageQueueInput, and is useful for accessing the field via an interface.
+func (v *__messageQueueModifyInput) GetMessageQueueInput() MessageQueueModifyInput {
 	return v.MessageQueueInput
 }
 
@@ -2942,6 +3613,11 @@ func (v *containerListNamespaceContainersContainer) GetEnvironmentVariables() []
 	return v.ContainerResult.EnvironmentVariables
 }
 
+// GetExternalConnection returns containerListNamespaceContainersContainer.ExternalConnection, and is useful for accessing the field via an interface.
+func (v *containerListNamespaceContainersContainer) GetExternalConnection() *ContainerResultExternalConnection {
+	return v.ContainerResult.ExternalConnection
+}
+
 // GetPorts returns containerListNamespaceContainersContainer.Ports, and is useful for accessing the field via an interface.
 func (v *containerListNamespaceContainersContainer) GetPorts() []string {
 	return v.ContainerResult.Ports
@@ -3028,6 +3704,8 @@ type __premarshalcontainerListNamespaceContainersContainer struct {
 
 	EnvironmentVariables []EnvironmentVariableResult `json:"environmentVariables"`
 
+	ExternalConnection *ContainerResultExternalConnection `json:"externalConnection"`
+
 	Ports []string `json:"ports"`
 
 	Ingresses []ContainerResultIngressesIngress `json:"ingresses"`
@@ -3067,6 +3745,7 @@ func (v *containerListNamespaceContainersContainer) __premarshalJSON() (*__prema
 	retval.Command = v.ContainerResult.Command
 	retval.Entrypoint = v.ContainerResult.Entrypoint
 	retval.EnvironmentVariables = v.ContainerResult.EnvironmentVariables
+	retval.ExternalConnection = v.ContainerResult.ExternalConnection
 	retval.Ports = v.ContainerResult.Ports
 	retval.Ingresses = v.ContainerResult.Ingresses
 	retval.Mounts = v.ContainerResult.Mounts
@@ -3513,6 +4192,17 @@ type messageQueueGetResponse struct {
 
 // GetMessageQueue returns messageQueueGetResponse.MessageQueue, and is useful for accessing the field via an interface.
 func (v *messageQueueGetResponse) GetMessageQueue() MessageQueueResult { return v.MessageQueue }
+
+// messageQueueModifyResponse is returned by messageQueueModify on success.
+type messageQueueModifyResponse struct {
+	// Cost: complexity = 100, multipliers = [], defaultMultiplier = null
+	MessageQueueModify MessageQueueResult `json:"messageQueueModify"`
+}
+
+// GetMessageQueueModify returns messageQueueModifyResponse.MessageQueueModify, and is useful for accessing the field via an interface.
+func (v *messageQueueModifyResponse) GetMessageQueueModify() MessageQueueResult {
+	return v.MessageQueueModify
+}
 
 // messageQueuePlansGetResponse is returned by messageQueuePlansGet on success.
 type messageQueuePlansGetResponse struct {
@@ -4195,6 +4885,9 @@ fragment CloudDatabaseClusterResult on CloudDatabaseCluster {
 	adminUser {
 		... CloudDatabaseClusterUserResult
 	}
+	externalConnection {
+		... ExternalConnectionResult
+	}
 	state
 	locked
 }
@@ -4213,6 +4906,16 @@ fragment CloudDatabaseClusterUserResult on DatabaseUser {
 	dsn
 	password
 	role
+}
+fragment ExternalConnectionResult on ExternalConnection {
+	ipv4
+	ipv6
+	ports {
+		allowList
+		externalPort
+		internalPort
+		protocol
+	}
 }
 `
 
@@ -4383,6 +5086,9 @@ fragment CloudDatabaseClusterResult on CloudDatabaseCluster {
 	adminUser {
 		... CloudDatabaseClusterUserResult
 	}
+	externalConnection {
+		... ExternalConnectionResult
+	}
 	state
 	locked
 }
@@ -4401,6 +5107,16 @@ fragment CloudDatabaseClusterUserResult on DatabaseUser {
 	dsn
 	password
 	role
+}
+fragment ExternalConnectionResult on ExternalConnection {
+	ipv4
+	ipv6
+	ports {
+		allowList
+		externalPort
+		internalPort
+		protocol
+	}
 }
 `
 
@@ -4524,6 +5240,9 @@ fragment ContainerResult on Container {
 	environmentVariables {
 		... EnvironmentVariableResult
 	}
+	externalConnection {
+		... ExternalConnectionResult
+	}
 	ports
 	ingresses {
 		domainName
@@ -4559,6 +5278,16 @@ fragment EnvironmentVariableResult on EnvironmentVariable {
 	name
 	value
 	secret
+}
+fragment ExternalConnectionResult on ExternalConnection {
+	ipv4
+	ipv6
+	ports {
+		allowList
+		externalPort
+		internalPort
+		protocol
+	}
 }
 fragment ContainerMounts on Mount {
 	path
@@ -4615,6 +5344,9 @@ fragment ContainerResult on Container {
 	environmentVariables {
 		... EnvironmentVariableResult
 	}
+	externalConnection {
+		... ExternalConnectionResult
+	}
 	ports
 	ingresses {
 		domainName
@@ -4650,6 +5382,16 @@ fragment EnvironmentVariableResult on EnvironmentVariable {
 	name
 	value
 	secret
+}
+fragment ExternalConnectionResult on ExternalConnection {
+	ipv4
+	ipv6
+	ports {
+		allowList
+		externalPort
+		internalPort
+		protocol
+	}
 }
 fragment ContainerMounts on Mount {
 	path
@@ -5054,6 +5796,9 @@ fragment ContainerResult on Container {
 	environmentVariables {
 		... EnvironmentVariableResult
 	}
+	externalConnection {
+		... ExternalConnectionResult
+	}
 	ports
 	ingresses {
 		domainName
@@ -5089,6 +5834,16 @@ fragment EnvironmentVariableResult on EnvironmentVariable {
 	name
 	value
 	secret
+}
+fragment ExternalConnectionResult on ExternalConnection {
+	ipv4
+	ipv6
+	ports {
+		allowList
+		externalPort
+		internalPort
+		protocol
+	}
 }
 fragment ContainerMounts on Mount {
 	path
@@ -5143,6 +5898,9 @@ fragment ContainerResult on Container {
 	environmentVariables {
 		... EnvironmentVariableResult
 	}
+	externalConnection {
+		... ExternalConnectionResult
+	}
 	ports
 	ingresses {
 		domainName
@@ -5178,6 +5936,16 @@ fragment EnvironmentVariableResult on EnvironmentVariable {
 	name
 	value
 	secret
+}
+fragment ExternalConnectionResult on ExternalConnection {
+	ipv4
+	ipv6
+	ports {
+		allowList
+		externalPort
+		internalPort
+		protocol
+	}
 }
 fragment ContainerMounts on Mount {
 	path
@@ -5400,6 +6168,9 @@ fragment CloudDatabaseClusterResult on CloudDatabaseCluster {
 	adminUser {
 		... CloudDatabaseClusterUserResult
 	}
+	externalConnection {
+		... ExternalConnectionResult
+	}
 	state
 	locked
 }
@@ -5418,6 +6189,16 @@ fragment CloudDatabaseClusterUserResult on DatabaseUser {
 	dsn
 	password
 	role
+}
+fragment ExternalConnectionResult on ExternalConnection {
+	ipv4
+	ipv6
+	ports {
+		allowList
+		externalPort
+		internalPort
+		protocol
+	}
 }
 `
 
@@ -5609,6 +6390,9 @@ fragment CloudDatabaseClusterResult on CloudDatabaseCluster {
 	adminUser {
 		... CloudDatabaseClusterUserResult
 	}
+	externalConnection {
+		... ExternalConnectionResult
+	}
 	state
 	locked
 }
@@ -5627,6 +6411,16 @@ fragment CloudDatabaseClusterUserResult on DatabaseUser {
 	dsn
 	password
 	role
+}
+fragment ExternalConnectionResult on ExternalConnection {
+	ipv4
+	ipv6
+	ports {
+		allowList
+		externalPort
+		internalPort
+		protocol
+	}
 }
 `
 
@@ -5670,6 +6464,49 @@ fragment MessageQueueResult on MessageQueue {
 		name
 		role
 		status
+	}
+	plan {
+		... MessageQueuePlanResult
+	}
+	spec {
+		... MessageQueueVersionResult
+	}
+	ingress {
+		... MessageQueueIngressResult
+	}
+	externalConnection {
+		... ExternalConnectionResult
+	}
+}
+fragment MessageQueuePlanResult on MessageQueuePlan {
+	cpu(unit: CPU)
+	group
+	id
+	memory(unit: GB)
+	name
+	price {
+		amount
+		currency
+	}
+	replicas
+	storage(unit: GB)
+}
+fragment MessageQueueVersionResult on MessageQueueSpec {
+	patchLevelVersion
+	type
+	version
+}
+fragment MessageQueueIngressResult on MessageQueueIngress {
+	allowList
+}
+fragment ExternalConnectionResult on ExternalConnection {
+	ipv4
+	ipv6
+	ports {
+		allowList
+		externalPort
+		internalPort
+		protocol
 	}
 }
 `
@@ -5751,6 +6588,49 @@ fragment MessageQueueResult on MessageQueue {
 		role
 		status
 	}
+	plan {
+		... MessageQueuePlanResult
+	}
+	spec {
+		... MessageQueueVersionResult
+	}
+	ingress {
+		... MessageQueueIngressResult
+	}
+	externalConnection {
+		... ExternalConnectionResult
+	}
+}
+fragment MessageQueuePlanResult on MessageQueuePlan {
+	cpu(unit: CPU)
+	group
+	id
+	memory(unit: GB)
+	name
+	price {
+		amount
+		currency
+	}
+	replicas
+	storage(unit: GB)
+}
+fragment MessageQueueVersionResult on MessageQueueSpec {
+	patchLevelVersion
+	type
+	version
+}
+fragment MessageQueueIngressResult on MessageQueueIngress {
+	allowList
+}
+fragment ExternalConnectionResult on ExternalConnection {
+	ipv4
+	ipv6
+	ports {
+		allowList
+		externalPort
+		internalPort
+		protocol
+	}
 }
 `
 
@@ -5768,6 +6648,97 @@ func messageQueueGet(
 	}
 
 	data_ = &messageQueueGetResponse{}
+	resp_ := &graphql.Response{Data: data_}
+
+	err_ = client_.MakeRequest(
+		ctx_,
+		req_,
+		resp_,
+	)
+
+	return data_, err_
+}
+
+// The mutation executed by messageQueueModify.
+const messageQueueModify_Operation = `
+mutation messageQueueModify ($messageQueueInput: MessageQueueModifyInput!) {
+	messageQueueModify(messageQueue: $messageQueueInput) {
+		... MessageQueueResult
+	}
+}
+fragment MessageQueueResult on MessageQueue {
+	id
+	locked
+	name
+	state
+	namespace {
+		name
+	}
+	adminUser {
+		name
+		role
+		status
+	}
+	plan {
+		... MessageQueuePlanResult
+	}
+	spec {
+		... MessageQueueVersionResult
+	}
+	ingress {
+		... MessageQueueIngressResult
+	}
+	externalConnection {
+		... ExternalConnectionResult
+	}
+}
+fragment MessageQueuePlanResult on MessageQueuePlan {
+	cpu(unit: CPU)
+	group
+	id
+	memory(unit: GB)
+	name
+	price {
+		amount
+		currency
+	}
+	replicas
+	storage(unit: GB)
+}
+fragment MessageQueueVersionResult on MessageQueueSpec {
+	patchLevelVersion
+	type
+	version
+}
+fragment MessageQueueIngressResult on MessageQueueIngress {
+	allowList
+}
+fragment ExternalConnectionResult on ExternalConnection {
+	ipv4
+	ipv6
+	ports {
+		allowList
+		externalPort
+		internalPort
+		protocol
+	}
+}
+`
+
+func messageQueueModify(
+	ctx_ context.Context,
+	client_ graphql.Client,
+	messageQueueInput MessageQueueModifyInput,
+) (data_ *messageQueueModifyResponse, err_ error) {
+	req_ := &graphql.Request{
+		OpName: "messageQueueModify",
+		Query:  messageQueueModify_Operation,
+		Variables: &__messageQueueModifyInput{
+			MessageQueueInput: messageQueueInput,
+		},
+	}
+
+	data_ = &messageQueueModifyResponse{}
 	resp_ := &graphql.Response{Data: data_}
 
 	err_ = client_.MakeRequest(
@@ -5919,6 +6890,49 @@ fragment MessageQueueResult on MessageQueue {
 		name
 		role
 		status
+	}
+	plan {
+		... MessageQueuePlanResult
+	}
+	spec {
+		... MessageQueueVersionResult
+	}
+	ingress {
+		... MessageQueueIngressResult
+	}
+	externalConnection {
+		... ExternalConnectionResult
+	}
+}
+fragment MessageQueuePlanResult on MessageQueuePlan {
+	cpu(unit: CPU)
+	group
+	id
+	memory(unit: GB)
+	name
+	price {
+		amount
+		currency
+	}
+	replicas
+	storage(unit: GB)
+}
+fragment MessageQueueVersionResult on MessageQueueSpec {
+	patchLevelVersion
+	type
+	version
+}
+fragment MessageQueueIngressResult on MessageQueueIngress {
+	allowList
+}
+fragment ExternalConnectionResult on ExternalConnection {
+	ipv4
+	ipv6
+	ports {
+		allowList
+		externalPort
+		internalPort
+		protocol
 	}
 }
 `

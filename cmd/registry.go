@@ -100,11 +100,11 @@ var deleteRegistryCmd = &cobra.Command{
 }
 
 func init() {
-	listRegistriesCmd.Flags().StringP("namespace", "", "", "Namespace")
+	listRegistriesCmd.Flags().StringP("namespace", "n", "", "Namespace")
 	listRegistriesCmd.MarkFlagRequired("namespace")
 	registryCmd.AddCommand(listRegistriesCmd)
 
-	createRegistryCmd.Flags().String("namespace", "", "Namespace")
+	createRegistryCmd.Flags().StringP("namespace", "n", "", "Namespace")
 	createRegistryCmd.Flags().String("name", "", "Name for the private registry")
 	createRegistryCmd.Flags().String("source", "", "Source URL for the private registry")
 	createRegistryCmd.Flags().String("username", "", "Username for the private registry")
@@ -116,7 +116,7 @@ func init() {
 	createRegistryCmd.MarkFlagRequired("password")
 	registryCmd.AddCommand(createRegistryCmd)
 
-	deleteRegistryCmd.Flags().String("namespace", "", "Namespace")
+	deleteRegistryCmd.Flags().StringP("namespace", "n", "", "Namespace")
 	deleteRegistryCmd.Flags().String("name", "", "Name of the private registry")
 	deleteRegistryCmd.MarkFlagRequired("namespace")
 	deleteRegistryCmd.MarkFlagRequired("name")

@@ -120,11 +120,11 @@ var deleteVolumeCmd = &cobra.Command{
 }
 
 func init() {
-	listVolumesCmd.Flags().String("namespace", "", "Namespace")
+	listVolumesCmd.Flags().StringP("namespace", "n", "", "Namespace")
 	listVolumesCmd.MarkFlagRequired("namespace")
 	volumeCmd.AddCommand(listVolumesCmd)
 
-	createVolumeCmd.Flags().String("namespace", "", "Namespace")
+	createVolumeCmd.Flags().StringP("namespace", "n", "", "Namespace")
 	createVolumeCmd.Flags().String("name", "", "Name for the volume")
 	createVolumeCmd.Flags().Int("size", 0, "Size of the volume")
 	createVolumeCmd.MarkFlagRequired("namespace")
@@ -132,7 +132,7 @@ func init() {
 	createVolumeCmd.MarkFlagRequired("size")
 	volumeCmd.AddCommand(createVolumeCmd)
 
-	increaseVolumeCmd.Flags().String("namespace", "", "Namespace")
+	increaseVolumeCmd.Flags().StringP("namespace", "n", "", "Namespace")
 	increaseVolumeCmd.Flags().String("name", "", "Name of the volume")
 	increaseVolumeCmd.Flags().Int("size", 0, "Size of the volume")
 	increaseVolumeCmd.MarkFlagRequired("namespace")
@@ -140,7 +140,7 @@ func init() {
 	increaseVolumeCmd.MarkFlagRequired("size")
 	volumeCmd.AddCommand(increaseVolumeCmd)
 
-	deleteVolumeCmd.Flags().String("namespace", "", "Namespace")
+	deleteVolumeCmd.Flags().StringP("namespace", "n", "", "Namespace")
 	deleteVolumeCmd.Flags().String("name", "", "name")
 	deleteVolumeCmd.MarkFlagRequired("namespace")
 	deleteVolumeCmd.MarkFlagRequired("name")

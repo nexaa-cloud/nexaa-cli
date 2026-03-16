@@ -227,7 +227,7 @@ func init() {
 
 	cloudDatabaseClusterCmd.AddCommand(listCloudDatabaseClustersCmd)
 
-	deleteCloudDatabaseClusterCmd.Flags().String("namespace", "", "Namespace")
+	deleteCloudDatabaseClusterCmd.Flags().StringP("namespace", "n", "", "Namespace")
 	deleteCloudDatabaseClusterCmd.Flags().String("name", "", "Name of the cluster")
 	deleteCloudDatabaseClusterCmd.MarkFlagRequired("namespace")
 	deleteCloudDatabaseClusterCmd.MarkFlagRequired("name")
@@ -249,4 +249,7 @@ func init() {
 	getClusterDatabaseUserCredentialsCmd.MarkFlagRequired("namespace")
 	getClusterDatabaseUserCredentialsCmd.MarkFlagRequired("user")
 	cloudDatabaseClusterCmd.AddCommand(getClusterDatabaseUserCredentialsCmd)
+
+	//External Connection
+	cloudDatabaseClusterCmd.AddCommand(cloudDatabaseClusterEnableExternalConnectionCmd)
 }

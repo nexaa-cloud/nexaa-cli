@@ -88,9 +88,64 @@ type CloudDatabase {
   whitelist: [String!]!
 }
 
+"""
+Enable this feature to get recommendations on how to improve your database usage.
+
+The tool will be providing you settings on a cluster level to tune your database, provide recommendations for
+missing indexes and more.
+
+Database clusters will be analyzed once a day.
+"""
+input CloudDatabaseAdvisorInput {
+  "Set this field to `true` to enable recommendations on how to improve your database usage."
+  enabled: Boolean! = false
+}
+
+type CloudDatabaseAdvisory implements CloudDatabaseAdvisoryInterface {
+  createdAt: String!
+  identifier: String!
+  message: String!
+}
+
+interface CloudDatabaseAdvisoryInterface {
+  createdAt: String!
+  identifier: String!
+  message: String!
+}
+
+type CloudDatabaseAdvisoryMissingIndex implements CloudDatabaseAdvisoryInterface {
+  createdAt: String!
+  databaseName: String!
+  identifier: String!
+  message: String!
+}
+
+enum CloudDatabaseAdvisoryType {
+  MissingIndex
+  SettingSuggestion
+}
+
 type CloudDatabaseCluster {
   adminUser: DatabaseUser
+
+  """
+  
+  Cost: complexity = 10, multipliers = [type], defaultMultiplier = null
+  """
+  advisories(type: CloudDatabaseAdvisoryType = null): [CloudDatabaseAdvisoryInterface!]!
+
   databases: [Database!]!
+  externalConnection: ExternalConnection
+
+  """
+  Returns the features available on a cluster.
+  Features are extra functionality or capabilities for database clusters.
+  They are opt-in and provide extra services for your database.
+  
+  Cost: complexity = 10, multipliers = [], defaultMultiplier = null
+  """
+  features: [CloudDatabaseClusterFeature!]!
+
   hostname: String!
   id: String!
   locked: Boolean!
@@ -103,6 +158,17 @@ type CloudDatabaseCluster {
   users: [DatabaseUser!]!
 }
 
+type CloudDatabaseClusterAdvisor implements CloudDatabaseClusterFeature {
+  enabled: Boolean!
+  status: String!
+}
+
+"""
+Input for create cloud database cluster.
+ 
+A database cluster is accessible from within the namespace your created it in.
+There is no limit on the number of users, or database.
+"""
 input CloudDatabaseClusterCreateInput {
   ""
   name: String!
@@ -121,6 +187,12 @@ input CloudDatabaseClusterCreateInput {
 
   ""
   users: [DatabaseUserInput!] = null
+
+  ""
+  advisor: CloudDatabaseAdvisorInput = null
+
+  ""
+  externalConnection: ExternalConnectionInput = null
 }
 
 input CloudDatabaseClusterDatabaseCreateInput {
@@ -139,6 +211,22 @@ input CloudDatabaseClusterDatabaseResourceInput {
   name: String!
 }
 
+interface CloudDatabaseClusterFeature {
+  enabled: Boolean!
+  status: String!
+}
+
+type CloudDatabaseClusterFeatureImpl implements CloudDatabaseClusterFeature {
+  enabled: Boolean!
+  status: String!
+}
+
+"""
+Input for create cloud database cluster.
+ 
+A database cluster is accessible from within the namespace your created it in.
+There is no limit on the number of users, or database.
+"""
 input CloudDatabaseClusterModifyInput {
   ""
   name: String!
@@ -151,6 +239,12 @@ input CloudDatabaseClusterModifyInput {
 
   ""
   users: [DatabaseUserInput!]
+
+  ""
+  advisor: CloudDatabaseAdvisorInput
+
+  ""
+  externalConnection: ExternalConnectionInput
 }
 
 input CloudDatabaseClusterResourceInput {
@@ -193,54 +287,6 @@ input CloudDatabaseClusterUserResourceInput {
   name: String!
 }
 
-input ConfigureContainerInput {
-  ""
-  containerId: Int!
-
-  ""
-  resourceSpecificationId: Int = null
-
-  ""
-  image: String = null
-
-  ""
-  numberOfContainers: Int = null
-
-  ""
-  environmentVariables: EnvironmentVariableModificationInput = null
-
-  ""
-  ingresses: IngressModificationInput = null
-
-  ""
-  unmount: [UnmountInput!] = null
-
-  ""
-  ports: [String!]
-
-  ""
-  privateRegistryId: Int = null
-
-  ""
-  mounts: [MountInput!]
-
-  """
-  Health check performed to check the status of the container.
-  Health checks are directly performed on the container so your application must expose
-  the port. Port mappings specified in the ports field are not used by the health check.
-  
-  When you want to disable the health check you must send us a null value. To leave the
-  current health check unchanged you can omit this field.
-  """
-  healthCheck: HealthCheckInput = null
-
-  ""
-  autoScalingInput: AutoScalingInput = null
-
-  ""
-  scaling: ScalingInput = null
-}
-
 type Container {
   autoScaling: AutoScaling
   availableReplicas: Int!
@@ -250,6 +296,7 @@ type Container {
   deletedAt: DateTime @deprecated(reason: "this field will be removed in the future, and doesn't have a replacement")
   entrypoint: [String!]
   environmentVariables: [EnvironmentVariable!]!
+  externalConnection: ExternalConnection
   healthCheck: HealthCheck
   id: ID!
   image: String!
@@ -341,6 +388,9 @@ input ContainerCreateInput {
   This field is defined in docker exec format. https://docs.docker.com/reference/dockerfile/#shell-and-exec-form
   """
   command: [String!]
+
+  ""
+  externalConnection: ExternalConnectionInput = null
 }
 
 input ContainerDeleteInput {
@@ -349,6 +399,15 @@ input ContainerDeleteInput {
 
   ""
   namespace: String!
+}
+
+type ContainerEndpoint {
+  allowList: [String!]!
+  containerPort: Int!
+  id: String!
+  ipv4Address: String!
+  ipv6Address: String!
+  port: Int!
 }
 
 type ContainerJob {
@@ -578,6 +637,9 @@ input ContainerModifyInput {
   This field is defined in docker exec format. https://docs.docker.com/reference/dockerfile/#shell-and-exec-form
   """
   command: [String!]
+
+  ""
+  externalConnection: ExternalConnectionInput
 }
 
 input ContainerResourceInput {
@@ -720,54 +782,6 @@ enum CpuUnit {
   CPU
 }
 
-input CreateContainerInput {
-  ""
-  namespaceId: Int!
-
-  ""
-  resourceSpecificationId: Int!
-
-  ""
-  name: String!
-
-  ""
-  image: String!
-
-  ""
-  replicas: Int = 1
-
-  ""
-  environmentVariables: [EnvironmentVariableInput!] = []
-
-  ""
-  ingresses: [IngressInput!] = []
-
-  ""
-  ports: [String!]
-
-  ""
-  privateRegistryId: Int = null
-
-  ""
-  mounts: [MountInput!]
-
-  """
-  Health check performed to check the status of the container.
-  Health checks are directly performed on the container so your application must expose
-  the port. Port mappings specified in the ports field are not used by the health check.
-  
-  When you want to disable the health check you must send us a null value. To leave the
-  current health check unchanged you can omit this field.
-  """
-  healthCheck: HealthCheckInput = null
-
-  ""
-  autoScalingInput: AutoScalingInput = null
-
-  ""
-  scaling: ScalingInput = null
-}
-
 type Customer {
   address: Address @deprecated(reason: "this field will be removed in the future")
   billingPeriod: Int! @deprecated(reason: "this field will be removed in the future")
@@ -781,6 +795,7 @@ type Customer {
 
 type Database {
   description: String
+  extensions: [Extension!]!
   name: String!
   status: String!
 }
@@ -863,8 +878,16 @@ input DeleteRegistryConnectionInput {
   namespace: String!
 }
 
+type Endpoint {
+  allowList: [String!]!
+  id: String!
+  ipv4Address: String!
+  ipv6Address: String!
+  port: Int!
+}
+
 type EnvironmentVariable {
-  id: ID!
+  id: ID! @deprecated(reason: "environment variables are identified by name")
   name: String!
   secret: Boolean!
   value: String
@@ -884,15 +907,57 @@ input EnvironmentVariableInput {
   state: State! = PRESENT
 }
 
-input EnvironmentVariableModificationInput {
+type Extension {
+  name: String!
+}
+
+type ExternalConnection {
+  ipv4: String!
+  ipv6: String!
+  ports: [ExternalConnectionPort!]!
+}
+
+input ExternalConnectionInput {
   ""
-  remove: [RemoveEnvironmentVariableInput!] = null
+  sharedIp: Boolean! = true
 
   ""
-  update: [UpdateEnvironmentVariableInput!] = null
+  state: State! = PRESENT
 
   ""
-  add: [EnvironmentVariableInput!] = null
+  ports: [ExternalConnectionPortInput!]! = []
+}
+
+type ExternalConnectionPort {
+  allowList: [String!]!
+  externalPort: Int!
+  internalPort: Int
+  protocol: Protocol!
+}
+
+input ExternalConnectionPortInput {
+  ""
+  externalPort: Int = null
+
+  """
+  Internal port is only used for external connections of containers.
+  For other resources, it's automatically selected
+  
+  See ports in `ContainerCreateInput` and `ContainerModifyInput`
+  """
+  internalPort: Int = null
+
+  """
+  Protocol is only used for external connections of containers.
+  For other resources, only TCP is allowed.
+  """
+  protocol: Protocol! = TCP
+
+  ""
+  state: State! = PRESENT
+
+  ""
+  allowList: [AllowListInput!]! = []
 }
 
 type HealthCheck {
@@ -934,17 +999,6 @@ input IngressInput {
   state: State! = PRESENT
 }
 
-input IngressModificationInput {
-  ""
-  remove: [Int!] = null
-
-  ""
-  update: [UpdateIngressInput!] = null
-
-  ""
-  add: [IngressInput!] = null
-}
-
 type Location {
   id: Int!
   name: String!
@@ -957,11 +1011,14 @@ input ManualScalingInput {
 
 type MessageQueue {
   adminUser: MessageQueueUser
+  externalConnection: ExternalConnection
   id: String!
   ingress: MessageQueueIngress!
   locked: Boolean!
   name: String!
   namespace: Namespace!
+  plan: MessageQueuePlan!
+  spec: MessageQueueSpec!
   state: String!
 }
 
@@ -980,6 +1037,9 @@ input MessageQueueCreateInput {
 
   ""
   allowList: [AllowListInput!]!
+
+  ""
+  externalConnection: ExternalConnectionInput = null
 }
 
 type MessageQueueIngress {
@@ -988,6 +1048,20 @@ type MessageQueueIngress {
   id: String!
   status: Status!
   tlsEnabled: Boolean!
+}
+
+input MessageQueueModifyInput {
+  ""
+  name: String!
+
+  ""
+  namespace: String!
+
+  ""
+  allowList: [AllowListInput!]
+
+  ""
+  externalConnection: ExternalConnectionInput
 }
 
 type MessageQueuePlan {
@@ -1166,18 +1240,6 @@ type Mutation {
   
   Cost: complexity = 100, multipliers = [], defaultMultiplier = null
   """
-  createCloudDatabase(customerId: Int!, name: String!, username: String!, version: String!, nodeType: String!, password: String!, location: String!, whitelist: [String!]! = []): Boolean! @deprecated(reason: "Use `createCloudDatabaseCluster` mutation instead")
-
-  """
-  
-  Cost: complexity = 100, multipliers = [], defaultMultiplier = null
-  """
-  createContainer(containerInput: CreateContainerInput!): Boolean! @deprecated(reason: "use `containerCreate` mutation instead")
-
-  """
-  
-  Cost: complexity = 100, multipliers = [], defaultMultiplier = null
-  """
   createNamespace(name: String!, customerId: Int = null, description: String = null, pricingPlanId: Int = 2, resourceSpecificationId: Int = null): Boolean! @deprecated(reason: "use `namespaceCreate` mutation")
 
   """
@@ -1185,12 +1247,6 @@ type Mutation {
   Cost: complexity = 100, multipliers = [], defaultMultiplier = null
   """
   createVolume(namespaceId: Int!, name: String!, size: Int!): Volume @deprecated(reason: "use `volumeCreate` mutation")
-
-  """
-  
-  Cost: complexity = 100, multipliers = [], defaultMultiplier = null
-  """
-  deleteContainer(containerId: Int!): Boolean! @deprecated(reason: "use `containerDelete` mutation instead")
 
   """
   
@@ -1225,7 +1281,7 @@ type Mutation {
   
   Cost: complexity = 100, multipliers = [], defaultMultiplier = null
   """
-  messageQueueCreate(messageQueue: MessageQueueCreateInput!): MessageQueue!
+  messageQueueCreate(messageQueue: MessageQueueCreateInput): MessageQueue!
 
   """
   
@@ -1237,19 +1293,13 @@ type Mutation {
   
   Cost: complexity = 100, multipliers = [], defaultMultiplier = null
   """
-  messageQueueModify(messageQueue: CloudDatabaseClusterModifyInput): MessageQueue!
+  messageQueueModify(messageQueue: MessageQueueModifyInput): MessageQueue!
 
   """
   
   Cost: complexity = 100, multipliers = [], defaultMultiplier = null
   """
   messageQueueUserModify(userInput: CloudDatabaseClusterUserModifyInput): MessageQueueUser!
-
-  """
-  
-  Cost: complexity = 100, multipliers = [], defaultMultiplier = null
-  """
-  modifyContainer(containerInput: ConfigureContainerInput!): Boolean! @deprecated(reason: "use `containerModify` mutation instead")
 
   """
   
@@ -1370,6 +1420,11 @@ type PrivateRegistry {
   source: String!
   state: String!
   username: String!
+}
+
+enum Protocol {
+  TCP
+  UDP
 }
 
 type Query {
@@ -1558,11 +1613,6 @@ input RegistryCreateInput {
   verify: Boolean! = true
 }
 
-input RemoveEnvironmentVariableInput {
-  ""
-  name: String!
-}
-
 type Replica {
   name: String!
   status: String!
@@ -1621,7 +1671,7 @@ enum Status {
 }
 
 type Subscription {
-  "A placeholder query used by thecodingmachine\/graphqlite when there are no declared subscriptions."
+  "A placeholder query used by thecodingmachine/graphqlite when there are no declared subscriptions."
   dummySubscription: String
 }
 
@@ -1637,39 +1687,6 @@ enum Unit {
   MB
   GB
   TB
-}
-
-input UnmountInput {
-  "Name of the volume to unmount"
-  volume: String!
-
-  "Path to unmount the volume in the container."
-  path: String!
-}
-
-input UpdateEnvironmentVariableInput {
-  ""
-  name: String!
-
-  ""
-  value: String!
-}
-
-input UpdateIngressInput {
-  ""
-  id: ID!
-
-  ""
-  domainName: String!
-
-  ""
-  port: Int!
-
-  ""
-  enableTLS: Boolean!
-
-  ""
-  whitelist: [String!] = null
 }
 
 type Volume {

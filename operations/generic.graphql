@@ -11,3 +11,14 @@ fragment ContainerMounts on Mount {
         size
     }
 }
+
+fragment ExternalConnectionResult on ExternalConnection {
+    ipv4
+    ipv6
+    ports {
+        allowList
+        externalPort
+        internalPort
+        protocol
+    }
+}

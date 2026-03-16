@@ -11,6 +11,18 @@ fragment MessageQueueResult on MessageQueue {
     role
     status
   }
+  plan {
+    ...MessageQueuePlanResult
+  }
+  spec {
+    ...MessageQueueVersionResult
+  }
+  ingress {
+    ...MessageQueueIngressResult
+  }
+  externalConnection {
+    ...ExternalConnectionResult
+  }
 }
 
 fragment MessageQueuePlanResult on MessageQueuePlan {
@@ -25,6 +37,10 @@ fragment MessageQueuePlanResult on MessageQueuePlan {
   }
   replicas
   storage(unit: GB)
+}
+
+fragment MessageQueueIngressResult on MessageQueueIngress {
+  allowList
 }
 
 fragment MessageQueueVersionResult on MessageQueueSpec {
@@ -61,6 +77,14 @@ mutation messageQueueCreate($messageQueueInput: MessageQueueCreateInput!) {
     ...MessageQueueResult
   }
 }
+
+mutation messageQueueModify($messageQueueInput: MessageQueueModifyInput!) {
+  # @genqlient(flatten: true)
+  messageQueueModify(messageQueue: $messageQueueInput) {
+    ...MessageQueueResult
+  }
+}
+
 mutation messageQueueDelete($messageQueueInput: MessageQueueResourceInput!) {
   messageQueueDelete(messageQueue: $messageQueueInput)
 }

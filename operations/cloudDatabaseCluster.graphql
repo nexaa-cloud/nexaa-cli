@@ -30,6 +30,9 @@ fragment CloudDatabaseClusterResult on CloudDatabaseCluster {
   adminUser {
     ...CloudDatabaseClusterUserResult
   }
+  externalConnection {
+    ...ExternalConnectionResult
+  }
   state
   locked
 }
