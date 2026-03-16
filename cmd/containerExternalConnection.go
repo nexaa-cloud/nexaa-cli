@@ -37,7 +37,7 @@ var enableContainerExternalConnectionCmd = &cobra.Command{
 			allowList = append(allowList, api.AllowListInput{Ip: ip, State: api.StatePresent})
 		}
 
-		resource := api.ContainerModifyInput{}
+		var resource api.ContainerModifyInput
 
 		if externalPort == 0 {
 			resource = api.ContainerModifyInput{
@@ -100,7 +100,7 @@ var disableContainerExternalConnectionCmd = &cobra.Command{
 		client := api.NewClient()
 
 		// If externalPort is not provided, it will disable all external connections on the container
-		resource := api.ContainerModifyInput{}
+		var resource api.ContainerModifyInput
 		if externalPort == 0 {
 			resource = api.ContainerModifyInput{
 				Name:      name,
