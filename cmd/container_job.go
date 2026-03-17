@@ -73,6 +73,15 @@ var modifyContainerJobCmd = &cobra.Command{
 		environmentVariables, _ := cmd.Flags().GetStringArray("env")
 		secrets, _ := cmd.Flags().GetStringArray("secret")
 		removedEnvironmentVariables, _ := cmd.Flags().GetStringArray("remove-env")
+
+		client := api.NewClient()
+
+		oldContainerJob, err := client.ContainerJobByName(namespace, name)
+
+		if err != nil {
+			log.Fatalf("Container job not found: %v", err)
+		}
+
 		envs := append(
 			envsToApi(environmentVariables, false, api.StatePresent),
 			envsToApi(secrets, true, api.StatePresent)...,
@@ -91,14 +100,23 @@ var modifyContainerJobCmd = &cobra.Command{
 
 		if image != "" {
 			input.Image = &image
+		} else {
+			image := oldContainerJob.Image
+			input.Image = &image
 		}
 
 		if resources != "" {
 			resources := api.ContainerResources(resources)
 			input.Resources = &resources
+		} else {
+			resources := oldContainerJob.Resources
+			input.Resources = &resources
 		}
 
 		if schedule != "" {
+			input.Schedule = &schedule
+		} else {
+			schedule := oldContainerJob.Schedule
 			input.Schedule = &schedule
 		}
 
@@ -109,8 +127,6 @@ var modifyContainerJobCmd = &cobra.Command{
 		if len(entrypoint) > 0 {
 			input.Entrypoint = entrypoint
 		}
-
-		client := api.NewClient()
 
 		containerJob, err := client.ContainerJobModify(input)
 
