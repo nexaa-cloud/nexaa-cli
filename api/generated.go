@@ -55,20 +55,6 @@ var AllAutoScalingType = []AutoScalingType{
 	AutoScalingTypeCpu,
 }
 
-// Enable this feature to get recommendations on how to improve your database usage.
-//
-// The tool will be providing you settings on a cluster level to tune your database, provide recommendations for
-// missing indexes and more.
-//
-// Database clusters will be analyzed once a day.
-type CloudDatabaseAdvisorInput struct {
-	// Set this field to `true` to enable recommendations on how to improve your database usage.
-	Enabled bool `json:"enabled"`
-}
-
-// GetEnabled returns CloudDatabaseAdvisorInput.Enabled, and is useful for accessing the field via an interface.
-func (v *CloudDatabaseAdvisorInput) GetEnabled() bool { return v.Enabled }
-
 // Input for create cloud database cluster.
 //
 // A database cluster is accessible from within the namespace your created it in.
@@ -80,7 +66,6 @@ type CloudDatabaseClusterCreateInput struct {
 	Plan               string                        `json:"plan"`
 	Databases          []DatabaseInput               `json:"databases"`
 	Users              []DatabaseUserInput           `json:"users"`
-	Advisor            *CloudDatabaseAdvisorInput    `json:"advisor"`
 	ExternalConnection *ExternalConnectionInput      `json:"externalConnection"`
 }
 
@@ -101,9 +86,6 @@ func (v *CloudDatabaseClusterCreateInput) GetDatabases() []DatabaseInput { retur
 
 // GetUsers returns CloudDatabaseClusterCreateInput.Users, and is useful for accessing the field via an interface.
 func (v *CloudDatabaseClusterCreateInput) GetUsers() []DatabaseUserInput { return v.Users }
-
-// GetAdvisor returns CloudDatabaseClusterCreateInput.Advisor, and is useful for accessing the field via an interface.
-func (v *CloudDatabaseClusterCreateInput) GetAdvisor() *CloudDatabaseAdvisorInput { return v.Advisor }
 
 // GetExternalConnection returns CloudDatabaseClusterCreateInput.ExternalConnection, and is useful for accessing the field via an interface.
 func (v *CloudDatabaseClusterCreateInput) GetExternalConnection() *ExternalConnectionInput {
@@ -157,12 +139,11 @@ func (v *CloudDatabaseClusterDatabaseResult) GetStatus() string { return v.Statu
 // A database cluster is accessible from within the namespace your created it in.
 // There is no limit on the number of users, or database.
 type CloudDatabaseClusterModifyInput struct {
-	Name               string                     `json:"name"`
-	Namespace          string                     `json:"namespace"`
-	Databases          []DatabaseInput            `json:"databases"`
-	Users              []DatabaseUserInput        `json:"users"`
-	Advisor            *CloudDatabaseAdvisorInput `json:"advisor"`
-	ExternalConnection *ExternalConnectionInput   `json:"externalConnection"`
+	Name               string                   `json:"name"`
+	Namespace          string                   `json:"namespace"`
+	Databases          []DatabaseInput          `json:"databases"`
+	Users              []DatabaseUserInput      `json:"users"`
+	ExternalConnection *ExternalConnectionInput `json:"externalConnection"`
 }
 
 // GetName returns CloudDatabaseClusterModifyInput.Name, and is useful for accessing the field via an interface.
@@ -176,9 +157,6 @@ func (v *CloudDatabaseClusterModifyInput) GetDatabases() []DatabaseInput { retur
 
 // GetUsers returns CloudDatabaseClusterModifyInput.Users, and is useful for accessing the field via an interface.
 func (v *CloudDatabaseClusterModifyInput) GetUsers() []DatabaseUserInput { return v.Users }
-
-// GetAdvisor returns CloudDatabaseClusterModifyInput.Advisor, and is useful for accessing the field via an interface.
-func (v *CloudDatabaseClusterModifyInput) GetAdvisor() *CloudDatabaseAdvisorInput { return v.Advisor }
 
 // GetExternalConnection returns CloudDatabaseClusterModifyInput.ExternalConnection, and is useful for accessing the field via an interface.
 func (v *CloudDatabaseClusterModifyInput) GetExternalConnection() *ExternalConnectionInput {

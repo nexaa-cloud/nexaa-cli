@@ -88,51 +88,8 @@ type CloudDatabase {
   whitelist: [String!]!
 }
 
-"""
-Enable this feature to get recommendations on how to improve your database usage.
-
-The tool will be providing you settings on a cluster level to tune your database, provide recommendations for
-missing indexes and more.
-
-Database clusters will be analyzed once a day.
-"""
-input CloudDatabaseAdvisorInput {
-  "Set this field to `true` to enable recommendations on how to improve your database usage."
-  enabled: Boolean! = false
-}
-
-type CloudDatabaseAdvisory implements CloudDatabaseAdvisoryInterface {
-  createdAt: String!
-  identifier: String!
-  message: String!
-}
-
-interface CloudDatabaseAdvisoryInterface {
-  createdAt: String!
-  identifier: String!
-  message: String!
-}
-
-type CloudDatabaseAdvisoryMissingIndex implements CloudDatabaseAdvisoryInterface {
-  createdAt: String!
-  databaseName: String!
-  identifier: String!
-  message: String!
-}
-
-enum CloudDatabaseAdvisoryType {
-  MissingIndex
-  SettingSuggestion
-}
-
 type CloudDatabaseCluster {
   adminUser: DatabaseUser
-
-  """
-  
-  Cost: complexity = 10, multipliers = [type], defaultMultiplier = null
-  """
-  advisories(type: CloudDatabaseAdvisoryType = null): [CloudDatabaseAdvisoryInterface!]!
 
   databases: [Database!]!
   externalConnection: ExternalConnection
@@ -156,11 +113,6 @@ type CloudDatabaseCluster {
   spec: Spec!
   state: String!
   users: [DatabaseUser!]!
-}
-
-type CloudDatabaseClusterAdvisor implements CloudDatabaseClusterFeature {
-  enabled: Boolean!
-  status: String!
 }
 
 """
@@ -187,9 +139,6 @@ input CloudDatabaseClusterCreateInput {
 
   ""
   users: [DatabaseUserInput!] = null
-
-  ""
-  advisor: CloudDatabaseAdvisorInput = null
 
   ""
   externalConnection: ExternalConnectionInput = null
@@ -239,9 +188,6 @@ input CloudDatabaseClusterModifyInput {
 
   ""
   users: [DatabaseUserInput!]
-
-  ""
-  advisor: CloudDatabaseAdvisorInput
 
   ""
   externalConnection: ExternalConnectionInput
