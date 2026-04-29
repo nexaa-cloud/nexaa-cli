@@ -14,6 +14,9 @@ fragment NamespaceResult on Namespace {
     cloudDatabaseClusters {
         name
     }
+    messageQueues {
+        name
+    }
 }
 
 query namespaceList {

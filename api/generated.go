@@ -2544,6 +2544,7 @@ type NamespaceResult struct {
 	Containers            []NamespaceResultContainersContainer                       `json:"containers"`
 	Volumes               []NamespaceResultVolumesVolume                             `json:"volumes"`
 	CloudDatabaseClusters []NamespaceResultCloudDatabaseClustersCloudDatabaseCluster `json:"cloudDatabaseClusters"`
+	MessageQueues         []NamespaceResultMessageQueuesMessageQueue                 `json:"messageQueues"`
 }
 
 // GetName returns NamespaceResult.Name, and is useful for accessing the field via an interface.
@@ -2571,6 +2572,11 @@ func (v *NamespaceResult) GetCloudDatabaseClusters() []NamespaceResultCloudDatab
 	return v.CloudDatabaseClusters
 }
 
+// GetMessageQueues returns NamespaceResult.MessageQueues, and is useful for accessing the field via an interface.
+func (v *NamespaceResult) GetMessageQueues() []NamespaceResultMessageQueuesMessageQueue {
+	return v.MessageQueues
+}
+
 // NamespaceResultCloudDatabaseClustersCloudDatabaseCluster includes the requested fields of the GraphQL type CloudDatabaseCluster.
 type NamespaceResultCloudDatabaseClustersCloudDatabaseCluster struct {
 	Name string `json:"name"`
@@ -2594,6 +2600,14 @@ type NamespaceResultContainersContainer struct {
 
 // GetName returns NamespaceResultContainersContainer.Name, and is useful for accessing the field via an interface.
 func (v *NamespaceResultContainersContainer) GetName() string { return v.Name }
+
+// NamespaceResultMessageQueuesMessageQueue includes the requested fields of the GraphQL type MessageQueue.
+type NamespaceResultMessageQueuesMessageQueue struct {
+	Name string `json:"name"`
+}
+
+// GetName returns NamespaceResultMessageQueuesMessageQueue.Name, and is useful for accessing the field via an interface.
+func (v *NamespaceResultMessageQueuesMessageQueue) GetName() string { return v.Name }
 
 // NamespaceResultVolumesVolume includes the requested fields of the GraphQL type Volume.
 type NamespaceResultVolumesVolume struct {
@@ -4381,6 +4395,11 @@ func (v *namespaceListByNameNamespace) GetCloudDatabaseClusters() []NamespaceRes
 	return v.NamespaceResult.CloudDatabaseClusters
 }
 
+// GetMessageQueues returns namespaceListByNameNamespace.MessageQueues, and is useful for accessing the field via an interface.
+func (v *namespaceListByNameNamespace) GetMessageQueues() []NamespaceResultMessageQueuesMessageQueue {
+	return v.NamespaceResult.MessageQueues
+}
+
 func (v *namespaceListByNameNamespace) UnmarshalJSON(b []byte) error {
 
 	if string(b) == "null" {
@@ -4420,6 +4439,8 @@ type __premarshalnamespaceListByNameNamespace struct {
 	Volumes []NamespaceResultVolumesVolume `json:"volumes"`
 
 	CloudDatabaseClusters []NamespaceResultCloudDatabaseClustersCloudDatabaseCluster `json:"cloudDatabaseClusters"`
+
+	MessageQueues []NamespaceResultMessageQueuesMessageQueue `json:"messageQueues"`
 }
 
 func (v *namespaceListByNameNamespace) MarshalJSON() ([]byte, error) {
@@ -4440,6 +4461,7 @@ func (v *namespaceListByNameNamespace) __premarshalJSON() (*__premarshalnamespac
 	retval.Containers = v.NamespaceResult.Containers
 	retval.Volumes = v.NamespaceResult.Volumes
 	retval.CloudDatabaseClusters = v.NamespaceResult.CloudDatabaseClusters
+	retval.MessageQueues = v.NamespaceResult.MessageQueues
 	return &retval, nil
 }
 
@@ -4488,6 +4510,11 @@ func (v *namespaceListNamespacesNamespace) GetCloudDatabaseClusters() []Namespac
 	return v.NamespaceResult.CloudDatabaseClusters
 }
 
+// GetMessageQueues returns namespaceListNamespacesNamespace.MessageQueues, and is useful for accessing the field via an interface.
+func (v *namespaceListNamespacesNamespace) GetMessageQueues() []NamespaceResultMessageQueuesMessageQueue {
+	return v.NamespaceResult.MessageQueues
+}
+
 func (v *namespaceListNamespacesNamespace) UnmarshalJSON(b []byte) error {
 
 	if string(b) == "null" {
@@ -4527,6 +4554,8 @@ type __premarshalnamespaceListNamespacesNamespace struct {
 	Volumes []NamespaceResultVolumesVolume `json:"volumes"`
 
 	CloudDatabaseClusters []NamespaceResultCloudDatabaseClustersCloudDatabaseCluster `json:"cloudDatabaseClusters"`
+
+	MessageQueues []NamespaceResultMessageQueuesMessageQueue `json:"messageQueues"`
 }
 
 func (v *namespaceListNamespacesNamespace) MarshalJSON() ([]byte, error) {
@@ -4547,6 +4576,7 @@ func (v *namespaceListNamespacesNamespace) __premarshalJSON() (*__premarshalname
 	retval.Containers = v.NamespaceResult.Containers
 	retval.Volumes = v.NamespaceResult.Volumes
 	retval.CloudDatabaseClusters = v.NamespaceResult.CloudDatabaseClusters
+	retval.MessageQueues = v.NamespaceResult.MessageQueues
 	return &retval, nil
 }
 
@@ -7004,6 +7034,9 @@ fragment NamespaceResult on Namespace {
 	cloudDatabaseClusters {
 		name
 	}
+	messageQueues {
+		name
+	}
 }
 `
 
@@ -7087,6 +7120,9 @@ fragment NamespaceResult on Namespace {
 	cloudDatabaseClusters {
 		name
 	}
+	messageQueues {
+		name
+	}
 }
 `
 
@@ -7132,6 +7168,9 @@ fragment NamespaceResult on Namespace {
 		name
 	}
 	cloudDatabaseClusters {
+		name
+	}
+	messageQueues {
 		name
 	}
 }
