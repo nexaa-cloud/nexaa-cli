@@ -47,7 +47,7 @@ func Login(username, password string) error {
 			return fmt.Errorf("invalid credentials: unauthorized")
 		}
 
-		return fmt.Errorf("Something went wrong: %v", resp.StatusCode)
+		return fmt.Errorf("something went wrong: %v", resp.StatusCode)
 	}
 
 	body, err := io.ReadAll(resp.Body)
