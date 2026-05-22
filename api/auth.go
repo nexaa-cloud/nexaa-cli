@@ -42,7 +42,12 @@ func Login(username, password string) error {
 	defer resp.Body.Close()
 
 	if resp.StatusCode != http.StatusOK {
-		return fmt.Errorf("invalid credentials: %v", resp.StatusCode)
+
+		if resp.StatusCode == http.StatusUnauthorized {
+			return fmt.Errorf("invalid credentials: unauthorized")
+		}
+
+		return fmt.Errorf("Something went wrong: %v", resp.StatusCode)
 	}
 
 	body, err := io.ReadAll(resp.Body)
