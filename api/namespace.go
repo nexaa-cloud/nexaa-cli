@@ -1,6 +1,9 @@
 package api
 
-import "context"
+import (
+	"context"
+	"errors"
+)
 
 func (client *Client) NamespacesList() ([]NamespaceResult, error) {
 	namespaceResponse, err := namespaceList(context.Background(), *client.client)
@@ -28,6 +31,9 @@ func (client *Client) NamespaceListByName(name string) (NamespaceResult, error) 
 	}
 
 	namespaceResult := namespaceResponse.GetNamespace()
+	if namespaceResult.Name == "" {
+		return NamespaceResult{}, errors.New("namespace not found")
+	}
 
 	result := NamespaceResult{
 		Name:        namespaceResult.Name,
