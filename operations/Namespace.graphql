@@ -17,6 +17,9 @@ fragment NamespaceResult on Namespace {
     messageQueues {
         name
     }
+    privateRegistries {
+        name
+    }
 }
 
 query namespaceList {

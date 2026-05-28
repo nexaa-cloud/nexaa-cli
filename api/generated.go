@@ -2545,6 +2545,7 @@ type NamespaceResult struct {
 	Volumes               []NamespaceResultVolumesVolume                             `json:"volumes"`
 	CloudDatabaseClusters []NamespaceResultCloudDatabaseClustersCloudDatabaseCluster `json:"cloudDatabaseClusters"`
 	MessageQueues         []NamespaceResultMessageQueuesMessageQueue                 `json:"messageQueues"`
+	PrivateRegistries     []NamespaceResultPrivateRegistriesPrivateRegistry          `json:"privateRegistries"`
 }
 
 // GetName returns NamespaceResult.Name, and is useful for accessing the field via an interface.
@@ -2575,6 +2576,11 @@ func (v *NamespaceResult) GetCloudDatabaseClusters() []NamespaceResultCloudDatab
 // GetMessageQueues returns NamespaceResult.MessageQueues, and is useful for accessing the field via an interface.
 func (v *NamespaceResult) GetMessageQueues() []NamespaceResultMessageQueuesMessageQueue {
 	return v.MessageQueues
+}
+
+// GetPrivateRegistries returns NamespaceResult.PrivateRegistries, and is useful for accessing the field via an interface.
+func (v *NamespaceResult) GetPrivateRegistries() []NamespaceResultPrivateRegistriesPrivateRegistry {
+	return v.PrivateRegistries
 }
 
 // NamespaceResultCloudDatabaseClustersCloudDatabaseCluster includes the requested fields of the GraphQL type CloudDatabaseCluster.
@@ -2608,6 +2614,14 @@ type NamespaceResultMessageQueuesMessageQueue struct {
 
 // GetName returns NamespaceResultMessageQueuesMessageQueue.Name, and is useful for accessing the field via an interface.
 func (v *NamespaceResultMessageQueuesMessageQueue) GetName() string { return v.Name }
+
+// NamespaceResultPrivateRegistriesPrivateRegistry includes the requested fields of the GraphQL type PrivateRegistry.
+type NamespaceResultPrivateRegistriesPrivateRegistry struct {
+	Name string `json:"name"`
+}
+
+// GetName returns NamespaceResultPrivateRegistriesPrivateRegistry.Name, and is useful for accessing the field via an interface.
+func (v *NamespaceResultPrivateRegistriesPrivateRegistry) GetName() string { return v.Name }
 
 // NamespaceResultVolumesVolume includes the requested fields of the GraphQL type Volume.
 type NamespaceResultVolumesVolume struct {
@@ -4400,6 +4414,11 @@ func (v *namespaceListByNameNamespace) GetMessageQueues() []NamespaceResultMessa
 	return v.NamespaceResult.MessageQueues
 }
 
+// GetPrivateRegistries returns namespaceListByNameNamespace.PrivateRegistries, and is useful for accessing the field via an interface.
+func (v *namespaceListByNameNamespace) GetPrivateRegistries() []NamespaceResultPrivateRegistriesPrivateRegistry {
+	return v.NamespaceResult.PrivateRegistries
+}
+
 func (v *namespaceListByNameNamespace) UnmarshalJSON(b []byte) error {
 
 	if string(b) == "null" {
@@ -4441,6 +4460,8 @@ type __premarshalnamespaceListByNameNamespace struct {
 	CloudDatabaseClusters []NamespaceResultCloudDatabaseClustersCloudDatabaseCluster `json:"cloudDatabaseClusters"`
 
 	MessageQueues []NamespaceResultMessageQueuesMessageQueue `json:"messageQueues"`
+
+	PrivateRegistries []NamespaceResultPrivateRegistriesPrivateRegistry `json:"privateRegistries"`
 }
 
 func (v *namespaceListByNameNamespace) MarshalJSON() ([]byte, error) {
@@ -4462,6 +4483,7 @@ func (v *namespaceListByNameNamespace) __premarshalJSON() (*__premarshalnamespac
 	retval.Volumes = v.NamespaceResult.Volumes
 	retval.CloudDatabaseClusters = v.NamespaceResult.CloudDatabaseClusters
 	retval.MessageQueues = v.NamespaceResult.MessageQueues
+	retval.PrivateRegistries = v.NamespaceResult.PrivateRegistries
 	return &retval, nil
 }
 
@@ -4515,6 +4537,11 @@ func (v *namespaceListNamespacesNamespace) GetMessageQueues() []NamespaceResultM
 	return v.NamespaceResult.MessageQueues
 }
 
+// GetPrivateRegistries returns namespaceListNamespacesNamespace.PrivateRegistries, and is useful for accessing the field via an interface.
+func (v *namespaceListNamespacesNamespace) GetPrivateRegistries() []NamespaceResultPrivateRegistriesPrivateRegistry {
+	return v.NamespaceResult.PrivateRegistries
+}
+
 func (v *namespaceListNamespacesNamespace) UnmarshalJSON(b []byte) error {
 
 	if string(b) == "null" {
@@ -4556,6 +4583,8 @@ type __premarshalnamespaceListNamespacesNamespace struct {
 	CloudDatabaseClusters []NamespaceResultCloudDatabaseClustersCloudDatabaseCluster `json:"cloudDatabaseClusters"`
 
 	MessageQueues []NamespaceResultMessageQueuesMessageQueue `json:"messageQueues"`
+
+	PrivateRegistries []NamespaceResultPrivateRegistriesPrivateRegistry `json:"privateRegistries"`
 }
 
 func (v *namespaceListNamespacesNamespace) MarshalJSON() ([]byte, error) {
@@ -4577,6 +4606,7 @@ func (v *namespaceListNamespacesNamespace) __premarshalJSON() (*__premarshalname
 	retval.Volumes = v.NamespaceResult.Volumes
 	retval.CloudDatabaseClusters = v.NamespaceResult.CloudDatabaseClusters
 	retval.MessageQueues = v.NamespaceResult.MessageQueues
+	retval.PrivateRegistries = v.NamespaceResult.PrivateRegistries
 	return &retval, nil
 }
 
@@ -7037,6 +7067,9 @@ fragment NamespaceResult on Namespace {
 	messageQueues {
 		name
 	}
+	privateRegistries {
+		name
+	}
 }
 `
 
@@ -7123,6 +7156,9 @@ fragment NamespaceResult on Namespace {
 	messageQueues {
 		name
 	}
+	privateRegistries {
+		name
+	}
 }
 `
 
@@ -7171,6 +7207,9 @@ fragment NamespaceResult on Namespace {
 		name
 	}
 	messageQueues {
+		name
+	}
+	privateRegistries {
 		name
 	}
 }

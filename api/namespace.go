@@ -36,8 +36,15 @@ func (client *Client) NamespaceListByName(name string) (NamespaceResult, error) 
 	}
 
 	result := NamespaceResult{
-		Name:        namespaceResult.Name,
-		Description: namespaceResult.Description,
+		Name:                  namespaceResult.Name,
+		Description:           namespaceResult.Description,
+		State:                 namespaceResult.State,
+		ContainerJobs:         namespaceResult.ContainerJobs,
+		Containers:            namespaceResult.Containers,
+		Volumes:               namespaceResult.Volumes,
+		CloudDatabaseClusters: namespaceResult.CloudDatabaseClusters,
+		MessageQueues:         namespaceResult.MessageQueues,
+		PrivateRegistries:     namespaceResult.PrivateRegistries,
 	}
 
 	return result, nil

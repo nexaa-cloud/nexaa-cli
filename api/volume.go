@@ -60,7 +60,7 @@ func (client *Client) VolumeCreate(input VolumeCreateInput) (VolumeResult, error
 func (client *Client) VolumeIncrease(input VolumeModifyInput) (VolumeResult, error) {
 	volumeIncreaseResponse, err := volumeIncrease(context.Background(), *client.client, input)
 	if err != nil {
-		return VolumeResult{}, nil
+		return VolumeResult{}, err
 	}
 
 	return volumeIncreaseResponse.GetVolumeIncrease(), nil
