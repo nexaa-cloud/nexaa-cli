@@ -12,9 +12,10 @@ jobs:
         go-version: [ '1.24', '1.25.x' ]
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
+
       - name: Setup Go
-        uses: actions/setup-go@v5
+        uses: actions/setup-go@4a3601121dd01d1626a1e23e37211e3254c1c06c
         with:
           go-version: ${{ matrix.go-version }}
       - name: Install dependencies
@@ -22,7 +23,7 @@ jobs:
       - name: Test with Go
         run: go test -v ./... -json > TestResults-${{ matrix.go-version }}.json
       - name: Upload Go test results
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
         with:
           name: Go-results-${{ matrix.go-version }}
           path: TestResults-${{ matrix.go-version }}.json
