@@ -67,7 +67,7 @@ func Login(username, password string) error {
 
 	err = config.SaveConfig()
 	if err != nil {
-		return fmt.Errorf("failt to store config: %v", err)
+		return fmt.Errorf("failed to store config: %v", err)
 	}
 
 	return nil

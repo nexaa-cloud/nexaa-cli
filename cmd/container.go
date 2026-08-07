@@ -286,7 +286,7 @@ func init() {
 	modifyContainerCmd.Flags().StringArray("secret", []string{}, "Container secrets")
 	modifyContainerCmd.Flags().StringArray("remove-env", []string{}, "Container remove environment variables")
 	modifyContainerCmd.Flags().String("registry", "", "Registry name for container image")
-	modifyContainerCmd.Flags().Bool("remove-registry", false, "Registry name for container image")
+	modifyContainerCmd.Flags().Bool("remove-registry", false, "Change the registry to public")
 	modifyContainerCmd.MarkFlagRequired("namespace")
 	modifyContainerCmd.MarkFlagRequired("name")
 	containerCmd.AddCommand(modifyContainerCmd)

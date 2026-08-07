@@ -22,6 +22,7 @@ var createContainerJobCmd = &cobra.Command{
 		namespace, _ := cmd.Flags().GetString("namespace")
 		name, _ := cmd.Flags().GetString("name")
 		image, _ := cmd.Flags().GetString("image")
+		registry, _ := cmd.Flags().GetString("registry")
 		resources, _ := cmd.Flags().GetString("resources")
 		schedule, _ := cmd.Flags().GetString("schedule")
 		enabled, _ := cmd.Flags().GetBool("enable")
@@ -32,11 +33,18 @@ var createContainerJobCmd = &cobra.Command{
 
 		envs := append(envsToApi(environmentVariables, false, api.StatePresent), envsToApi(secrets, true, api.StatePresent)...)
 
+		var registryInput *string
+
+		if registry != "" {
+			registryInput = &registry
+		}
+
 		input := api.ContainerJobCreateInput{
 			Name:                 name,
 			Namespace:            namespace,
 			Resources:            api.ContainerResources(resources),
 			Image:                image,
+			Registry:             registryInput,
 			Entrypoint:           entrypoint,
 			Command:              command,
 			Enabled:              enabled,
@@ -65,6 +73,8 @@ var modifyContainerJobCmd = &cobra.Command{
 		namespace, _ := cmd.Flags().GetString("namespace")
 		name, _ := cmd.Flags().GetString("name")
 		image, _ := cmd.Flags().GetString("image")
+		registry, _ := cmd.Flags().GetString("registry")
+		removeRegistry, _ := cmd.Flags().GetBool("remove-registry")		
 		resources, _ := cmd.Flags().GetString("resources")
 		schedule, _ := cmd.Flags().GetString("schedule")
 		command, _ := cmd.Flags().GetStringArray("command")
@@ -103,6 +113,14 @@ var modifyContainerJobCmd = &cobra.Command{
 		} else {
 			image := oldContainerJob.Image
 			input.Image = &image
+		}
+
+		if !removeRegistry {
+			if registry != "" {
+				input.Registry = &registry
+			} else if oldContainerJob.PrivateRegistry != nil {
+				input.Registry = &oldContainerJob.PrivateRegistry.Name
+			}
 		}
 
 		if resources != "" {
@@ -224,6 +242,7 @@ func init() {
 	createContainerJobCmd.Flags().StringP("namespace", "n", "", "Namespace")
 	createContainerJobCmd.Flags().String("name", "", "Name for this container job")
 	createContainerJobCmd.Flags().String("image", "", "Container job image")
+	createContainerJobCmd.Flags().String("registry", "", "Image registry to use")
 	createContainerJobCmd.Flags().String("resources", "", "Container job resources")
 	createContainerJobCmd.Flags().String("schedule", "", "Container job schedule")
 	createContainerJobCmd.Flags().StringArray("env", []string{}, "Container job environment variables")
@@ -241,6 +260,8 @@ func init() {
 	modifyContainerJobCmd.Flags().StringP("namespace", "n", "", "Namespace")
 	modifyContainerJobCmd.Flags().String("name", "", "Name for this container job")
 	modifyContainerJobCmd.Flags().String("image", "", "Container job image")
+	modifyContainerJobCmd.Flags().String("registry", "", "Image registry to use")
+	modifyContainerJobCmd.Flags().Bool("remove-registry", false, "Change the registry to public")
 	modifyContainerJobCmd.Flags().String("resources", "", "Container job resources")
 	modifyContainerJobCmd.Flags().String("schedule", "", "Container job schedule")
 	modifyContainerJobCmd.Flags().Bool("enable", true, "enable container job")
