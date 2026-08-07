@@ -165,7 +165,9 @@ var modifyContainerCmd = &cobra.Command{
 		registry, _ := cmd.Flags().GetString("registry")
 		removeRegistry, _ := cmd.Flags().GetBool("remove-registry")
 		command, _ := cmd.Flags().GetStringArray("command")
+		removeCommand, _ := cmd.Flags().GetBool("remove-command")
 		entrypoint, _ := cmd.Flags().GetStringArray("entrypoint")
+		removeEntrypoint, _ := cmd.Flags().GetBool("remove-entrypoint")
 
 		client := api.NewClient()
 
@@ -209,12 +211,20 @@ var modifyContainerCmd = &cobra.Command{
 			input.Resources = &resources
 		}
 
-		if len(command) > 0 {
-			input.Command = command
+		if !removeCommand {
+			if len(command) > 0 {
+				input.Command = command
+			} else if len(oldContainer.Command) > 0 {
+				input.Command = oldContainer.Command
+			}
 		}
 
-		if len(entrypoint) > 0 {
-			input.Entrypoint = entrypoint
+		if !removeEntrypoint {
+			if len(entrypoint) > 0 {
+				input.Entrypoint = entrypoint
+			} else if len(oldContainer.Entrypoint) > 0 {
+				input.Entrypoint = oldContainer.Entrypoint
+			}
 		}
 
 		container, err := client.ContainerModify(input)
@@ -281,7 +291,9 @@ func init() {
 	modifyContainerCmd.Flags().String("image", "", "Container image")
 	modifyContainerCmd.Flags().String("resources", "", "Container resources")
 	modifyContainerCmd.Flags().StringArray("command", []string{}, "Command to run in the container")
+	modifyContainerCmd.Flags().Bool("remove-command", false, "Remove the command from the container")
 	modifyContainerCmd.Flags().StringArray("entrypoint", []string{}, "Entrypoint for the container")
+	modifyContainerCmd.Flags().Bool("remove-entrypoint", false, "Remove the entrypoint from the container")
 	modifyContainerCmd.Flags().StringArray("env", []string{}, "Container environment variables")
 	modifyContainerCmd.Flags().StringArray("secret", []string{}, "Container secrets")
 	modifyContainerCmd.Flags().StringArray("remove-env", []string{}, "Container remove environment variables")
