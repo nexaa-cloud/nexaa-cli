@@ -20,25 +20,56 @@ var enableCloudDatabaseClusterExternalConnectionCmd = &cobra.Command{
 		namespace, _ := cmd.Flags().GetString("namespace")
 		clusterName, _ := cmd.Flags().GetString("cluster")
 		allowedIp, _ := cmd.Flags().GetStringArray("allowed-ip")
+		externalPort, _ := cmd.Flags().GetInt("external-port")
+		isDedicated, _ := cmd.Flags().GetBool("dedicated")
 
 		allowList := make([]api.AllowListInput, 0)
 		for _, ip := range allowedIp {
 			allowList = append(allowList, api.AllowListInput{Ip: ip, State: api.StatePresent})
 		}
+		var resource api.CloudDatabaseClusterModifyInput
 
-		resource := api.CloudDatabaseClusterModifyInput{
-			Name:      clusterName,
-			Namespace: namespace,
-			ExternalConnection: &api.ExternalConnectionInput{
-				State:    api.StatePresent,
-				SharedIp: true,
-				Ports: []api.ExternalConnectionPortInput{
-					{
-						AllowList: allowList,
-						State:     api.StatePresent,
+		if isDedicated && externalPort == 0 {
+			log.Fatalf("External port must be provided when using dedicated connection")
+			return
+		}
+			
+
+		if externalPort == 0 {
+			resource = api.CloudDatabaseClusterModifyInput{
+				Name:      clusterName,
+				Namespace: namespace,
+				ExternalConnection: &api.ExternalConnectionInput{
+					State:    api.StatePresent,
+					SharedIp: true,
+					Ports: []api.ExternalConnectionPortInput{
+						{
+							AllowList: allowList,
+							State:     api.StatePresent,
+							Protocol: api.ProtocolTcp,
+						},
 					},
 				},
-			},
+			}
+		}
+
+		if externalPort != 0 {
+			resource = api.CloudDatabaseClusterModifyInput{
+				Name:      clusterName,
+				Namespace: namespace,
+				ExternalConnection: &api.ExternalConnectionInput{
+					State:    api.StatePresent,
+					SharedIp: !isDedicated,
+					Ports: []api.ExternalConnectionPortInput{
+						{
+							AllowList: allowList,
+							State:     api.StatePresent,
+							ExternalPort: &externalPort,
+							Protocol:   api.ProtocolTcp,
+						},
+					},
+				},
+			}
 		}
 
 		client := api.NewClient()
@@ -51,6 +82,7 @@ var enableCloudDatabaseClusterExternalConnectionCmd = &cobra.Command{
 		fmt.Printf("External connection enabled. Reachable at:\n")
 		fmt.Printf("Ipv4: %s:%d \n", cluster.ExternalConnection.Ipv4, cluster.ExternalConnection.Ports[0].ExternalPort)
 		fmt.Printf("Ipv6: %s:%d \n", cluster.ExternalConnection.Ipv6, cluster.ExternalConnection.Ports[0].ExternalPort)
+		fmt.Printf("Allowlist: %v \n", cluster.ExternalConnection.Ports[0].AllowList)
 	},
 }
 
@@ -85,6 +117,8 @@ func init() {
 	enableCloudDatabaseClusterExternalConnectionCmd.Flags().StringP("namespace", "n", "", "Namespace")
 	enableCloudDatabaseClusterExternalConnectionCmd.Flags().String("cluster", "", "Name of the cluster")
 	enableCloudDatabaseClusterExternalConnectionCmd.Flags().StringArray("allowed-ip", []string{"0.0.0.0/0", "::/0"}, "Allowed ip for the connection")
+	enableCloudDatabaseClusterExternalConnectionCmd.Flags().BoolP("dedicated", "d", false, "Allows to use dedicated connection")
+	enableCloudDatabaseClusterExternalConnectionCmd.Flags().Int("external-port", 0, "External port of the external connection")
 	enableCloudDatabaseClusterExternalConnectionCmd.MarkFlagRequired("namespace")
 	enableCloudDatabaseClusterExternalConnectionCmd.MarkFlagRequired("cluster")
 	cloudDatabaseClusterEnableExternalConnectionCmd.AddCommand(enableCloudDatabaseClusterExternalConnectionCmd)

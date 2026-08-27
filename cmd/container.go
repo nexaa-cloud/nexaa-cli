@@ -82,12 +82,13 @@ var createContainerCmd = &cobra.Command{
 		entrypoint, _ := cmd.Flags().GetStringArray("entrypoint")
 
 		envs := append(envsToApi(environmentVariables, false, api.StatePresent), envsToApi(secrets, true, api.StatePresent)...)
+		conResources := api.ContainerResources(resources)
 
 		input := api.ContainerCreateInput{
 			Name:                 name,
 			Namespace:            namespace,
-			Resources:            api.ContainerResources(resources),
-			Image:                image,
+			Resources:            &conResources,
+			Image:                &image,
 			EnvironmentVariables: envs,
 			Entrypoint:           entrypoint,
 			Command:              command,
@@ -123,12 +124,13 @@ var createStarterContainerCmd = &cobra.Command{
 		entrypoint, _ := cmd.Flags().GetStringArray("entrypoint")
 
 		envs := append(envsToApi(environmentVariables, false, api.StatePresent), envsToApi(secrets, true, api.StatePresent)...)
+		resources := api.ContainerResourcesCpu250Ram500
 
 		input := api.ContainerCreateInput{
 			Name:                 name,
 			Namespace:            namespace,
-			Resources:            api.ContainerResourcesCpu250Ram500,
-			Image:                image,
+			Resources:            &resources,
+			Image:                &image,
 			EnvironmentVariables: envs,
 			Entrypoint:           entrypoint,
 			Command:              command,

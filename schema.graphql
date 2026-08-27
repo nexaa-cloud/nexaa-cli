@@ -88,9 +88,53 @@ type CloudDatabase {
   whitelist: [String!]!
 }
 
+"""
+Enable this feature to get recommendations on how to improve your database usage.
+
+The tool will be providing you settings on a cluster level to tune your database, provide recommendations for
+missing indexes and more.
+
+Database clusters will be analyzed once a day.
+"""
+input CloudDatabaseAdvisorInput {
+  "Set this field to `true` to enable recommendations on how to improve your database usage."
+  enabled: Boolean! = false
+}
+
+type CloudDatabaseAdvisory implements CloudDatabaseAdvisoryInterface {
+  createdAt: String!
+  identifier: String!
+  message: String!
+}
+
+interface CloudDatabaseAdvisoryInterface {
+  createdAt: String!
+  identifier: String!
+  message: String!
+}
+
+type CloudDatabaseAdvisoryMissingIndex implements CloudDatabaseAdvisoryInterface {
+  createdAt: String!
+  databaseName: String!
+  identifier: String!
+  message: String!
+}
+
+enum CloudDatabaseAdvisoryType {
+  MissingIndex
+  SettingSuggestion
+}
+
 type CloudDatabaseCluster {
   adminUser: DatabaseUser
 
+  """
+  
+  Cost: complexity = 10, multipliers = [type], defaultMultiplier = null
+  """
+  advisories(type: CloudDatabaseAdvisoryType = null): [CloudDatabaseAdvisoryInterface!]!
+
+  createdAt: DateTime!
   databases: [Database!]!
   externalConnection: ExternalConnection
 
@@ -113,6 +157,11 @@ type CloudDatabaseCluster {
   spec: Spec!
   state: String!
   users: [DatabaseUser!]!
+}
+
+type CloudDatabaseClusterAdvisor implements CloudDatabaseClusterFeature {
+  enabled: Boolean!
+  status: String!
 }
 
 """
@@ -139,6 +188,9 @@ input CloudDatabaseClusterCreateInput {
 
   ""
   users: [DatabaseUserInput!] = null
+
+  ""
+  advisor: CloudDatabaseAdvisorInput = null
 
   ""
   externalConnection: ExternalConnectionInput = null
@@ -188,6 +240,9 @@ input CloudDatabaseClusterModifyInput {
 
   ""
   users: [DatabaseUserInput!]
+
+  ""
+  advisor: CloudDatabaseAdvisorInput
 
   ""
   externalConnection: ExternalConnectionInput
@@ -257,7 +312,7 @@ type Container {
   replicas: [Replica!]!
   resourceSpecification: ResourceSpecification! @deprecated(reason: "use `resources` instead")
   resources: ContainerResources!
-  startedAt: DateTime!
+  startedAt: DateTime @deprecated(reason: "this field will be removed in the future, and doesn't have a replacement'")
   state: String!
   type: ContainerType!
 }
@@ -270,13 +325,13 @@ input ContainerCreateInput {
   namespace: String!
 
   ""
-  resources: ContainerResources!
+  resources: ContainerResources = null
 
   ""
   registry: String = null
 
   ""
-  image: String!
+  image: String = null
 
   "Environment variables to be set in the job."
   environmentVariables: [EnvironmentVariableInput!] = []
@@ -288,7 +343,7 @@ input ContainerCreateInput {
   ports: [String!]
 
   ""
-  ingresses: [IngressInput!]! = []
+  ingresses: [IngressInput!] = null
 
   ""
   scaling: ScalingInput = null
@@ -505,6 +560,13 @@ input ContainerJobModifyInput {
   mounts: [MountInput!]
 }
 
+type ContainerJobPriceBreakdown implements ResourcePriceBreakdownInterface {
+  name: String!
+  price: Price!
+  resourceType: PriceBreakdownResourceType!
+  runs: [ContainerJobRunPriceBreakdown!]!
+}
+
 type ContainerJobRun {
   duration: Int
   endTime: DateTime
@@ -512,6 +574,14 @@ type ContainerJobRun {
   name: String!
   startTime: DateTime
   status: String!
+}
+
+type ContainerJobRunPriceBreakdown {
+  cpu(unit: CpuUnit = CPU): Float!
+  duration: Int!
+  memory(unit: Unit = GB): Float!
+  price: Price!
+  runs: Int!
 }
 
 input ContainerModifyInput {
@@ -586,6 +656,21 @@ input ContainerModifyInput {
 
   ""
   externalConnection: ExternalConnectionInput
+}
+
+type ContainerPriceBreakdown implements ResourcePriceBreakdownInterface {
+  name: String!
+  price: Price!
+  replicas: [ContainerReplicaPriceBreakdown!]!
+  resourceType: PriceBreakdownResourceType!
+}
+
+type ContainerReplicaPriceBreakdown {
+  cpu(unit: CpuUnit = CPU): Float!
+  duration: Int!
+  memory(unit: Unit = GB): Float!
+  name: String!
+  price: Price!
 }
 
 input ContainerResourceInput {
@@ -729,14 +814,32 @@ enum CpuUnit {
 }
 
 type Customer {
-  address: Address @deprecated(reason: "this field will be removed in the future")
   billingPeriod: Int! @deprecated(reason: "this field will be removed in the future")
+  credit: Price!
+  hasDedicatedIp: Boolean!
   hasPaymentDetails: Boolean!
   id: ID!
   name: String! @deprecated(reason: "this field will be removed in the future")
+
+  """
+  
+  Cost: complexity = 1000, multipliers = [], defaultMultiplier = null
+  """
+  priceBreakdown(startDate: DateTime = null, endDate: DateTime = null): CustomerPriceBreakdown!
+
   recurringPayment: Boolean! @deprecated(reason: "this field will be removed in the future")
   suspendedReason: SuspendedReason
   termOfPayment: Int! @deprecated(reason: "this field will be removed in the future")
+}
+
+type CustomerPriceBreakdown {
+  endDate: DateTime!
+  resourceSum(resourceType: PriceBreakdownResourceType = ALL): PriceBreakdownResourceSum!
+
+  "Returns the price breakdown of resources used during the billing period."
+  resources(resourceType: PriceBreakdownResourceType = ALL, name: String = null): [UnionIpAddressPriceBreakdownNamespacePriceBreakdown!]!
+
+  startDate: DateTime!
 }
 
 type Database {
@@ -744,6 +847,12 @@ type Database {
   extensions: [Extension!]!
   name: String!
   status: String!
+}
+
+type DatabaseClusterPriceBreakdown implements ResourcePriceBreakdownInterface {
+  name: String!
+  price: Price!
+  resourceType: PriceBreakdownResourceType!
 }
 
 input DatabaseInput {
@@ -861,6 +970,7 @@ type ExternalConnection {
   ipv4: String!
   ipv6: String!
   ports: [ExternalConnectionPort!]!
+  type: String!
 }
 
 input ExternalConnectionInput {
@@ -945,6 +1055,12 @@ input IngressInput {
   state: State! = PRESENT
 }
 
+type IpAddressPriceBreakdown implements ResourcePriceBreakdownInterface {
+  name: String!
+  price: Price!
+  resourceType: PriceBreakdownResourceType!
+}
+
 type Location {
   id: Int!
   name: String!
@@ -957,6 +1073,7 @@ input ManualScalingInput {
 
 type MessageQueue {
   adminUser: MessageQueueUser
+  createdAt: DateTime!
   externalConnection: ExternalConnection
   id: String!
   ingress: MessageQueueIngress!
@@ -1026,6 +1143,12 @@ type MessageQueuePlanBenchmark {
   connections: Int!
   maximumMessageRate: Int!
   minimumMessageRate: Int!
+}
+
+type MessageQueuePriceBreakdown implements ResourcePriceBreakdownInterface {
+  name: String!
+  price: Price!
+  resourceType: PriceBreakdownResourceType!
 }
 
 input MessageQueueResourceInput {
@@ -1293,7 +1416,7 @@ type Mutation {
 type Namespace {
   cloudDatabaseClusters: [CloudDatabaseCluster!]!
   containerJobs: [ContainerJob!]!
-  containers: [Container!]
+  containers: [Container!]!
   createdAt: DateTime!
   deletedAt: DateTime
   description: String!
@@ -1319,6 +1442,22 @@ input NamespaceCreateInput {
 
 "The unique identifier of a cluster namespace, represented as an integer."
 scalar NamespaceId
+
+type NamespacePriceBreakdown implements ResourcePriceBreakdownInterface {
+  name: String!
+  price: Price!
+
+  "Returns the sum of the price per resource type."
+  resourceSum(resourceType: PriceBreakdownResourceType = ALL): PriceBreakdownResourceSum!
+
+  resourceType: PriceBreakdownResourceType!
+
+  """
+  Returns the price breakdown of resource in this namespace.
+  Each resource has its own price breakdown. Depending on the resource type you can query more or less details.
+  """
+  resources(resourceType: PriceBreakdownResourceType!): [ResourcePriceBreakdownInterface!]!
+}
 
 type NodeType {
   description: String
@@ -1350,6 +1489,23 @@ type Plan {
 type Price {
   amount: Int
   currency: String
+}
+
+type PriceBreakdownResourceSum {
+  price: Price!
+  resourceType: PriceBreakdownResourceType!
+}
+
+enum PriceBreakdownResourceType {
+  ALL
+  CONTAINER
+  STARTER_CONTAINER
+  CONTAINER_JOB
+  VOLUME
+  DATABASE_CLUSTER
+  MESSAGE_QUEUE
+  IPADDRESS
+  NAMESPACE
 }
 
 type PricingPlan {
@@ -1441,6 +1597,12 @@ type Query {
   Cost: complexity = 100, multipliers = [], defaultMultiplier = null
   """
   containerJob(namespace: String!, name: String!): ContainerJob!
+
+  """
+  
+  Cost: complexity = 100, multipliers = [], defaultMultiplier = null
+  """
+  customer: Customer
 
   """
   
@@ -1578,6 +1740,18 @@ input ResourceNameInput {
   namespace: String!
 }
 
+type ResourcePriceBreakdown implements ResourcePriceBreakdownInterface {
+  name: String!
+  price: Price!
+  resourceType: PriceBreakdownResourceType!
+}
+
+interface ResourcePriceBreakdownInterface {
+  name: String!
+  price: Price!
+  resourceType: PriceBreakdownResourceType!
+}
+
 type ResourceSpecification {
   cpu: Float!
   id: ID!
@@ -1595,6 +1769,12 @@ type Spec {
   patchLevelVersion: String!
   type: String!
   version: String!
+}
+
+type StarterContainerPriceBreakdown implements ResourcePriceBreakdownInterface {
+  name: String!
+  price: Price!
+  resourceType: PriceBreakdownResourceType!
 }
 
 enum State {
@@ -1628,6 +1808,8 @@ enum SuspendedReason {
   SUPPORTING_PROHIBITED_CONTENT
   DEFAULT
 }
+
+union UnionIpAddressPriceBreakdownNamespacePriceBreakdown = IpAddressPriceBreakdown | NamespacePriceBreakdown
 
 enum Unit {
   MB
@@ -1669,6 +1851,12 @@ input VolumeModifyInput {
   size: Int!
 }
 
+type VolumePriceBreakdown implements ResourcePriceBreakdownInterface {
+  name: String!
+  price: Price!
+  resourceType: PriceBreakdownResourceType!
+}
+
 input VolumeResourceInput {
   ""
   name: String!
@@ -1676,4 +1864,3 @@ input VolumeResourceInput {
   ""
   namespace: String!
 }
-

@@ -13,6 +13,7 @@ fragment ContainerMounts on Mount {
 }
 
 fragment ExternalConnectionResult on ExternalConnection {
+    type
     ipv4
     ipv6
     ports {

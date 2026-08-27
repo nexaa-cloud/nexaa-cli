@@ -10,35 +10,66 @@ import (
 
 var messageQueueEnableExternalConnectionCmd = &cobra.Command{
 	Use:   "external-connection",
-	Short: "Enable or Disable external connection on a cloud database cluster",
+	Short: "Enable or Disable external connection on a message queue cluster",
 }
 
 var enableMessageQueueExternalConnectionCmd = &cobra.Command{
 	Use:   "enable",
-	Short: "Enable external connection on a cloud database cluster",
+	Short: "Enable external connection on a message queue cluster",
 	Run: func(cmd *cobra.Command, args []string) {
 		namespace, _ := cmd.Flags().GetString("namespace")
 		clusterName, _ := cmd.Flags().GetString("cluster")
 		allowedIp, _ := cmd.Flags().GetStringArray("allowed-ip")
+		externalPort, _ := cmd.Flags().GetInt("external-port")
+		isDedicated, _ := cmd.Flags().GetBool("dedicated")
 
 		allowList := make([]api.AllowListInput, 0)
 		for _, ip := range allowedIp {
 			allowList = append(allowList, api.AllowListInput{Ip: ip, State: api.StatePresent})
 		}
 
-		resource := api.MessageQueueModifyInput{
-			Name:      clusterName,
-			Namespace: namespace,
-			ExternalConnection: &api.ExternalConnectionInput{
-				State:    api.StatePresent,
-				SharedIp: true,
-				Ports: []api.ExternalConnectionPortInput{
-					{
-						AllowList: allowList,
-						State:     api.StatePresent,
+		if isDedicated && externalPort == 0 {
+			log.Fatalf("External port must be provided when using dedicated connection")
+			return
+		}
+
+		var resource api.MessageQueueModifyInput
+
+		if externalPort == 0 {
+			resource = api.MessageQueueModifyInput{
+				Name:      clusterName,
+				Namespace: namespace,
+				ExternalConnection: &api.ExternalConnectionInput{
+					State:    api.StatePresent,
+					SharedIp: true,
+					Ports: []api.ExternalConnectionPortInput{
+						{
+							AllowList: allowList,
+							State:     api.StatePresent,
+							Protocol:  api.ProtocolTcp,
+						},
 					},
 				},
-			},
+			}
+		}
+
+		if externalPort != 0 {
+			resource = api.MessageQueueModifyInput{
+				Name:      clusterName,
+				Namespace: namespace,
+				ExternalConnection: &api.ExternalConnectionInput{
+					State:    api.StatePresent,
+					SharedIp: !isDedicated,
+					Ports: []api.ExternalConnectionPortInput{
+						{
+							AllowList: allowList,
+							State:     api.StatePresent,
+							ExternalPort: &externalPort,
+							Protocol:   api.ProtocolTcp,
+						},
+					},
+				},
+			}
 		}
 
 		client := api.NewClient()
@@ -51,12 +82,13 @@ var enableMessageQueueExternalConnectionCmd = &cobra.Command{
 		fmt.Printf("External connection enabled. Reachable at:\n")
 		fmt.Printf("Ipv4: %s:%d \n", cluster.ExternalConnection.Ipv4, cluster.ExternalConnection.Ports[0].ExternalPort)
 		fmt.Printf("Ipv6: %s:%d \n", cluster.ExternalConnection.Ipv6, cluster.ExternalConnection.Ports[0].ExternalPort)
+		fmt.Printf("Allowlist: %v \n", cluster.ExternalConnection.Ports[0].AllowList)
 	},
 }
 
 var disableMessageQueueExternalConnectionCmd = &cobra.Command{
 	Use:   "disable",
-	Short: "disable external connection on a cloud database cluster",
+	Short: "disable external connection on a message queue cluster",
 	Run: func(cmd *cobra.Command, args []string) {
 		namespace, _ := cmd.Flags().GetString("namespace")
 		clusterName, _ := cmd.Flags().GetString("cluster")
@@ -85,6 +117,8 @@ func init() {
 	enableMessageQueueExternalConnectionCmd.Flags().StringP("namespace", "n", "", "Namespace")
 	enableMessageQueueExternalConnectionCmd.Flags().String("cluster", "", "Name of the cluster")
 	enableMessageQueueExternalConnectionCmd.Flags().StringArray("allowed-ip", []string{"0.0.0.0/0", "::/0"}, "Allowed ip for the connection")
+	enableMessageQueueExternalConnectionCmd.Flags().Int("external-port", 0, "External port of the external connection")
+	enableMessageQueueExternalConnectionCmd.Flags().BoolP("dedicated", "d", false, "Allows to use dedicated connection")
 	enableMessageQueueExternalConnectionCmd.MarkFlagRequired("namespace")
 	enableMessageQueueExternalConnectionCmd.MarkFlagRequired("cluster")
 	messageQueueEnableExternalConnectionCmd.AddCommand(enableMessageQueueExternalConnectionCmd)

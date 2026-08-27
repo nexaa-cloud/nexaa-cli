@@ -13,12 +13,12 @@ import (
 
 var containerEnableExternalConnectionCmd = &cobra.Command{
 	Use:   "external-connection",
-	Short: "Enable or Disable external connection on a cloud database cluster",
+	Short: "Enable or Disable external connection on a container",
 }
 
 var enableContainerExternalConnectionCmd = &cobra.Command{
 	Use:   "enable",
-	Short: "Enable external connection on a cloud database cluster",
+	Short: "Enable external connection on a container",
 	Run: func(cmd *cobra.Command, args []string) {
 		namespace, _ := cmd.Flags().GetString("namespace")
 		containerName, _ := cmd.Flags().GetString("name")
@@ -26,9 +26,15 @@ var enableContainerExternalConnectionCmd = &cobra.Command{
 		internalPort, _ := cmd.Flags().GetInt("internal-port")
 		externalPort, _ := cmd.Flags().GetInt("external-port")
 		protocol, _ := cmd.Flags().GetString("protocol")
+		isDedicated, _ := cmd.Flags().GetBool("dedicated")
 
 		if internalPort == 0 {
 			log.Fatalf("Internal port must be provided and cannot be 0")
+			return
+		}
+
+		if isDedicated && externalPort == 0 {
+			log.Fatalf("External port must be provided when using dedicated connection")
 			return
 		}
 
@@ -45,7 +51,7 @@ var enableContainerExternalConnectionCmd = &cobra.Command{
 				Namespace: namespace,
 				ExternalConnection: &api.ExternalConnectionInput{
 					State:    api.StatePresent,
-					SharedIp: true,
+					SharedIp: !isDedicated,
 					Ports: []api.ExternalConnectionPortInput{
 						{
 							AllowList:    allowList,
@@ -56,13 +62,14 @@ var enableContainerExternalConnectionCmd = &cobra.Command{
 					},
 				},
 			}
-		} else {
+		} 
+		if externalPort != 0 {
 			resource = api.ContainerModifyInput{
 				Name:      containerName,
 				Namespace: namespace,
 				ExternalConnection: &api.ExternalConnectionInput{
 					State:    api.StatePresent,
-					SharedIp: true,
+					SharedIp: !isDedicated,
 					Ports: []api.ExternalConnectionPortInput{
 						{
 							AllowList:    allowList,
@@ -80,7 +87,7 @@ var enableContainerExternalConnectionCmd = &cobra.Command{
 
 		container, err := client.ContainerModify(resource)
 		if err != nil {
-			log.Fatalf("Failed to enable external connection in cluster %q/%q: %v", namespace, containerName, err)
+			log.Fatalf("Failed to enable external connection on container %q/%q: %v", namespace, containerName, err)
 			return
 		}
 
@@ -96,6 +103,12 @@ var disableContainerExternalConnectionCmd = &cobra.Command{
 		namespace, _ := cmd.Flags().GetString("namespace")
 		name, _ := cmd.Flags().GetString("name")
 		externalPort, _ := cmd.Flags().GetInt("external-port")
+		protocol, _ := cmd.Flags().GetString("protocol")
+
+		if protocol == "" && externalPort != 0 {
+			log.Fatalf("Protocol must be provided to disable an external connection for a specific port")
+			return
+		}
 
 		client := api.NewClient()
 
@@ -116,7 +129,7 @@ var disableContainerExternalConnectionCmd = &cobra.Command{
 			ports = append(ports, api.ExternalConnectionPortInput{
 				ExternalPort: &externalPort,
 				State:        api.StateAbsent,
-				Protocol:     api.ProtocolUdp,
+				Protocol:     api.Protocol(protocol),
 				AllowList:    []api.AllowListInput{},
 			})
 
@@ -133,7 +146,7 @@ var disableContainerExternalConnectionCmd = &cobra.Command{
 		container, err := client.ContainerModify(resource)
 
 		if err != nil {
-			log.Fatalf("Failed to disable external connection in cluster %q/%q: %v", namespace, name, err)
+			log.Fatalf("Failed to disable external connection on container %q/%q: %v", namespace, name, err)
 			return
 		}
 		fmt.Printf("External connection disabled in: %s/%s. \n", namespace, name)
@@ -144,7 +157,7 @@ var disableContainerExternalConnectionCmd = &cobra.Command{
 
 var listContainerExternalConnectionCmd = &cobra.Command{
 	Use:   "list",
-	Short: "list external connection on a cloud database cluster",
+	Short: "list external connection on a container	",
 	Run: func(cmd *cobra.Command, args []string) {
 		namespace, _ := cmd.Flags().GetString("namespace")
 		name, _ := cmd.Flags().GetString("name")
@@ -170,12 +183,16 @@ func printConnections(container api.ContainerResult) {
 	writer := tabwriter.NewWriter(os.Stdout, 0, 0, 3, ' ', tabwriter.Debug)
 	fmt.Fprintln(writer, "IPV4\t IPV6\t EXTERNAL PORT\t INTERNAL PORT\t PROTOCOL\t ALLOWLIST\t")
 
+	if container.ExternalConnection == nil {
+		return
+	}
+
 	for _, port := range container.ExternalConnection.Ports {
 		fmt.Fprintf(
 			writer,
-			"%s\t %s\t %d\t %d\t %s\t %s\n",
+			"%s\t %s\t %d\t %d\t %s\t %s\t \n",
 			container.ExternalConnection.Ipv4,
-			container.ExternalConnection.Ipv4,
+			container.ExternalConnection.Ipv6,
 			port.ExternalPort,
 			*port.InternalPort,
 			port.Protocol,
@@ -193,6 +210,7 @@ func init() {
 	enableContainerExternalConnectionCmd.Flags().Int("internal-port", 0, "Internal port to enable external connection on")
 	enableContainerExternalConnectionCmd.Flags().Int("external-port", 0, "Internal port to enable external connection on")
 	enableContainerExternalConnectionCmd.Flags().String("protocol", "TCP", "Protocol for the external connection (tcp or udp)")
+	enableContainerExternalConnectionCmd.Flags().BoolP("dedicated", "d", false, "Allows to use dedicated connection")
 	enableContainerExternalConnectionCmd.MarkFlagRequired("namespace")
 	enableContainerExternalConnectionCmd.MarkFlagRequired("name")
 	enableContainerExternalConnectionCmd.MarkFlagRequired("internal-port")
@@ -201,6 +219,7 @@ func init() {
 	disableContainerExternalConnectionCmd.Flags().StringP("namespace", "n", "", "Namespace")
 	disableContainerExternalConnectionCmd.Flags().String("name", "", "Name of the container")
 	disableContainerExternalConnectionCmd.Flags().Int("external-port", 0, "External port to disable")
+	disableContainerExternalConnectionCmd.Flags().String("protocol", "", "Protocol of the external connection port (tcp or udp)")
 	disableContainerExternalConnectionCmd.MarkFlagRequired("namespace")
 	disableContainerExternalConnectionCmd.MarkFlagRequired("name")
 	containerEnableExternalConnectionCmd.AddCommand(disableContainerExternalConnectionCmd)
