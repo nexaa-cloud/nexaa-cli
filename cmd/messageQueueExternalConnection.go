@@ -62,10 +62,10 @@ var enableMessageQueueExternalConnectionCmd = &cobra.Command{
 					SharedIp: !isDedicated,
 					Ports: []api.ExternalConnectionPortInput{
 						{
-							AllowList: allowList,
-							State:     api.StatePresent,
+							AllowList:    allowList,
+							State:        api.StatePresent,
 							ExternalPort: &externalPort,
-							Protocol:   api.ProtocolTcp,
+							Protocol:     api.ProtocolTcp,
 						},
 					},
 				},

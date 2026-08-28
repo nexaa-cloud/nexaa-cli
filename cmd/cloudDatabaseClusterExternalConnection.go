@@ -33,7 +33,6 @@ var enableCloudDatabaseClusterExternalConnectionCmd = &cobra.Command{
 			log.Fatalf("External port must be provided when using dedicated connection")
 			return
 		}
-			
 
 		if externalPort == 0 {
 			resource = api.CloudDatabaseClusterModifyInput{
@@ -46,7 +45,7 @@ var enableCloudDatabaseClusterExternalConnectionCmd = &cobra.Command{
 						{
 							AllowList: allowList,
 							State:     api.StatePresent,
-							Protocol: api.ProtocolTcp,
+							Protocol:  api.ProtocolTcp,
 						},
 					},
 				},
@@ -62,10 +61,10 @@ var enableCloudDatabaseClusterExternalConnectionCmd = &cobra.Command{
 					SharedIp: !isDedicated,
 					Ports: []api.ExternalConnectionPortInput{
 						{
-							AllowList: allowList,
-							State:     api.StatePresent,
+							AllowList:    allowList,
+							State:        api.StatePresent,
 							ExternalPort: &externalPort,
-							Protocol:   api.ProtocolTcp,
+							Protocol:     api.ProtocolTcp,
 						},
 					},
 				},

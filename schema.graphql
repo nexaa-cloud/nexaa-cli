@@ -1099,7 +1099,7 @@ input MessageQueueCreateInput {
   spec: MessageQueueSpecInput!
 
   ""
-  allowList: [AllowListInput!]!
+  allowList: [AllowListInput!] = null
 
   ""
   externalConnection: ExternalConnectionInput = null

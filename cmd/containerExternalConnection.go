@@ -62,7 +62,8 @@ var enableContainerExternalConnectionCmd = &cobra.Command{
 					},
 				},
 			}
-		} 
+		}
+
 		if externalPort != 0 {
 			resource = api.ContainerModifyInput{
 				Name:      containerName,
