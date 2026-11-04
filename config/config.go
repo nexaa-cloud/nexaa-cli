@@ -11,6 +11,7 @@ var (
 	AccessToken  string // OAuth Access Token
 	ExpiresAt    int64  // Token expiration time as Unix timestamp
 	RefreshToken string // OAuth Refresh Token
+	ApiKey       string // API Key
 )
 
 // Config represents the structure of the configuration stored on disk
@@ -18,6 +19,12 @@ type Config struct {
 	AccessToken  string `json:"access_token"`
 	ExpiresAt    int64  `json:"expires_at"`
 	RefreshToken string `json:"refresh_token"`
+}
+
+type ApiConfig struct {
+	AccessToken string `json:"access_token"`
+	ApiKey      string `json:"api_key"`
+	ExpiresAt   int64  `json:"expires_at"`
 }
 
 // SaveConfig writes the current configuration to disk
@@ -68,6 +75,56 @@ func LoadConfig() error {
 	AccessToken = configData.AccessToken
 	ExpiresAt = configData.ExpiresAt
 	RefreshToken = configData.RefreshToken
+
+	return nil
+}
+
+func SaveApiConfig() error {
+	configData := ApiConfig{
+		AccessToken: AccessToken,
+		ApiKey:      ApiKey,
+		ExpiresAt:   ExpiresAt,
+	}
+
+	// Serialize the config struct to JSON
+	data, err := json.MarshalIndent(configData, "", "  ")
+	if err != nil {
+		return fmt.Errorf("failed to marshal config to JSON: %v", err)
+	}
+
+	// Write the JSON data to the token file
+	err = os.WriteFile(TOKEN_FILE, data, 0600)
+	if err != nil {
+		return fmt.Errorf("failed to write config to file: %v", err)
+	}
+
+	return nil
+}
+
+func LoadApiConfig() error {
+	// Check if the token file exists
+	if _, err := os.Stat(TOKEN_FILE); os.IsNotExist(err) {
+		// File does not exist, so keep the values empty
+		return nil
+	}
+
+	// Read the content of the token file
+	data, err := os.ReadFile(TOKEN_FILE)
+	if err != nil {
+		return fmt.Errorf("failed to read config file: %v", err)
+	}
+
+	// Deserialize the JSON content into the config struct
+	var configData ApiConfig
+	err = json.Unmarshal(data, &configData)
+	if err != nil {
+		return fmt.Errorf("failed to unmarshal config JSON: %v", err)
+	}
+
+	// Update the global variables with the loaded configuration
+	AccessToken = configData.AccessToken
+	ApiKey = ApiKey
+	ExpiresAt = configData.ExpiresAt
 
 	return nil
 }

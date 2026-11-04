@@ -21,6 +21,14 @@ input AllowListInput {
   state: State! = PRESENT
 }
 
+input ApiKeyInput {
+  ""
+  name: String = null
+
+  ""
+  authorizations: [String!]!
+}
+
 type AuditLog {
   account: Account
   changeSet: [AuditLogChange!]!
@@ -1217,9 +1225,21 @@ input MountVolumeInput {
 type Mutation {
   """
   
+  Cost: complexity = 1500, multipliers = [], defaultMultiplier = null
+  """
+  accessTokenCreate: String!
+
+  """
+  
   Cost: complexity = 100, multipliers = [], defaultMultiplier = null
   """
   addPrivateRegistry(namespaceId: Int!, name: String!, source: String!, username: String!, password: String!, verify: Boolean = true): Boolean! @deprecated(reason: "use `registryConnectionCreate` mutation")
+
+  """
+  
+  Cost: complexity = 1500, multipliers = [], defaultMultiplier = null
+  """
+  apiKeyCreate(apiKeyInput: ApiKeyInput!): String!
 
   """
   

@@ -21,6 +21,17 @@ func (v *AllowListInput) GetIp() string { return v.Ip }
 // GetState returns AllowListInput.State, and is useful for accessing the field via an interface.
 func (v *AllowListInput) GetState() State { return v.State }
 
+type ApiKeyInput struct {
+	Name           *string  `json:"name"`
+	Authorizations []string `json:"authorizations"`
+}
+
+// GetName returns ApiKeyInput.Name, and is useful for accessing the field via an interface.
+func (v *ApiKeyInput) GetName() *string { return v.Name }
+
+// GetAuthorizations returns ApiKeyInput.Authorizations, and is useful for accessing the field via an interface.
+func (v *ApiKeyInput) GetAuthorizations() []string { return v.Authorizations }
+
 type AutoScalingInput struct {
 	Replicas ReplicasInput             `json:"replicas"`
 	Triggers []AutoScalingTriggerInput `json:"triggers"`
@@ -2856,6 +2867,14 @@ type VolumeResultContainersContainer struct {
 // GetName returns VolumeResultContainersContainer.Name, and is useful for accessing the field via an interface.
 func (v *VolumeResultContainersContainer) GetName() string { return v.Name }
 
+// __apiKeyCreateInput is used internally by genqlient
+type __apiKeyCreateInput struct {
+	ApiKeyInput ApiKeyInput `json:"apiKeyInput"`
+}
+
+// GetApiKeyInput returns __apiKeyCreateInput.ApiKeyInput, and is useful for accessing the field via an interface.
+func (v *__apiKeyCreateInput) GetApiKeyInput() ApiKeyInput { return v.ApiKeyInput }
+
 // __cloudDatabaseClusterCreateInput is used internally by genqlient
 type __cloudDatabaseClusterCreateInput struct {
 	CloudDatabaseClusterInput CloudDatabaseClusterCreateInput `json:"cloudDatabaseClusterInput"`
@@ -3237,6 +3256,24 @@ type __volumeListInput struct {
 
 // GetNamespaceName returns __volumeListInput.NamespaceName, and is useful for accessing the field via an interface.
 func (v *__volumeListInput) GetNamespaceName() string { return v.NamespaceName }
+
+// accessTokenCreateResponse is returned by accessTokenCreate on success.
+type accessTokenCreateResponse struct {
+	// Cost: complexity = 1500, multipliers = [], defaultMultiplier = null
+	AccessTokenCreate string `json:"accessTokenCreate"`
+}
+
+// GetAccessTokenCreate returns accessTokenCreateResponse.AccessTokenCreate, and is useful for accessing the field via an interface.
+func (v *accessTokenCreateResponse) GetAccessTokenCreate() string { return v.AccessTokenCreate }
+
+// apiKeyCreateResponse is returned by apiKeyCreate on success.
+type apiKeyCreateResponse struct {
+	// Cost: complexity = 1500, multipliers = [], defaultMultiplier = null
+	ApiKeyCreate string `json:"apiKeyCreate"`
+}
+
+// GetApiKeyCreate returns apiKeyCreateResponse.ApiKeyCreate, and is useful for accessing the field via an interface.
+func (v *apiKeyCreateResponse) GetApiKeyCreate() string { return v.ApiKeyCreate }
 
 // cloudDatabaseClusterCreateResponse is returned by cloudDatabaseClusterCreate on success.
 type cloudDatabaseClusterCreateResponse struct {
@@ -4931,6 +4968,66 @@ type volumeListResponse struct {
 
 // GetNamespace returns volumeListResponse.Namespace, and is useful for accessing the field via an interface.
 func (v *volumeListResponse) GetNamespace() volumeListNamespace { return v.Namespace }
+
+// The mutation executed by accessTokenCreate.
+const accessTokenCreate_Operation = `
+mutation accessTokenCreate {
+	accessTokenCreate
+}
+`
+
+func accessTokenCreate(
+	ctx_ context.Context,
+	client_ graphql.Client,
+) (data_ *accessTokenCreateResponse, err_ error) {
+	req_ := &graphql.Request{
+		OpName: "accessTokenCreate",
+		Query:  accessTokenCreate_Operation,
+	}
+
+	data_ = &accessTokenCreateResponse{}
+	resp_ := &graphql.Response{Data: data_}
+
+	err_ = client_.MakeRequest(
+		ctx_,
+		req_,
+		resp_,
+	)
+
+	return data_, err_
+}
+
+// The mutation executed by apiKeyCreate.
+const apiKeyCreate_Operation = `
+mutation apiKeyCreate ($apiKeyInput: ApiKeyInput!) {
+	apiKeyCreate(apiKeyInput: $apiKeyInput)
+}
+`
+
+func apiKeyCreate(
+	ctx_ context.Context,
+	client_ graphql.Client,
+	apiKeyInput ApiKeyInput,
+) (data_ *apiKeyCreateResponse, err_ error) {
+	req_ := &graphql.Request{
+		OpName: "apiKeyCreate",
+		Query:  apiKeyCreate_Operation,
+		Variables: &__apiKeyCreateInput{
+			ApiKeyInput: apiKeyInput,
+		},
+	}
+
+	data_ = &apiKeyCreateResponse{}
+	resp_ := &graphql.Response{Data: data_}
+
+	err_ = client_.MakeRequest(
+		ctx_,
+		req_,
+		resp_,
+	)
+
+	return data_, err_
+}
 
 // The mutation executed by cloudDatabaseClusterCreate.
 const cloudDatabaseClusterCreate_Operation = `

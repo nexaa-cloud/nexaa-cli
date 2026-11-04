@@ -72,3 +72,25 @@ func Login(username, password string) error {
 
 	return nil
 }
+
+func LoginApiKey(apiKey string) error {
+	token, err := ApiKeyClient().AccessTokenCreate()
+	if err != nil {
+		return err
+	}
+
+	fmt.Println("Created access token")
+
+	config.AccessToken = token
+	config.ApiKey = apiKey
+	config.ExpiresAt = time.Now().Add(time.Duration(5) * time.Minute).UnixMicro()
+
+	err = config.SaveApiConfig()
+	if err != nil {
+		return fmt.Errorf("failed to store API key config: %v", err)
+	}
+
+	fmt.Println("Saved in " + config.TOKEN_FILE)
+
+	return nil
+}

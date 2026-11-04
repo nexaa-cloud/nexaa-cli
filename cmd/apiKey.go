@@ -7,12 +7,12 @@ import (
 )
 
 var apiKeyCmd = &cobra.Command{
-	Use: "apikey",
+	Use:   "apikey",
 	Short: "Manage API keys",
 }
 
 var listApiKeysCmd = &cobra.Command{
-	Use: "list",
+	Use:   "list",
 	Short: "List all API Keys",
 	Run: func(ccmd *cobra.Command, args []string) {
 		fmt.Errorf("Not implemented yet")
@@ -20,17 +20,17 @@ var listApiKeysCmd = &cobra.Command{
 }
 
 var createApiKeyCmd = &cobra.Command{
-	Use: "create",
+	Use:   "create",
 	Short: "Create a new API key",
-		Run: func(ccmd *cobra.Command, args []string) {
+	Run: func(ccmd *cobra.Command, args []string) {
 		fmt.Errorf("Not implemented yet")
 	},
 }
 
 var revokeApiKeyCmd = &cobra.Command{
-	Use: "revoke",
+	Use:   "revoke",
 	Short: "Revoke a API key",
-		Run: func(ccmd *cobra.Command, args []string) {
+	Run: func(ccmd *cobra.Command, args []string) {
 		fmt.Errorf("Not implemented yet")
 	},
 }

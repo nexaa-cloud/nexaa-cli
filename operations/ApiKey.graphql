@@ -1,0 +1,7 @@
+mutation apiKeyCreate($apiKeyInput: ApiKeyInput!) {
+    apiKeyCreate(apiKeyInput: $apiKeyInput)
+}
+
+mutation accessTokenCreate {
+    accessTokenCreate
+}

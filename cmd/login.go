@@ -16,7 +16,7 @@ import (
 // loginCmd defines the login command
 var loginCmd = &cobra.Command{
 	Use:   "login",
-	Short: "Login using username and password",
+	Short: "Login using username and password or API key",
 	Run: func(cmd *cobra.Command, args []string) {
 		username, _ := cmd.Flags().GetString("username")
 
@@ -27,8 +27,8 @@ var loginCmd = &cobra.Command{
 			password = envPassword
 		}
 
-		if username == "" {
-			fmt.Println("Username is required.")
+		if username == "" && password == "" {
+			loginApiKey(cmd)
 			return
 		}
 
@@ -52,7 +52,52 @@ var loginCmd = &cobra.Command{
 	},
 }
 
+func loginApiKey(cmd *cobra.Command) {
+	fmt.Println("Retrieving API Key")
+	envApiKey := os.Getenv("NEXAA_APIKEY")
+	apiKey, _ := cmd.Flags().GetString("apiKey")
+	if apiKey == "" {
+		apiKey = envApiKey
+	}
+
+	if apiKey == "" {
+		fmt.Print("API key not found. Please enter API key: ")
+		byteApiKey, err := term.ReadPassword(int(syscall.Stdin))
+		fmt.Println() // Print a newline after password input for clarity
+		if err != nil {
+			log.Fatalf("Failed to read password: %v", err)
+		}
+		apiKey = string(byteApiKey)
+	}
+
+	fmt.Println("Logging in with API key")
+
+	err := api.LoginApiKey(apiKey)
+	if err != nil {
+		log.Fatalf("Login failed with API key failed: %v", err)
+	} else {
+		fmt.Println("Login successful, access token stored in " + config.TOKEN_FILE)
+	}
+}
+
+// var loginApiKeyCmd = &cobra.Command{
+// 	Use: "login_apikey",
+// 	Short: "Login using API Key",
+// 	Run: func(cmd *cobra.Command, args []string) {
+// 		// What route should we use to retrieve the key from customers
+// 		apiKey, _ := cmd.Flags().GetString("apiKey")
+
+// 		err := api.LoginApiKey(apiKey)
+// 		if err != nil {
+// 			log.Fatalf("Login failed with API key failed: %v", err)
+// 		} else {
+// 			fmt.Println("Login successful, access token stored in " + config.TOKEN_FILE)
+// 		}
+// 	},
+// }
+
 func init() {
-	loginCmd.Flags().StringP("username", "u", "", "Username for authentication")
+	loginCmd.Flags().StringP("username", "u", "", "Username for authentication (optional, without username an API will be prompted)")
 	loginCmd.Flags().StringP("password", "p", "", "Password for authentication (optional, will be prompted if not provided)")
+	loginCmd.Flags().StringP("apikey", "a", "", "API key for authentication on Nexaa")
 }
