@@ -21,7 +21,7 @@ var getContainerCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		namespace, _ := cmd.Flags().GetString("namespace")
 		name, _ := cmd.Flags().GetString("name")
-		client := api.NewClient()
+		client := api.BuildClient()
 
 		container, err := client.ListContainerByName(namespace, name)
 		if err != nil {
@@ -43,7 +43,7 @@ var listContainersCmd = &cobra.Command{
 	Short: "List all containers",
 	Run: func(cmd *cobra.Command, args []string) {
 		namespace, _ := cmd.Flags().GetString("namespace")
-		client := api.NewClient()
+		client := api.BuildClient()
 
 		containers, err := client.ListContainers(namespace)
 
@@ -98,7 +98,7 @@ var createContainerCmd = &cobra.Command{
 			Type:                 api.ContainerTypeDefault,
 		}
 
-		client := api.NewClient()
+		client := api.BuildClient()
 
 		container, err := client.ContainerCreate(input)
 
@@ -140,7 +140,7 @@ var createStarterContainerCmd = &cobra.Command{
 			Type:                 api.ContainerTypeStarter,
 		}
 
-		client := api.NewClient()
+		client := api.BuildClient()
 
 		container, err := client.ContainerCreate(input)
 
@@ -171,7 +171,7 @@ var modifyContainerCmd = &cobra.Command{
 		entrypoint, _ := cmd.Flags().GetStringArray("entrypoint")
 		removeEntrypoint, _ := cmd.Flags().GetBool("remove-entrypoint")
 
-		client := api.NewClient()
+		client := api.BuildClient()
 
 		oldContainer, err := client.ListContainerByName(namespace, name)
 		if err != nil {
@@ -246,7 +246,7 @@ var deleteContainerCmd = &cobra.Command{
 		namespace, _ := cmd.Flags().GetString("namespace")
 		name, _ := cmd.Flags().GetString("name")
 
-		client := api.NewClient()
+		client := api.BuildClient()
 
 		result, err := client.ContainerDelete(namespace, name)
 		if err != nil {

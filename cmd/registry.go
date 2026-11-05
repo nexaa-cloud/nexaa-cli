@@ -20,7 +20,7 @@ var listRegistriesCmd = &cobra.Command{
 	Short: "List all private registries",
 	Run: func(cmd *cobra.Command, args []string) {
 		namespace, _ := cmd.Flags().GetString("namespace")
-		client := api.NewClient()
+		client := api.BuildClient()
 
 		registries, err := client.ListRegistries(namespace)
 
@@ -64,7 +64,7 @@ var createRegistryCmd = &cobra.Command{
 			Verify:    true,
 		}
 
-		client := api.NewClient()
+		client := api.BuildClient()
 		registry, err := client.RegistryCreate(input)
 
 		if err != nil {
@@ -82,7 +82,7 @@ var deleteRegistryCmd = &cobra.Command{
 		namespace, _ := cmd.Flags().GetString("namespace")
 		name, _ := cmd.Flags().GetString("name")
 
-		client := api.NewClient()
+		client := api.BuildClient()
 
 		result, err := client.RegistryDelete(namespace, name)
 		if err != nil {

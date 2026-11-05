@@ -20,7 +20,7 @@ var listVolumesCmd = &cobra.Command{
 	Short: "List all persistent volumes",
 	Run: func(cmd *cobra.Command, args []string) {
 		namespace, _ := cmd.Flags().GetString("namespace")
-		client := api.NewClient()
+		client := api.BuildClient()
 
 		volumes, err := client.ListVolumes(namespace)
 		if err != nil {
@@ -59,7 +59,7 @@ var createVolumeCmd = &cobra.Command{
 			Size:      size,
 		}
 
-		client := api.NewClient()
+		client := api.BuildClient()
 		volume, err := client.VolumeCreate(input)
 		if err != nil {
 			log.Fatalf("Failed to create volume: %v", err)
@@ -84,7 +84,7 @@ var increaseVolumeCmd = &cobra.Command{
 			Size:      size,
 		}
 
-		client := api.NewClient()
+		client := api.BuildClient()
 
 		volume, err := client.VolumeIncrease(input)
 		if err != nil {
@@ -103,7 +103,7 @@ var deleteVolumeCmd = &cobra.Command{
 		namespace, _ := cmd.Flags().GetString("namespace")
 		name, _ := cmd.Flags().GetString("name")
 
-		client := api.NewClient()
+		client := api.BuildClient()
 
 		result, err := client.VolumeDelete(namespace, name)
 		if err != nil {

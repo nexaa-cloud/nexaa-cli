@@ -72,7 +72,7 @@ var enableMessageQueueExternalConnectionCmd = &cobra.Command{
 			}
 		}
 
-		client := api.NewClient()
+		client := api.BuildClient()
 
 		cluster, err := client.MessageQueueModify(resource)
 		if err != nil {
@@ -102,7 +102,7 @@ var disableMessageQueueExternalConnectionCmd = &cobra.Command{
 			},
 		}
 
-		client := api.NewClient()
+		client := api.BuildClient()
 
 		cluster, err := client.MessageQueueModify(resource)
 		if err != nil {

@@ -12,6 +12,7 @@ var (
 	ExpiresAt    int64  // Token expiration time as Unix timestamp
 	RefreshToken string // OAuth Refresh Token
 	ApiKey       string // API Key
+	AuthMethod   string // Method used to login
 )
 
 // Config represents the structure of the configuration stored on disk
@@ -19,12 +20,14 @@ type Config struct {
 	AccessToken  string `json:"access_token"`
 	ExpiresAt    int64  `json:"expires_at"`
 	RefreshToken string `json:"refresh_token"`
+	AuthMethod   string `json:"auth_method"`
 }
 
 type ApiConfig struct {
 	AccessToken string `json:"access_token"`
 	ApiKey      string `json:"api_key"`
 	ExpiresAt   int64  `json:"expires_at"`
+	AuthMethod  string `json:"auth_method"`
 }
 
 // SaveConfig writes the current configuration to disk
@@ -33,6 +36,7 @@ func SaveConfig() error {
 		AccessToken:  AccessToken,
 		ExpiresAt:    ExpiresAt,
 		RefreshToken: RefreshToken,
+		AuthMethod:   "oauth",
 	}
 
 	// Serialize the config struct to JSON
@@ -75,6 +79,7 @@ func LoadConfig() error {
 	AccessToken = configData.AccessToken
 	ExpiresAt = configData.ExpiresAt
 	RefreshToken = configData.RefreshToken
+	AuthMethod = configData.AuthMethod
 
 	return nil
 }
@@ -84,6 +89,7 @@ func SaveApiConfig() error {
 		AccessToken: AccessToken,
 		ApiKey:      ApiKey,
 		ExpiresAt:   ExpiresAt,
+		AuthMethod:  "apikey",
 	}
 
 	// Serialize the config struct to JSON
@@ -123,8 +129,9 @@ func LoadApiConfig() error {
 
 	// Update the global variables with the loaded configuration
 	AccessToken = configData.AccessToken
-	ApiKey = ApiKey
+	ApiKey = configData.ApiKey
 	ExpiresAt = configData.ExpiresAt
+	AuthMethod = configData.AuthMethod
 
 	return nil
 }
@@ -132,5 +139,5 @@ func LoadApiConfig() error {
 // IsTokenExpired checks if the current access token is expired
 func IsTokenExpired() bool {
 	// Compare current time with ExpiresAt
-	return time.Now().Unix() >= ExpiresAt
+	return time.Now().UnixMicro() >= ExpiresAt
 }

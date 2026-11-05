@@ -20,7 +20,7 @@ var listMessageQueuesCmd = &cobra.Command{
 	Use:   "list",
 	Short: "List all message queues",
 	Run: func(cmd *cobra.Command, args []string) {
-		client := api.NewClient()
+		client := api.BuildClient()
 		queues, err := client.MessageQueueList()
 		if err != nil {
 			log.Fatalf("Failed to list message queues: %v", err)
@@ -47,7 +47,7 @@ var getMessageQueueCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		namespace, _ := cmd.Flags().GetString("namespace")
 		name, _ := cmd.Flags().GetString("name")
-		client := api.NewClient()
+		client := api.BuildClient()
 
 		input := api.MessageQueueResourceInput{
 			Name:      name,
@@ -112,7 +112,7 @@ var createMessageQueueCmd = &cobra.Command{
 			AllowList: allowList,
 		}
 
-		client := api.NewClient()
+		client := api.BuildClient()
 		queue, err := client.MessageQueueCreate(input)
 		if err != nil {
 			log.Fatalf("Failed to create message queue: %v", err)
@@ -129,7 +129,7 @@ var deleteMessageQueueCmd = &cobra.Command{
 		namespace, _ := cmd.Flags().GetString("namespace")
 		name, _ := cmd.Flags().GetString("name")
 
-		client := api.NewClient()
+		client := api.BuildClient()
 
 		input := api.MessageQueueResourceInput{
 			Name:      name,
@@ -152,7 +152,7 @@ var listMessageQueuePlansCmd = &cobra.Command{
 	Use:   "plans",
 	Short: "List all available message queue plans",
 	Run: func(cmd *cobra.Command, args []string) {
-		client := api.NewClient()
+		client := api.BuildClient()
 		plans, err := client.MessageQueuePlans()
 		if err != nil {
 			log.Fatalf("Failed to list message queue plans: %v", err)
@@ -179,7 +179,7 @@ var listMessageQueueVersionsCmd = &cobra.Command{
 	Use:   "versions",
 	Short: "List all available message queue versions",
 	Run: func(cmd *cobra.Command, args []string) {
-		client := api.NewClient()
+		client := api.BuildClient()
 		versions, err := client.MessageQueueVersions()
 		if err != nil {
 			log.Fatalf("Failed to list message queue versions: %v", err)
@@ -208,7 +208,7 @@ var listAdminUserCredentialsCmd = &cobra.Command{
 		namespace, _ := cmd.Flags().GetString("namespace")
 		name, _ := cmd.Flags().GetString("name")
 		username, _ := cmd.Flags().GetString("username")
-		client := api.NewClient()
+		client := api.BuildClient()
 
 		input := api.MessageQueueResourceInput{
 			Name:      name,

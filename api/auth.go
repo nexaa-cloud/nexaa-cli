@@ -6,6 +6,7 @@ import (
 	"io"
 	"net/http"
 	"net/url"
+	"os"
 	"strings"
 	"time"
 
@@ -74,23 +75,64 @@ func Login(username, password string) error {
 }
 
 func LoginApiKey(apiKey string) error {
-	token, err := ApiKeyClient().AccessTokenCreate()
-	if err != nil {
-		return err
-	}
-
-	fmt.Println("Created access token")
-
-	config.AccessToken = token
 	config.ApiKey = apiKey
-	config.ExpiresAt = time.Now().Add(time.Duration(5) * time.Minute).UnixMicro()
+
+	err := generateAccessToken()
+	if err != nil {
+		return fmt.Errorf("failed to generate access token: %v", err)
+	}
 
 	err = config.SaveApiConfig()
 	if err != nil {
 		return fmt.Errorf("failed to store API key config: %v", err)
 	}
 
-	fmt.Println("Saved in " + config.TOKEN_FILE)
+	return nil
+}
+
+func Logout() error {
+	err := os.Remove(config.TOKEN_FILE)
+	if err != nil && !os.IsNotExist(err) {
+		return fmt.Errorf("failed to remove %s: %v", config.TOKEN_FILE, err)
+	}
+
+	return nil
+}
+
+func generateAccessToken() error {
+	token, err := ApiKeyClient().AccessTokenCreate()
+	if err != nil {
+		return err
+	}
+
+	config.AccessToken = token
+	config.ExpiresAt = time.Now().Add(time.Duration(5) * time.Minute).UnixMicro()
+
+	return nil
+}
+
+func RefreshAKToken() error {
+	if config.IsTokenExpired() {
+		fmt.Println("Access token expired, refreshing token...")
+
+		err := config.LoadApiConfig()
+		if err != nil {
+			return fmt.Errorf("failed to load config: %v", err)
+		}
+
+		err = generateAccessToken()
+		if err != nil {
+			return fmt.Errorf("failed to generate access token: %v", err)
+		}
+
+		err = config.SaveApiConfig()
+		if err != nil {
+			return fmt.Errorf("failed to store new access stoken: %v", err)
+
+		}
+
+		return nil
+	}
 
 	return nil
 }

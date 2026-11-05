@@ -45,7 +45,7 @@ var rootCmd = &cobra.Command{
 			log.Fatalf("Failed to load config: %v", err)
 		}
 
-		if config.AccessToken == "" && cmd.Name() != "login" {
+		if config.AccessToken == "" && cmd.Name() != "login" && cmd.Name() != "logout" {
 			fmt.Println("ERROR: No access token found, please login first.")
 			fmt.Println("Run 'nexaa login' to authenticate.")
 			os.Exit(1)
@@ -73,4 +73,6 @@ func init() {
 	rootCmd.AddCommand(volumeCmd)
 	rootCmd.AddCommand(resourcesCmd)
 	rootCmd.AddCommand(messageQueueCmd)
+	rootCmd.AddCommand(logoutCmd)
+	rootCmd.AddCommand(apiKeyCmd)
 }

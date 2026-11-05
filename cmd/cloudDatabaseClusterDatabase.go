@@ -27,7 +27,7 @@ var createCloudDatabaseClusterDatabaseCmd = &cobra.Command{
 		if dbDescription == "" {
 			dbDescription = ""
 		}
-		client := api.NewClient()
+		client := api.BuildClient()
 		input := api.CloudDatabaseClusterDatabaseCreateInput{
 			Cluster: api.CloudDatabaseClusterResourceInput{
 				Name:      clusterName,
@@ -54,7 +54,7 @@ var listCloudDatabaseClusterDatabasesCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		namespaceName, _ := cmd.Flags().GetString("namespace")
 		clusterName, _ := cmd.Flags().GetString("cluster")
-		client := api.NewClient()
+		client := api.BuildClient()
 		input := api.CloudDatabaseClusterResourceInput{
 			Name:      clusterName,
 			Namespace: namespaceName,
@@ -87,7 +87,7 @@ var deleteCloudDatabaseClusterDatabaseCmd = &cobra.Command{
 		namespaceName, _ := cmd.Flags().GetString("namespace")
 		clusterName, _ := cmd.Flags().GetString("cluster")
 		name, _ := cmd.Flags().GetString("name")
-		client := api.NewClient()
+		client := api.BuildClient()
 		input := api.CloudDatabaseClusterDatabaseResourceInput{
 			Cluster: api.CloudDatabaseClusterResourceInput{
 				Name:      clusterName,

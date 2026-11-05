@@ -71,7 +71,7 @@ var enableCloudDatabaseClusterExternalConnectionCmd = &cobra.Command{
 			}
 		}
 
-		client := api.NewClient()
+		client := api.BuildClient()
 
 		cluster, err := client.CloudDatabaseClusterModify(resource)
 		if err != nil {
@@ -101,7 +101,7 @@ var disableCloudDatabaseClusterExternalConnectionCmd = &cobra.Command{
 			},
 		}
 
-		client := api.NewClient()
+		client := api.BuildClient()
 
 		cluster, err := client.CloudDatabaseClusterModify(resource)
 		if err != nil {

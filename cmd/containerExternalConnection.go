@@ -84,7 +84,7 @@ var enableContainerExternalConnectionCmd = &cobra.Command{
 			}
 		}
 
-		client := api.NewClient()
+		client := api.BuildClient()
 
 		container, err := client.ContainerModify(resource)
 		if err != nil {
@@ -111,7 +111,7 @@ var disableContainerExternalConnectionCmd = &cobra.Command{
 			return
 		}
 
-		client := api.NewClient()
+		client := api.BuildClient()
 
 		// If externalPort is not provided, it will disable all external connections on the container
 		var resource api.ContainerModifyInput
@@ -163,7 +163,7 @@ var listContainerExternalConnectionCmd = &cobra.Command{
 		namespace, _ := cmd.Flags().GetString("namespace")
 		name, _ := cmd.Flags().GetString("name")
 
-		client := api.NewClient()
+		client := api.BuildClient()
 		container, err := client.ListContainerByName(namespace, name)
 
 		if err != nil {

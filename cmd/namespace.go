@@ -21,7 +21,7 @@ var listNamespacesCmd = &cobra.Command{
 	Use:   "list",
 	Short: "List all namespaces",
 	Run: func(cmd *cobra.Command, args []string) {
-		client := api.NewClient()
+		client := api.BuildClient()
 		namespaces, err := client.NamespacesList()
 
 		if err != nil {
@@ -57,7 +57,7 @@ var createNamespaceCmd = &cobra.Command{
 			Description: &description,
 		}
 
-		client := api.NewClient()
+		client := api.BuildClient()
 
 		namespace, err := client.NamespaceCreate(input)
 		if err != nil {
@@ -74,7 +74,7 @@ var deleteNamespaceCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		name, _ := cmd.Flags().GetString("name")
 
-		client := api.NewClient()
+		client := api.BuildClient()
 
 		_, err := client.NamespaceDelete(name)
 		if err != nil {

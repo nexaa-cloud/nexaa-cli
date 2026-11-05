@@ -1,9 +1,10 @@
 package api
 
 import (
+	"net/http"
+
 	"github.com/Khan/genqlient/graphql"
 	"github.com/nexaa-cloud/nexaa-cli/config"
-	"net/http"
 )
 
 type authedTransport struct {
@@ -51,4 +52,30 @@ func ApiKeyClient() *Client {
 	client := graphql.NewClient(config.GRAPHQL_URL, &httpClient)
 
 	return &Client{client: &client}
+}
+
+func AKTokenClient() *Client {
+	httpClient := http.Client{
+		Transport: &authedTransport{
+			key:     config.AccessToken,
+			scheme:  "",
+			wrapped: http.DefaultTransport,
+		},
+	}
+
+	client := graphql.NewClient(config.GRAPHQL_URL, &httpClient)
+
+	return &Client{client: &client}
+}
+
+func BuildClient() *Client {
+	if config.AuthMethod == "apikey" {
+		err := RefreshAKToken()
+		if err != nil {
+			return nil
+		}
+		return AKTokenClient()
+	}
+
+	return NewClient()
 }

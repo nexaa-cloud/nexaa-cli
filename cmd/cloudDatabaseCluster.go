@@ -37,7 +37,7 @@ var createCloudDatabaseClusterCmd = &cobra.Command{
 			},
 		}
 
-		client := api.NewClient()
+		client := api.BuildClient()
 		result, err := client.CloudDatabaseClusterCreate(input)
 		if err != nil {
 			log.Fatalf("Failed to create cloud database cluster: %v", err)
@@ -51,7 +51,7 @@ var listCloudDatabaseClustersCmd = &cobra.Command{
 	Use:   "list",
 	Short: "List all cloud database clusters",
 	Run: func(cmd *cobra.Command, args []string) {
-		client := api.NewClient()
+		client := api.BuildClient()
 		clusters, err := client.CloudDatabaseClusterList()
 		if err != nil {
 			log.Fatalf("Failed to list cloud database clusters: %v", err)
@@ -104,7 +104,7 @@ var listCloudDatabaseClusterCmd = &cobra.Command{
 			log.Fatal("Namespace and name are required to get a cloud database cluster.")
 			return
 		}
-		client := api.NewClient()
+		client := api.BuildClient()
 		input := api.CloudDatabaseClusterResourceInput{
 			Namespace: namespace,
 			Name:      name,
@@ -130,7 +130,7 @@ var deleteCloudDatabaseClusterCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		namespace, _ := cmd.Flags().GetString("namespace")
 		name, _ := cmd.Flags().GetString("name")
-		client := api.NewClient()
+		client := api.BuildClient()
 		input := api.CloudDatabaseClusterResourceInput{
 			Namespace: namespace,
 			Name:      name,
@@ -151,7 +151,7 @@ var listCloudDatabaseClusterPlansCmd = &cobra.Command{
 	Use:   "list-plans",
 	Short: "List available plans for cloud database clusters",
 	Run: func(cmd *cobra.Command, args []string) {
-		client := api.NewClient()
+		client := api.BuildClient()
 		plans, err := client.CloudDatabaseClusterListPlans()
 		if err != nil {
 			log.Fatalf("Failed to list cloud database cluster plans: %v", err)
@@ -173,7 +173,7 @@ var listCloudDatabaseClusterSpecsCmd = &cobra.Command{
 	Use:   "list-specs",
 	Short: "List available specs for cloud database clusters",
 	Run: func(cmd *cobra.Command, args []string) {
-		client := api.NewClient()
+		client := api.BuildClient()
 		specs, err := client.CloudDatabaseClusterListSpecs()
 		if err != nil {
 			log.Fatalf("Failed to list cloud database cluster specs: %v", err)
@@ -202,7 +202,7 @@ var getClusterDatabaseUserCredentialsCmd = &cobra.Command{
 			Name:      clusterName,
 			Namespace: namespace,
 		}
-		client := api.NewClient()
+		client := api.BuildClient()
 		dsn, err := client.CloudDatabaseClusterUserCredentials(input, userName)
 		if err != nil {
 			log.Fatalf("Failed to get user credentials: %v", err)

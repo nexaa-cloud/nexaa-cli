@@ -38,7 +38,7 @@ var createCloudDatabaseClusterUserCmd = &cobra.Command{
 			Namespace: namespace,
 		}
 
-		client := api.NewClient()
+		client := api.BuildClient()
 
 		permsissions := make([]api.DatabaseUserPermissionInput, 0)
 		for _, p := range permPairs {
@@ -93,7 +93,7 @@ var modifyCloudDatabaseClusterUserCmd = &cobra.Command{
 			Namespace: namespace,
 		}
 
-		client := api.NewClient()
+		client := api.BuildClient()
 
 		var parsed []api.DatabaseUserPermissionInput
 		for _, p := range addPerms {
@@ -152,7 +152,7 @@ var listCloudDatabaseClusterUserCmd = &cobra.Command{
 			Namespace: namespace,
 		}
 
-		client := api.NewClient()
+		client := api.BuildClient()
 		users, err := client.CloudDatabaseClusterUserList(resource)
 		if err != nil {
 			log.Fatalf("Failed to list cloud database cluster users: %v", err)
@@ -205,7 +205,7 @@ var deleteCloudDatabaseClusterUserCmd = &cobra.Command{
 			Namespace: namespace,
 		}
 
-		client := api.NewClient()
+		client := api.BuildClient()
 		_, err := client.CloudDatabaseClusterUserDelete(api.CloudDatabaseClusterUserResourceInput{
 			Name:    userName,
 			Cluster: cluster,

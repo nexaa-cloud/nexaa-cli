@@ -55,7 +55,7 @@ var loginCmd = &cobra.Command{
 func loginApiKey(cmd *cobra.Command) {
 	fmt.Println("Retrieving API Key")
 	envApiKey := os.Getenv("NEXAA_APIKEY")
-	apiKey, _ := cmd.Flags().GetString("apiKey")
+	apiKey, _ := cmd.Flags().GetString("apikey")
 	if apiKey == "" {
 		apiKey = envApiKey
 	}
@@ -79,22 +79,6 @@ func loginApiKey(cmd *cobra.Command) {
 		fmt.Println("Login successful, access token stored in " + config.TOKEN_FILE)
 	}
 }
-
-// var loginApiKeyCmd = &cobra.Command{
-// 	Use: "login_apikey",
-// 	Short: "Login using API Key",
-// 	Run: func(cmd *cobra.Command, args []string) {
-// 		// What route should we use to retrieve the key from customers
-// 		apiKey, _ := cmd.Flags().GetString("apiKey")
-
-// 		err := api.LoginApiKey(apiKey)
-// 		if err != nil {
-// 			log.Fatalf("Login failed with API key failed: %v", err)
-// 		} else {
-// 			fmt.Println("Login successful, access token stored in " + config.TOKEN_FILE)
-// 		}
-// 	},
-// }
 
 func init() {
 	loginCmd.Flags().StringP("username", "u", "", "Username for authentication (optional, without username an API will be prompted)")

@@ -53,7 +53,7 @@ var createContainerJobCmd = &cobra.Command{
 			Mounts:               []api.MountInput{},
 		}
 
-		client := api.NewClient()
+		client := api.BuildClient()
 
 		containerJob, err := client.ContainerJobCreate(input)
 
@@ -84,7 +84,7 @@ var modifyContainerJobCmd = &cobra.Command{
 		secrets, _ := cmd.Flags().GetStringArray("secret")
 		removedEnvironmentVariables, _ := cmd.Flags().GetStringArray("remove-env")
 
-		client := api.NewClient()
+		client := api.BuildClient()
 
 		oldContainerJob, err := client.ContainerJobByName(namespace, name)
 
@@ -163,7 +163,7 @@ var getContainerJobCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		namespace, _ := cmd.Flags().GetString("namespace")
 		name, _ := cmd.Flags().GetString("name")
-		client := api.NewClient()
+		client := api.BuildClient()
 
 		containerJob, err := client.ContainerJobByName(namespace, name)
 		if err != nil {
@@ -185,7 +185,7 @@ var listContainerJobsCmd = &cobra.Command{
 	Short: "List all container jobs",
 	Run: func(cmd *cobra.Command, args []string) {
 		namespace, _ := cmd.Flags().GetString("namespace")
-		client := api.NewClient()
+		client := api.BuildClient()
 
 		containerJobs, err := client.ContainerJobList(namespace)
 
@@ -222,7 +222,7 @@ var deleteContainerJobCmd = &cobra.Command{
 		namespace, _ := cmd.Flags().GetString("namespace")
 		name, _ := cmd.Flags().GetString("name")
 
-		client := api.NewClient()
+		client := api.BuildClient()
 
 		result, err := client.ContainerJobDelete(namespace, name)
 		if err != nil {
