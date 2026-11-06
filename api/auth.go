@@ -96,6 +96,12 @@ func Logout() error {
 		return fmt.Errorf("failed to remove %s: %v", config.TOKEN_FILE, err)
 	}
 
+	config.AccessToken = ""
+	config.RefreshToken = ""
+	config.ApiKey = ""
+	config.AuthMethod = ""
+	config.ExpiresAt = 0
+
 	return nil
 }
 
@@ -112,26 +118,27 @@ func generateAccessToken() error {
 }
 
 func RefreshAKToken() error {
-	if config.IsTokenExpired() {
-		fmt.Println("Access token expired, refreshing token...")
+	if !config.IsTokenExpired() {
+		return nil
+	}
 
-		err := config.LoadApiConfig()
-		if err != nil {
+	if config.ApiKey == "" {
+		if err := config.LoadApiConfig(); err != nil {
 			return fmt.Errorf("failed to load config: %v", err)
 		}
+	}
+	if config.ApiKey == "" {
+		return fmt.Errorf("api key missing, please run 'nexaa login'")
+	}
 
-		err = generateAccessToken()
-		if err != nil {
-			return fmt.Errorf("failed to generate access token: %v", err)
-		}
+	fmt.Fprintln(os.Stderr, "Access token expired, refreshing token...")
 
-		err = config.SaveApiConfig()
-		if err != nil {
-			return fmt.Errorf("failed to store new access stoken: %v", err)
+	if err := generateAccessToken(); err != nil {
+		return fmt.Errorf("failed to generate access token: %v", err)
+	}
 
-		}
-
-		return nil
+	if err := config.SaveApiConfig(); err != nil {
+		return fmt.Errorf("failed to store new access token: %v", err)
 	}
 
 	return nil

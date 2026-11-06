@@ -1,7 +1,9 @@
 package api
 
 import (
+	"fmt"
 	"net/http"
+	"os"
 
 	"github.com/Khan/genqlient/graphql"
 	"github.com/nexaa-cloud/nexaa-cli/config"
@@ -15,6 +17,10 @@ type authedTransport struct {
 
 func (t *authedTransport) RoundTrip(req *http.Request) (*http.Response, error) {
 	value := t.key
+	if t.key == "" {
+		return t.wrapped.RoundTrip(req)
+	}
+
 	if t.scheme != "" {
 		value = t.scheme + " " + t.key
 	}
@@ -70,12 +76,11 @@ func AKTokenClient() *Client {
 
 func BuildClient() *Client {
 	if config.AuthMethod == "apikey" {
-		err := RefreshAKToken()
-		if err != nil {
-			return nil
+		if err := RefreshAKToken(); err != nil {
+			fmt.Fprintln(os.Stderr, "ERROR:", err)
+			os.Exit(1)
 		}
 		return AKTokenClient()
 	}
-
 	return NewClient()
 }
