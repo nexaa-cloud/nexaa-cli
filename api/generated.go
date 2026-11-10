@@ -5,6 +5,7 @@ package api
 import (
 	"context"
 	"encoding/json"
+	"time"
 
 	"github.com/Khan/genqlient/graphql"
 )
@@ -21,16 +22,56 @@ func (v *AllowListInput) GetIp() string { return v.Ip }
 // GetState returns AllowListInput.State, and is useful for accessing the field via an interface.
 func (v *AllowListInput) GetState() State { return v.State }
 
+type ApiKeyAuthorizationType string
+
+const (
+	ApiKeyAuthorizationTypeRead  ApiKeyAuthorizationType = "read"
+	ApiKeyAuthorizationTypeWrite ApiKeyAuthorizationType = "write"
+)
+
+var AllApiKeyAuthorizationType = []ApiKeyAuthorizationType{
+	ApiKeyAuthorizationTypeRead,
+	ApiKeyAuthorizationTypeWrite,
+}
+
 type ApiKeyInput struct {
-	Name           *string  `json:"name"`
-	Authorizations []string `json:"authorizations"`
+	Name           *string                   `json:"name"`
+	Authorizations []ApiKeyAuthorizationType `json:"authorizations"`
 }
 
 // GetName returns ApiKeyInput.Name, and is useful for accessing the field via an interface.
 func (v *ApiKeyInput) GetName() *string { return v.Name }
 
 // GetAuthorizations returns ApiKeyInput.Authorizations, and is useful for accessing the field via an interface.
-func (v *ApiKeyInput) GetAuthorizations() []string { return v.Authorizations }
+func (v *ApiKeyInput) GetAuthorizations() []ApiKeyAuthorizationType { return v.Authorizations }
+
+// ApiKeyResult includes the GraphQL fields of ApiKey requested by the fragment ApiKeyResult.
+type ApiKeyResult struct {
+	Identifier     string    `json:"identifier"`
+	Name           string    `json:"name"`
+	Authorizations []string  `json:"authorizations"`
+	StartDate      time.Time `json:"startDate"`
+	EndDate        time.Time `json:"endDate"`
+	Status         string    `json:"status"`
+}
+
+// GetIdentifier returns ApiKeyResult.Identifier, and is useful for accessing the field via an interface.
+func (v *ApiKeyResult) GetIdentifier() string { return v.Identifier }
+
+// GetName returns ApiKeyResult.Name, and is useful for accessing the field via an interface.
+func (v *ApiKeyResult) GetName() string { return v.Name }
+
+// GetAuthorizations returns ApiKeyResult.Authorizations, and is useful for accessing the field via an interface.
+func (v *ApiKeyResult) GetAuthorizations() []string { return v.Authorizations }
+
+// GetStartDate returns ApiKeyResult.StartDate, and is useful for accessing the field via an interface.
+func (v *ApiKeyResult) GetStartDate() time.Time { return v.StartDate }
+
+// GetEndDate returns ApiKeyResult.EndDate, and is useful for accessing the field via an interface.
+func (v *ApiKeyResult) GetEndDate() time.Time { return v.EndDate }
+
+// GetStatus returns ApiKeyResult.Status, and is useful for accessing the field via an interface.
+func (v *ApiKeyResult) GetStatus() string { return v.Status }
 
 type AutoScalingInput struct {
 	Replicas ReplicasInput             `json:"replicas"`
@@ -4006,6 +4047,97 @@ func (v *deleteCloudDatabaseClusterUserResponse) GetCloudDatabaseClusterUserDele
 	return v.CloudDatabaseClusterUserDelete
 }
 
+// getApiKeysApiKeysApiKey includes the requested fields of the GraphQL type ApiKey.
+type getApiKeysApiKeysApiKey struct {
+	ApiKeyResult `json:"-"`
+}
+
+// GetIdentifier returns getApiKeysApiKeysApiKey.Identifier, and is useful for accessing the field via an interface.
+func (v *getApiKeysApiKeysApiKey) GetIdentifier() string { return v.ApiKeyResult.Identifier }
+
+// GetName returns getApiKeysApiKeysApiKey.Name, and is useful for accessing the field via an interface.
+func (v *getApiKeysApiKeysApiKey) GetName() string { return v.ApiKeyResult.Name }
+
+// GetAuthorizations returns getApiKeysApiKeysApiKey.Authorizations, and is useful for accessing the field via an interface.
+func (v *getApiKeysApiKeysApiKey) GetAuthorizations() []string { return v.ApiKeyResult.Authorizations }
+
+// GetStartDate returns getApiKeysApiKeysApiKey.StartDate, and is useful for accessing the field via an interface.
+func (v *getApiKeysApiKeysApiKey) GetStartDate() time.Time { return v.ApiKeyResult.StartDate }
+
+// GetEndDate returns getApiKeysApiKeysApiKey.EndDate, and is useful for accessing the field via an interface.
+func (v *getApiKeysApiKeysApiKey) GetEndDate() time.Time { return v.ApiKeyResult.EndDate }
+
+// GetStatus returns getApiKeysApiKeysApiKey.Status, and is useful for accessing the field via an interface.
+func (v *getApiKeysApiKeysApiKey) GetStatus() string { return v.ApiKeyResult.Status }
+
+func (v *getApiKeysApiKeysApiKey) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*getApiKeysApiKeysApiKey
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.getApiKeysApiKeysApiKey = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	err = json.Unmarshal(
+		b, &v.ApiKeyResult)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+type __premarshalgetApiKeysApiKeysApiKey struct {
+	Identifier string `json:"identifier"`
+
+	Name string `json:"name"`
+
+	Authorizations []string `json:"authorizations"`
+
+	StartDate time.Time `json:"startDate"`
+
+	EndDate time.Time `json:"endDate"`
+
+	Status string `json:"status"`
+}
+
+func (v *getApiKeysApiKeysApiKey) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *getApiKeysApiKeysApiKey) __premarshalJSON() (*__premarshalgetApiKeysApiKeysApiKey, error) {
+	var retval __premarshalgetApiKeysApiKeysApiKey
+
+	retval.Identifier = v.ApiKeyResult.Identifier
+	retval.Name = v.ApiKeyResult.Name
+	retval.Authorizations = v.ApiKeyResult.Authorizations
+	retval.StartDate = v.ApiKeyResult.StartDate
+	retval.EndDate = v.ApiKeyResult.EndDate
+	retval.Status = v.ApiKeyResult.Status
+	return &retval, nil
+}
+
+// getApiKeysResponse is returned by getApiKeys on success.
+type getApiKeysResponse struct {
+	// Cost: complexity = 100, multipliers = [], defaultMultiplier = null
+	ApiKeys []getApiKeysApiKeysApiKey `json:"apiKeys"`
+}
+
+// GetApiKeys returns getApiKeysResponse.ApiKeys, and is useful for accessing the field via an interface.
+func (v *getApiKeysResponse) GetApiKeys() []getApiKeysApiKeysApiKey { return v.ApiKeys }
+
 // getCloudDatabaseClusterDatabasesCloudDatabaseCluster includes the requested fields of the GraphQL type CloudDatabaseCluster.
 type getCloudDatabaseClusterDatabasesCloudDatabaseCluster struct {
 	Databases []getCloudDatabaseClusterDatabasesCloudDatabaseClusterDatabasesDatabase `json:"databases"`
@@ -6307,6 +6439,44 @@ func deleteCloudDatabaseClusterUser(
 	}
 
 	data_ = &deleteCloudDatabaseClusterUserResponse{}
+	resp_ := &graphql.Response{Data: data_}
+
+	err_ = client_.MakeRequest(
+		ctx_,
+		req_,
+		resp_,
+	)
+
+	return data_, err_
+}
+
+// The query executed by getApiKeys.
+const getApiKeys_Operation = `
+query getApiKeys {
+	apiKeys {
+		... ApiKeyResult
+	}
+}
+fragment ApiKeyResult on ApiKey {
+	identifier
+	name
+	authorizations
+	startDate
+	endDate
+	status
+}
+`
+
+func getApiKeys(
+	ctx_ context.Context,
+	client_ graphql.Client,
+) (data_ *getApiKeysResponse, err_ error) {
+	req_ := &graphql.Request{
+		OpName: "getApiKeys",
+		Query:  getApiKeys_Operation,
+	}
+
+	data_ = &getApiKeysResponse{}
 	resp_ := &graphql.Response{Data: data_}
 
 	err_ = client_.MakeRequest(

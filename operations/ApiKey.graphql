@@ -1,7 +1,22 @@
+fragment ApiKeyResult on ApiKey {
+    identifier
+    name
+    authorizations
+    startDate
+    endDate
+    status
+}
+
 mutation apiKeyCreate($apiKeyInput: ApiKeyInput!) {
     apiKeyCreate(apiKeyInput: $apiKeyInput)
 }
 
 mutation accessTokenCreate {
     accessTokenCreate
+}
+
+query getApiKeys {
+    apiKeys {
+        ...ApiKeyResult
+    }
 }

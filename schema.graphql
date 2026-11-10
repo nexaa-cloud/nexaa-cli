@@ -21,12 +21,26 @@ input AllowListInput {
   state: State! = PRESENT
 }
 
+type ApiKey {
+  authorizations: [String!]!
+  endDate: DateTime!
+  identifier: String!
+  name: String!
+  startDate: DateTime!
+  status: String!
+}
+
+enum ApiKeyAuthorizationType {
+  read
+  write
+}
+
 input ApiKeyInput {
   ""
   name: String = null
 
   ""
-  authorizations: [String!]!
+  authorizations: [ApiKeyAuthorizationType!]!
 }
 
 type AuditLog {
@@ -1557,6 +1571,12 @@ type Query {
   Cost: complexity = 100, multipliers = [], defaultMultiplier = null
   """
   account: Account
+
+  """
+  
+  Cost: complexity = 100, multipliers = [], defaultMultiplier = null
+  """
+  apiKeys: [ApiKey!]!
 
   """
   

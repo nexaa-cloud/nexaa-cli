@@ -18,3 +18,25 @@ func (client *Client) ApiKeyCreate(input ApiKeyInput) (string, error) {
 	}
 	return resp.GetApiKeyCreate(), nil
 }
+
+func (client *Client) ApiKeysList() ([]ApiKeyResult, error) {
+	resp, err := getApiKeys(context.Background(), *client.client)
+	if err != nil {
+		return []ApiKeyResult{}, err
+	}
+
+	result := resp.GetApiKeys()
+
+	apiKeys := make([]ApiKeyResult, len(result))
+	for i, apiKey := range result {
+		apiKeys[i] = ApiKeyResult{
+			Identifier:     apiKey.Identifier,
+			Name:           apiKey.Name,
+			Authorizations: apiKey.Authorizations,
+			StartDate:      apiKey.StartDate,
+			EndDate:        apiKey.EndDate,
+			Status:         apiKey.Status,
+		}
+	}
+	return apiKeys, nil
+}
