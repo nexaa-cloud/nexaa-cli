@@ -33,8 +33,8 @@ func (client *Client) ApiKeysList() ([]ApiKeyResult, error) {
 			Identifier:     apiKey.Identifier,
 			Name:           apiKey.Name,
 			Authorizations: apiKey.Authorizations,
-			StartDate:      apiKey.StartDate,
-			EndDate:        apiKey.EndDate,
+			ValidFrom:      apiKey.ValidFrom,
+			ValidUntil:     apiKey.ValidUntil,
 			Status:         apiKey.Status,
 		}
 	}

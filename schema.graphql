@@ -23,11 +23,11 @@ input AllowListInput {
 
 type ApiKey {
   authorizations: [String!]!
-  endDate: DateTime!
   identifier: String!
   name: String!
-  startDate: DateTime!
   status: String!
+  validFrom: DateTime!
+  validUntil: DateTime!
 }
 
 enum ApiKeyAuthorizationType {

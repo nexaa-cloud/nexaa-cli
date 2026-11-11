@@ -34,12 +34,12 @@ var listApiKeysCmd = &cobra.Command{
 
 		writer := tabwriter.NewWriter(os.Stdout, 0, 0, 3, ' ', tabwriter.Debug)
 
-		fmt.Fprintln(writer, "IDENTIFIER\t NAME\t AUTHORIZATION\t START DATE\t END DATE\t STATUS\t")
+		fmt.Fprintln(writer, "IDENTIFIER\t NAME\t AUTHORIZATION\t VALID FROM\t VALID UNTIL\t STATUS")
 
 		for _, apiKey := range apiKeys {
 			fmt.Fprintf(
-				writer, "%s\t %s\t %s\t %s\t %s\t %s\t\n",
-				apiKey.Identifier, apiKey.Name, strings.Join(apiKey.Authorizations, ", "), apiKey.StartDate, apiKey.EndDate, apiKey.Status,
+				writer, "%s\t %s\t %s\t %s\t %s\t %s\n",
+				apiKey.Identifier, apiKey.Name, strings.Join(apiKey.Authorizations, ", "), apiKey.ValidFrom, apiKey.ValidUntil, apiKey.Status,
 			)
 		}
 

@@ -2,8 +2,8 @@ fragment ApiKeyResult on ApiKey {
     identifier
     name
     authorizations
-    startDate
-    endDate
+    validFrom
+    validUntil
     status
 }
 

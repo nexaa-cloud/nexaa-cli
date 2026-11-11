@@ -50,8 +50,8 @@ type ApiKeyResult struct {
 	Identifier     string    `json:"identifier"`
 	Name           string    `json:"name"`
 	Authorizations []string  `json:"authorizations"`
-	StartDate      time.Time `json:"startDate"`
-	EndDate        time.Time `json:"endDate"`
+	ValidFrom      time.Time `json:"validFrom"`
+	ValidUntil     time.Time `json:"validUntil"`
 	Status         string    `json:"status"`
 }
 
@@ -64,11 +64,11 @@ func (v *ApiKeyResult) GetName() string { return v.Name }
 // GetAuthorizations returns ApiKeyResult.Authorizations, and is useful for accessing the field via an interface.
 func (v *ApiKeyResult) GetAuthorizations() []string { return v.Authorizations }
 
-// GetStartDate returns ApiKeyResult.StartDate, and is useful for accessing the field via an interface.
-func (v *ApiKeyResult) GetStartDate() time.Time { return v.StartDate }
+// GetValidFrom returns ApiKeyResult.ValidFrom, and is useful for accessing the field via an interface.
+func (v *ApiKeyResult) GetValidFrom() time.Time { return v.ValidFrom }
 
-// GetEndDate returns ApiKeyResult.EndDate, and is useful for accessing the field via an interface.
-func (v *ApiKeyResult) GetEndDate() time.Time { return v.EndDate }
+// GetValidUntil returns ApiKeyResult.ValidUntil, and is useful for accessing the field via an interface.
+func (v *ApiKeyResult) GetValidUntil() time.Time { return v.ValidUntil }
 
 // GetStatus returns ApiKeyResult.Status, and is useful for accessing the field via an interface.
 func (v *ApiKeyResult) GetStatus() string { return v.Status }
@@ -4061,11 +4061,11 @@ func (v *getApiKeysApiKeysApiKey) GetName() string { return v.ApiKeyResult.Name 
 // GetAuthorizations returns getApiKeysApiKeysApiKey.Authorizations, and is useful for accessing the field via an interface.
 func (v *getApiKeysApiKeysApiKey) GetAuthorizations() []string { return v.ApiKeyResult.Authorizations }
 
-// GetStartDate returns getApiKeysApiKeysApiKey.StartDate, and is useful for accessing the field via an interface.
-func (v *getApiKeysApiKeysApiKey) GetStartDate() time.Time { return v.ApiKeyResult.StartDate }
+// GetValidFrom returns getApiKeysApiKeysApiKey.ValidFrom, and is useful for accessing the field via an interface.
+func (v *getApiKeysApiKeysApiKey) GetValidFrom() time.Time { return v.ApiKeyResult.ValidFrom }
 
-// GetEndDate returns getApiKeysApiKeysApiKey.EndDate, and is useful for accessing the field via an interface.
-func (v *getApiKeysApiKeysApiKey) GetEndDate() time.Time { return v.ApiKeyResult.EndDate }
+// GetValidUntil returns getApiKeysApiKeysApiKey.ValidUntil, and is useful for accessing the field via an interface.
+func (v *getApiKeysApiKeysApiKey) GetValidUntil() time.Time { return v.ApiKeyResult.ValidUntil }
 
 // GetStatus returns getApiKeysApiKeysApiKey.Status, and is useful for accessing the field via an interface.
 func (v *getApiKeysApiKeysApiKey) GetStatus() string { return v.ApiKeyResult.Status }
@@ -4102,9 +4102,9 @@ type __premarshalgetApiKeysApiKeysApiKey struct {
 
 	Authorizations []string `json:"authorizations"`
 
-	StartDate time.Time `json:"startDate"`
+	ValidFrom time.Time `json:"validFrom"`
 
-	EndDate time.Time `json:"endDate"`
+	ValidUntil time.Time `json:"validUntil"`
 
 	Status string `json:"status"`
 }
@@ -4123,8 +4123,8 @@ func (v *getApiKeysApiKeysApiKey) __premarshalJSON() (*__premarshalgetApiKeysApi
 	retval.Identifier = v.ApiKeyResult.Identifier
 	retval.Name = v.ApiKeyResult.Name
 	retval.Authorizations = v.ApiKeyResult.Authorizations
-	retval.StartDate = v.ApiKeyResult.StartDate
-	retval.EndDate = v.ApiKeyResult.EndDate
+	retval.ValidFrom = v.ApiKeyResult.ValidFrom
+	retval.ValidUntil = v.ApiKeyResult.ValidUntil
 	retval.Status = v.ApiKeyResult.Status
 	return &retval, nil
 }
@@ -6461,8 +6461,8 @@ fragment ApiKeyResult on ApiKey {
 	identifier
 	name
 	authorizations
-	startDate
-	endDate
+	validFrom
+	validUntil
 	status
 }
 `
