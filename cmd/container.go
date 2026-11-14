@@ -170,6 +170,9 @@ var modifyContainerCmd = &cobra.Command{
 		removeCommand, _ := cmd.Flags().GetBool("remove-command")
 		entrypoint, _ := cmd.Flags().GetStringArray("entrypoint")
 		removeEntrypoint, _ := cmd.Flags().GetBool("remove-entrypoint")
+		healthCheckPort, _ := cmd.Flags().GetInt("health-check-port")
+		healthCheckPath, _ := cmd.Flags().GetString("health-check-path")
+		removeHealthCheck, _ := cmd.Flags().GetBool("remove-health-check")
 
 		client := api.NewClient()
 
@@ -178,56 +181,24 @@ var modifyContainerCmd = &cobra.Command{
 			log.Fatalf("Container not found: %v", err)
 		}
 
-		envs := append(
-			envsToApi(environmentVariables, false, api.StatePresent),
-			envsToApi(secrets, true, api.StatePresent)...,
-		)
-		envs = append(
-			envs,
-			envsToApi(removedEnvironmentVariables, false, api.StateAbsent)...,
-		)
-
-		input := api.ContainerModifyInput{
-			Name:                 name,
-			Namespace:            namespace,
-			EnvironmentVariables: envs,
-		}
-
-		if !removeRegistry {
-			if registry != "" {
-				input.Registry = &registry
-			} else if oldContainer.PrivateRegistry != nil {
-				input.Registry = &oldContainer.PrivateRegistry.Name
-			}
-		}
-
-		if image != "" {
-			input.Image = &image
-		}
-
-		if resources != "" {
-			resource := api.ContainerResources(resources)
-			input.Resources = &resource
-		} else {
-			resources := oldContainer.Resources
-			input.Resources = &resources
-		}
-
-		if !removeCommand {
-			if len(command) > 0 {
-				input.Command = command
-			} else if len(oldContainer.Command) > 0 {
-				input.Command = oldContainer.Command
-			}
-		}
-
-		if !removeEntrypoint {
-			if len(entrypoint) > 0 {
-				input.Entrypoint = entrypoint
-			} else if len(oldContainer.Entrypoint) > 0 {
-				input.Entrypoint = oldContainer.Entrypoint
-			}
-		}
+		input := buildContainerModifyInput(oldContainer, modifyContainerOptions{
+			Namespace:                   namespace,
+			Name:                        name,
+			Image:                       image,
+			Resources:                   resources,
+			Registry:                    registry,
+			RemoveRegistry:              removeRegistry,
+			Command:                     command,
+			RemoveCommand:               removeCommand,
+			Entrypoint:                  entrypoint,
+			RemoveEntrypoint:            removeEntrypoint,
+			EnvironmentVariables:        environmentVariables,
+			Secrets:                     secrets,
+			RemovedEnvironmentVariables: removedEnvironmentVariables,
+			HealthCheckPort:             healthCheckPort,
+			HealthCheckPath:             healthCheckPath,
+			RemoveHealthCheck:           removeHealthCheck,
+		})
 
 		container, err := client.ContainerModify(input)
 		if err != nil {
@@ -237,6 +208,104 @@ var modifyContainerCmd = &cobra.Command{
 
 		log.Println("Modified container: ", container.Name)
 	},
+}
+
+type modifyContainerOptions struct {
+	Namespace                   string
+	Name                        string
+	Image                       string
+	Resources                   string
+	Registry                    string
+	RemoveRegistry              bool
+	Command                     []string
+	RemoveCommand               bool
+	Entrypoint                  []string
+	RemoveEntrypoint            bool
+	EnvironmentVariables        []string
+	Secrets                     []string
+	RemovedEnvironmentVariables []string
+	HealthCheckPort             int
+	HealthCheckPath             string
+	RemoveHealthCheck           bool
+}
+
+func buildContainerModifyInput(oldContainer api.ContainerResult, opts modifyContainerOptions) api.ContainerModifyInput {
+	envs := append(
+		envsToApi(opts.EnvironmentVariables, false, api.StatePresent),
+		envsToApi(opts.Secrets, true, api.StatePresent)...,
+	)
+	envs = append(
+		envs,
+		envsToApi(opts.RemovedEnvironmentVariables, false, api.StateAbsent)...,
+	)
+
+	input := api.ContainerModifyInput{
+		Name:                 opts.Name,
+		Namespace:            opts.Namespace,
+		EnvironmentVariables: envs,
+	}
+
+	if !opts.RemoveRegistry {
+		if opts.Registry != "" {
+			input.Registry = &opts.Registry
+		} else if oldContainer.PrivateRegistry != nil {
+			input.Registry = &oldContainer.PrivateRegistry.Name
+		}
+	}
+
+	if opts.Image != "" {
+		input.Image = &opts.Image
+	}
+
+	if opts.Resources != "" {
+		resource := api.ContainerResources(opts.Resources)
+		input.Resources = &resource
+	} else {
+		resources := oldContainer.Resources
+		input.Resources = &resources
+	}
+
+	if !opts.RemoveCommand {
+		if len(opts.Command) > 0 {
+			input.Command = opts.Command
+		} else if len(oldContainer.Command) > 0 {
+			input.Command = oldContainer.Command
+		}
+	}
+
+	if !opts.RemoveEntrypoint {
+		if len(opts.Entrypoint) > 0 {
+			input.Entrypoint = opts.Entrypoint
+		} else if len(oldContainer.Entrypoint) > 0 {
+			input.Entrypoint = oldContainer.Entrypoint
+		}
+	}
+
+	if !opts.RemoveHealthCheck {
+		if opts.HealthCheckPort > 0 || opts.HealthCheckPath != "" {
+			port := opts.HealthCheckPort
+			path := opts.HealthCheckPath
+			if oldContainer.HealthCheck != nil {
+				if port == 0 {
+					port = oldContainer.HealthCheck.Port
+				}
+				if path == "" {
+					path = oldContainer.HealthCheck.Path
+				}
+			}
+			input.HealthCheck = &api.HealthCheckInput{
+				Port: port,
+				Path: path,
+			}
+		} else if oldContainer.HealthCheck != nil {
+			input.HealthCheck = &api.HealthCheckInput{
+				Port: oldContainer.HealthCheck.Port,
+				Path: oldContainer.HealthCheck.Path,
+			}
+		}
+	}
+
+	return input
 }
 
 var deleteContainerCmd = &cobra.Command{
@@ -301,6 +370,9 @@ func init() {
 	modifyContainerCmd.Flags().StringArray("remove-env", []string{}, "Container remove environment variables")
 	modifyContainerCmd.Flags().String("registry", "", "Registry name for container image")
 	modifyContainerCmd.Flags().Bool("remove-registry", false, "Change the registry to public")
+	modifyContainerCmd.Flags().Int("health-check-port", 0, "Port for container health check")
+	modifyContainerCmd.Flags().String("health-check-path", "", "Path for container health check")
+	modifyContainerCmd.Flags().Bool("remove-health-check", false, "Remove health check from the container")
 	modifyContainerCmd.MarkFlagRequired("namespace")
 	modifyContainerCmd.MarkFlagRequired("name")
 	containerCmd.AddCommand(modifyContainerCmd)
