@@ -94,7 +94,7 @@ func init() {
 
 	createApiKeyCmd.Flags().StringP("name", "n", "", "Name of the API key")
 	createApiKeyCmd.Flags().StringP("authorizations", "a", "read", "The authorizations of the API key (read or read/write). Defaults to read")
-	createApiKeyCmd.Flags().String("end-date", "", "The API key is valid until this date. Defaults to 6 months")
+	createApiKeyCmd.Flags().String("valid-until", "", "The API key is valid until this date. Defaults to 6 months")
 	createApiKeyCmd.MarkFlagRequired("name")
 	apiKeyCmd.AddCommand(createApiKeyCmd)
 
