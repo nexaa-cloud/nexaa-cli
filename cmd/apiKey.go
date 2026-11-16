@@ -6,6 +6,7 @@ import (
 	"os"
 	"strings"
 	"text/tabwriter"
+	"time"
 
 	"github.com/nexaa-cloud/nexaa-cli/api"
 	"github.com/spf13/cobra"
@@ -53,7 +54,7 @@ var createApiKeyCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		name, _ := cmd.Flags().GetString("name")
 		authorizations, _ := cmd.Flags().GetString("authorizations")
-		//endDate, _ := cmd.Flags().GetString("endDate")
+		validUntil, _ := cmd.Flags().GetString("valid-until")
 
 		var auths []api.ApiKeyAuthorizationType
 		switch authorizations {
@@ -68,6 +69,16 @@ var createApiKeyCmd = &cobra.Command{
 		input := api.ApiKeyInput{
 			Name:           &name,
 			Authorizations: auths,
+		}
+
+		if validUntil != "" {
+			endDate, err := time.Parse(time.DateOnly, validUntil)
+			if err != nil {
+				log.Fatalf("Failed to create API key, invalid date: %v", err)
+				return
+			}
+
+			input.ValidUntil = &endDate
 		}
 
 		client := api.NewClient()
@@ -94,7 +105,7 @@ func init() {
 
 	createApiKeyCmd.Flags().StringP("name", "n", "", "Name of the API key")
 	createApiKeyCmd.Flags().StringP("authorizations", "a", "read", "The authorizations of the API key (read or read/write). Defaults to read")
-	createApiKeyCmd.Flags().String("valid-until", "", "The API key is valid until this date. Defaults to 6 months")
+	createApiKeyCmd.Flags().String("valid-until", "", "The API key is valid until this date. Defaults to 6 months in the future. (YYYY-MM-DD)")
 	createApiKeyCmd.MarkFlagRequired("name")
 	apiKeyCmd.AddCommand(createApiKeyCmd)
 

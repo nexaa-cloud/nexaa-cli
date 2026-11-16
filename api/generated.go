@@ -36,11 +36,15 @@ var AllApiKeyAuthorizationType = []ApiKeyAuthorizationType{
 
 type ApiKeyInput struct {
 	Name           *string                   `json:"name"`
+	ValidUntil     *time.Time                `json:"validUntil"`
 	Authorizations []ApiKeyAuthorizationType `json:"authorizations"`
 }
 
 // GetName returns ApiKeyInput.Name, and is useful for accessing the field via an interface.
 func (v *ApiKeyInput) GetName() *string { return v.Name }
+
+// GetValidUntil returns ApiKeyInput.ValidUntil, and is useful for accessing the field via an interface.
+func (v *ApiKeyInput) GetValidUntil() *time.Time { return v.ValidUntil }
 
 // GetAuthorizations returns ApiKeyInput.Authorizations, and is useful for accessing the field via an interface.
 func (v *ApiKeyInput) GetAuthorizations() []ApiKeyAuthorizationType { return v.Authorizations }
