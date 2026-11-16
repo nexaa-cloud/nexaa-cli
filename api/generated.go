@@ -77,6 +77,13 @@ func (v *ApiKeyResult) GetValidUntil() time.Time { return v.ValidUntil }
 // GetStatus returns ApiKeyResult.Status, and is useful for accessing the field via an interface.
 func (v *ApiKeyResult) GetStatus() string { return v.Status }
 
+type ApiKeyRevokeInput struct {
+	Identifier string `json:"identifier"`
+}
+
+// GetIdentifier returns ApiKeyRevokeInput.Identifier, and is useful for accessing the field via an interface.
+func (v *ApiKeyRevokeInput) GetIdentifier() string { return v.Identifier }
+
 type AutoScalingInput struct {
 	Replicas ReplicasInput             `json:"replicas"`
 	Triggers []AutoScalingTriggerInput `json:"triggers"`
@@ -2920,6 +2927,14 @@ type __apiKeyCreateInput struct {
 // GetApiKeyInput returns __apiKeyCreateInput.ApiKeyInput, and is useful for accessing the field via an interface.
 func (v *__apiKeyCreateInput) GetApiKeyInput() ApiKeyInput { return v.ApiKeyInput }
 
+// __apiKeyRevokeInput is used internally by genqlient
+type __apiKeyRevokeInput struct {
+	ApiKeyRevokeInput ApiKeyRevokeInput `json:"apiKeyRevokeInput"`
+}
+
+// GetApiKeyRevokeInput returns __apiKeyRevokeInput.ApiKeyRevokeInput, and is useful for accessing the field via an interface.
+func (v *__apiKeyRevokeInput) GetApiKeyRevokeInput() ApiKeyRevokeInput { return v.ApiKeyRevokeInput }
+
 // __cloudDatabaseClusterCreateInput is used internally by genqlient
 type __cloudDatabaseClusterCreateInput struct {
 	CloudDatabaseClusterInput CloudDatabaseClusterCreateInput `json:"cloudDatabaseClusterInput"`
@@ -3319,6 +3334,15 @@ type apiKeyCreateResponse struct {
 
 // GetApiKeyCreate returns apiKeyCreateResponse.ApiKeyCreate, and is useful for accessing the field via an interface.
 func (v *apiKeyCreateResponse) GetApiKeyCreate() string { return v.ApiKeyCreate }
+
+// apiKeyRevokeResponse is returned by apiKeyRevoke on success.
+type apiKeyRevokeResponse struct {
+	// Cost: complexity = 100, multipliers = [], defaultMultiplier = null
+	ApiKeyRevoke bool `json:"apiKeyRevoke"`
+}
+
+// GetApiKeyRevoke returns apiKeyRevokeResponse.ApiKeyRevoke, and is useful for accessing the field via an interface.
+func (v *apiKeyRevokeResponse) GetApiKeyRevoke() bool { return v.ApiKeyRevoke }
 
 // cloudDatabaseClusterCreateResponse is returned by cloudDatabaseClusterCreate on success.
 type cloudDatabaseClusterCreateResponse struct {
@@ -5154,6 +5178,38 @@ func apiKeyCreate(
 	}
 
 	data_ = &apiKeyCreateResponse{}
+	resp_ := &graphql.Response{Data: data_}
+
+	err_ = client_.MakeRequest(
+		ctx_,
+		req_,
+		resp_,
+	)
+
+	return data_, err_
+}
+
+// The mutation executed by apiKeyRevoke.
+const apiKeyRevoke_Operation = `
+mutation apiKeyRevoke ($apiKeyRevokeInput: ApiKeyRevokeInput!) {
+	apiKeyRevoke(input: $apiKeyRevokeInput)
+}
+`
+
+func apiKeyRevoke(
+	ctx_ context.Context,
+	client_ graphql.Client,
+	apiKeyRevokeInput ApiKeyRevokeInput,
+) (data_ *apiKeyRevokeResponse, err_ error) {
+	req_ := &graphql.Request{
+		OpName: "apiKeyRevoke",
+		Query:  apiKeyRevoke_Operation,
+		Variables: &__apiKeyRevokeInput{
+			ApiKeyRevokeInput: apiKeyRevokeInput,
+		},
+	}
+
+	data_ = &apiKeyRevokeResponse{}
 	resp_ := &graphql.Response{Data: data_}
 
 	err_ = client_.MakeRequest(

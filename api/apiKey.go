@@ -19,6 +19,15 @@ func (client *Client) ApiKeyCreate(input ApiKeyInput) (string, error) {
 	return resp.GetApiKeyCreate(), nil
 }
 
+func (client *Client) ApiKeyRevoke(input ApiKeyRevokeInput) (bool, error) {
+	resp, err := apiKeyRevoke(context.Background(), *client.client, input)
+	if err != nil {
+		return false, err
+	}
+
+	return resp.ApiKeyRevoke, nil
+}
+
 func (client *Client) ApiKeysList() ([]ApiKeyResult, error) {
 	resp, err := getApiKeys(context.Background(), *client.client)
 	if err != nil {

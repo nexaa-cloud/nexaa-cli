@@ -11,6 +11,10 @@ mutation apiKeyCreate($apiKeyInput: ApiKeyInput!) {
     apiKeyCreate(apiKeyInput: $apiKeyInput)
 }
 
+mutation apiKeyRevoke($apiKeyRevokeInput: ApiKeyRevokeInput!) {
+    apiKeyRevoke(input: $apiKeyRevokeInput)
+} 
+
 mutation accessTokenCreate {
     accessTokenCreate
 }

@@ -96,7 +96,25 @@ var revokeApiKeyCmd = &cobra.Command{
 	Use:   "revoke",
 	Short: "Revoke a API key",
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Errorf("Not implemented yet")
+		identifier, _ := cmd.Flags().GetString("identifier")
+
+		input := api.ApiKeyRevokeInput{
+			Identifier: identifier,
+		}
+
+		client := api.NewClient()
+		result, err := client.ApiKeyRevoke(input)
+		if err != nil {
+			log.Fatalf("Failed to revoke API key: %v", err)
+			return
+		}
+
+		if !result {
+			log.Fatalf("Could not revoke API key with identifier: %s", identifier)
+			return
+		}
+
+		log.Println("Revoked API key with identifier:", identifier)
 	},
 }
 
@@ -109,5 +127,7 @@ func init() {
 	createApiKeyCmd.MarkFlagRequired("name")
 	apiKeyCmd.AddCommand(createApiKeyCmd)
 
+	revokeApiKeyCmd.Flags().StringP("identifier", "i", "", "Identifier of the API key")
+	revokeApiKeyCmd.MarkFlagRequired("identifier")
 	apiKeyCmd.AddCommand(revokeApiKeyCmd)
 }
