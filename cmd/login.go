@@ -48,6 +48,8 @@ var loginCmd = &cobra.Command{
 			password = string(bytePassword)
 		}
 
+		fmt.Println("WARNING: Logging in with username and password is not recommended except for managing API keys.")
+		fmt.Println("WARNING: We recommend to log out when your done or manually delete the " + config.TOKEN_FILE)
 		err := api.Login(username, password)
 		if err != nil {
 			log.Fatalf("Login failed: %v", err)
