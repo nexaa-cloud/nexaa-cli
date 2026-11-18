@@ -20,7 +20,7 @@ var loginCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		username, _ := cmd.Flags().GetString("username")
 
-		envPassword := os.Getenv("TILAA_PASSWORD")
+		envPassword := os.Getenv("NEXAA_PASSWORD")
 		password, _ := cmd.Flags().GetString("password")
 
 		if password == "" {
@@ -40,6 +40,11 @@ var loginCmd = &cobra.Command{
 			if err != nil {
 				log.Fatalf("Failed to read password: %v", err)
 			}
+
+			if string(bytePassword) == "" {
+				log.Fatalf("Received empty password. Aborting login...")
+			}
+
 			password = string(bytePassword)
 		}
 
@@ -63,10 +68,15 @@ func loginApiKey(cmd *cobra.Command) {
 	if apiKey == "" {
 		fmt.Print("API key not found. Please enter API key: ")
 		byteApiKey, err := term.ReadPassword(int(syscall.Stdin))
-		fmt.Println() // Print a newline after password input for clarity
+		fmt.Println() // Print a newline after API key input for clarity
 		if err != nil {
-			log.Fatalf("Failed to read password: %v", err)
+			log.Fatalf("Failed to read API key: %v", err)
 		}
+
+		if string(byteApiKey) == "" {
+			log.Fatalf("Received empty API key. Aborting login...")
+		}
+
 		apiKey = string(byteApiKey)
 	}
 
