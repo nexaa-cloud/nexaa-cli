@@ -81,6 +81,8 @@ var createContainerCmd = &cobra.Command{
 		secrets, _ := cmd.Flags().GetStringArray("secret")
 		command, _ := cmd.Flags().GetStringArray("command")
 		entrypoint, _ := cmd.Flags().GetStringArray("entrypoint")
+		healthCheckPath, _ := cmd.Flags().GetString("health-check-path")
+		healthCheckPort, _ := cmd.Flags().GetInt("health-check-port")
 
 		envs := append(envsToApi(environmentVariables, false, api.StatePresent), envsToApi(secrets, true, api.StatePresent)...)
 		conResources := api.ContainerResources(resources)
@@ -97,6 +99,23 @@ var createContainerCmd = &cobra.Command{
 			Ports:                ports,
 			Ingresses:            []api.IngressInput{},
 			Type:                 api.ContainerTypeDefault,
+		}
+
+		if healthCheckPath == "" && healthCheckPort != -1 {
+			log.Fatalf("Failed to create container: Missing flag --health-check-path")
+			return
+		}
+
+		if healthCheckPath != "" && healthCheckPort == -1 {
+			log.Fatalf("Failed to create container: Missing flag --health-check-port")
+			return
+		}
+
+		if healthCheckPath != "" && healthCheckPort != -1 {
+			input.HealthCheck = &api.HealthCheckInput{
+				Path: healthCheckPath,
+				Port: healthCheckPort,
+			}
 		}
 
 		client := api.NewClient()
@@ -124,6 +143,8 @@ var createStarterContainerCmd = &cobra.Command{
 		secrets, _ := cmd.Flags().GetStringArray("secret")
 		command, _ := cmd.Flags().GetStringArray("command")
 		entrypoint, _ := cmd.Flags().GetStringArray("entrypoint")
+		healthCheckPath, _ := cmd.Flags().GetString("health-check-path")
+		healthCheckPort, _ := cmd.Flags().GetInt("health-check-port")
 
 		envs := append(envsToApi(environmentVariables, false, api.StatePresent), envsToApi(secrets, true, api.StatePresent)...)
 		resources := api.ContainerResourcesCpu250Ram500
@@ -140,6 +161,23 @@ var createStarterContainerCmd = &cobra.Command{
 			Ports:                ports,
 			Ingresses:            []api.IngressInput{},
 			Type:                 api.ContainerTypeStarter,
+		}
+
+		if healthCheckPath == "" && healthCheckPort != -1 {
+			log.Fatalf("Failed to create starter container: Missing flag --health-check-path")
+			return
+		}
+
+		if healthCheckPath != "" && healthCheckPort == -1 {
+			log.Fatalf("Failed to create starter container: Missing flag --health-check-port")
+			return
+		}
+
+		if healthCheckPath != "" && healthCheckPort != -1 {
+			input.HealthCheck = &api.HealthCheckInput{
+				Path: healthCheckPath,
+				Port: healthCheckPort,
+			}
 		}
 
 		client := api.NewClient()
@@ -174,6 +212,9 @@ var modifyContainerCmd = &cobra.Command{
 		removeCommand, _ := cmd.Flags().GetBool("remove-command")
 		entrypoint, _ := cmd.Flags().GetStringArray("entrypoint")
 		removeEntrypoint, _ := cmd.Flags().GetBool("remove-entrypoint")
+		healthCheckPath, _ := cmd.Flags().GetString("health-check-path")
+		healthCheckPort, _ := cmd.Flags().GetInt("health-check-port")
+		removeHealthCheck, _ := cmd.Flags().GetBool("remove-health-check")
 
 		client := api.NewClient()
 
@@ -242,6 +283,36 @@ var modifyContainerCmd = &cobra.Command{
 			}
 		}
 
+		if !removeHealthCheck {
+			if healthCheckPath != "" && healthCheckPort != -1 {
+				input.HealthCheck = &api.HealthCheckInput{
+					Path: healthCheckPath,
+					Port: healthCheckPort,
+				}
+			} else if oldContainer.HealthCheck != nil {
+				if healthCheckPath != "" && healthCheckPort == -1 {
+					input.HealthCheck = &api.HealthCheckInput{
+						Path: healthCheckPath,
+						Port: oldContainer.HealthCheck.Port,
+					}
+				} else if healthCheckPath == "" && healthCheckPort != -1 {
+					input.HealthCheck = &api.HealthCheckInput{
+						Path: oldContainer.HealthCheck.Path,
+						Port: healthCheckPort,
+					}
+				} else {
+					input.HealthCheck = &api.HealthCheckInput{
+						Path: oldContainer.HealthCheck.Path,
+						Port: oldContainer.HealthCheck.Port,
+					}
+				}
+			} else if healthCheckPath == "" && healthCheckPort != -1 {
+				log.Fatalf("Failed to modify container: Missing flag --health-check-path")
+			} else if healthCheckPath != "" && healthCheckPort == -1 {
+				log.Fatalf("Failed to modify container: Missing flag --health-check-port")
+			}
+		}
+
 		container, err := client.ContainerModify(input)
 		if err != nil {
 			log.Fatalf("Failed to modify container: %v", err)
@@ -283,11 +354,13 @@ func init() {
 	createContainerCmd.Flags().StringArray("expose-port", []string{}, "Expose container port for container traffic (e.g. 80 or 80:8080)")
 	createContainerCmd.Flags().StringArray("env", []string{}, "Container environment variables")
 	createContainerCmd.Flags().StringArray("secret", []string{}, "Container secrets")
+	createContainerCmd.Flags().StringArray("entrypoint", []string{}, "Entrypoint for the container")
+	createContainerCmd.Flags().StringArray("command", []string{}, "Command to run in the container")
+	createContainerCmd.Flags().String("health-check-path", "", "Path for the health check")
+	createContainerCmd.Flags().Int("health-check-port", -1, "Port for the health check")
 	createContainerCmd.MarkFlagRequired("namespace")
 	createContainerCmd.MarkFlagRequired("name")
 	createContainerCmd.MarkFlagRequired("image")
-	createContainerCmd.Flags().StringArray("entrypoint", []string{}, "Entrypoint for the container")
-	createContainerCmd.Flags().StringArray("command", []string{}, "Command to run in the container")
 	containerCmd.AddCommand(createContainerCmd)
 
 	createStarterContainerCmd.Flags().StringP("namespace", "n", "", "Namespace")
@@ -298,6 +371,8 @@ func init() {
 	createStarterContainerCmd.Flags().StringArray("secret", []string{}, "Container secrets")
 	createStarterContainerCmd.Flags().StringArray("entrypoint", []string{}, "Entrypoint for the container")
 	createStarterContainerCmd.Flags().StringArray("command", []string{}, "Command to run in the container")
+	createStarterContainerCmd.Flags().String("health-check-path", "", "Path for the health check")
+	createStarterContainerCmd.Flags().Int("health-check-port", -1, "Port for the health check")
 	createStarterContainerCmd.MarkFlagRequired("namespace")
 	createStarterContainerCmd.MarkFlagRequired("name")
 	createStarterContainerCmd.MarkFlagRequired("image")
@@ -318,6 +393,9 @@ func init() {
 	modifyContainerCmd.Flags().StringArray("remove-env", []string{}, "Container remove environment variables")
 	modifyContainerCmd.Flags().String("registry", "", "Registry name for container image")
 	modifyContainerCmd.Flags().Bool("remove-registry", false, "Change the registry to public")
+	modifyContainerCmd.Flags().String("health-check-path", "", "Change path for the health check")
+	modifyContainerCmd.Flags().Int("health-check-port", -1, "Change port for the health check")
+	modifyContainerCmd.Flags().Bool("remove-health-check", false, "Remove the health check (takes precedence over --health-check-path and --health-check-port)")
 	modifyContainerCmd.MarkFlagRequired("namespace")
 	modifyContainerCmd.MarkFlagRequired("name")
 	containerCmd.AddCommand(modifyContainerCmd)
