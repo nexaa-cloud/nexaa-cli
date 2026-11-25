@@ -62,15 +62,15 @@ func splitAndTrim(input string) []string {
 
 func removeSliceFromSlice(slice []string, remove []string) []string {
 	removeSet := make(map[string]struct{}, len(remove))
-    for _, v := range remove {
-        removeSet[v] = struct{}{}
-    }
+	for _, v := range remove {
+		removeSet[v] = struct{}{}
+	}
 
-    result := make([]string, 0, len(slice))
-    for _, v := range slice {
-        if _, exists := removeSet[v]; !exists {
-            result = append(result, v)
-        }
-    }
-    return result
+	result := make([]string, 0, len(slice))
+	for _, v := range slice {
+		if _, exists := removeSet[v]; !exists {
+			result = append(result, v)
+		}
+	}
+	return result
 }
