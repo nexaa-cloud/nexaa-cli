@@ -75,6 +75,7 @@ var createContainerCmd = &cobra.Command{
 		namespace, _ := cmd.Flags().GetString("namespace")
 		name, _ := cmd.Flags().GetString("name")
 		image, _ := cmd.Flags().GetString("image")
+		ports, _ := cmd.Flags().GetStringArray("expose-port")
 		resources, _ := cmd.Flags().GetString("resources")
 		environmentVariables, _ := cmd.Flags().GetStringArray("env")
 		secrets, _ := cmd.Flags().GetStringArray("secret")
@@ -93,7 +94,7 @@ var createContainerCmd = &cobra.Command{
 			Entrypoint:           entrypoint,
 			Command:              command,
 			Mounts:               []api.MountInput{},
-			Ports:                []string{},
+			Ports:                ports,
 			Ingresses:            []api.IngressInput{},
 			Type:                 api.ContainerTypeDefault,
 		}
@@ -118,6 +119,7 @@ var createStarterContainerCmd = &cobra.Command{
 		namespace, _ := cmd.Flags().GetString("namespace")
 		name, _ := cmd.Flags().GetString("name")
 		image, _ := cmd.Flags().GetString("image")
+		ports, _ := cmd.Flags().GetStringArray("expose-port")
 		environmentVariables, _ := cmd.Flags().GetStringArray("env")
 		secrets, _ := cmd.Flags().GetStringArray("secret")
 		command, _ := cmd.Flags().GetStringArray("command")
@@ -135,7 +137,7 @@ var createStarterContainerCmd = &cobra.Command{
 			Entrypoint:           entrypoint,
 			Command:              command,
 			Mounts:               []api.MountInput{},
-			Ports:                []string{},
+			Ports:                ports,
 			Ingresses:            []api.IngressInput{},
 			Type:                 api.ContainerTypeStarter,
 		}
@@ -160,6 +162,8 @@ var modifyContainerCmd = &cobra.Command{
 		namespace, _ := cmd.Flags().GetString("namespace")
 		name, _ := cmd.Flags().GetString("name")
 		image, _ := cmd.Flags().GetString("image")
+		addPorts, _ := cmd.Flags().GetStringArray("add-expose-port")
+		removePorts, _ := cmd.Flags().GetStringArray("remove-expose-port")
 		resources, _ := cmd.Flags().GetString("resources")
 		environmentVariables, _ := cmd.Flags().GetStringArray("env")
 		secrets, _ := cmd.Flags().GetStringArray("secret")
@@ -204,6 +208,15 @@ var modifyContainerCmd = &cobra.Command{
 		if image != "" {
 			input.Image = &image
 		}
+
+		ports := oldContainer.Ports
+		if len(addPorts) > 0 {
+			ports = append(ports, addPorts...)
+		}
+		if len(removePorts) > 0 {
+			ports = removeSliceFromSlice(ports, removePorts)
+		}
+		input.Ports = ports
 
 		if resources != "" {
 			resource := api.ContainerResources(resources)
@@ -267,6 +280,7 @@ func init() {
 	createContainerCmd.Flags().String("name", "", "Name for the container")
 	createContainerCmd.Flags().String("image", "", "Container image")
 	createContainerCmd.Flags().String("resources", "", "Container resources")
+	createContainerCmd.Flags().StringArray("expose-port", []string{}, "Expose container port for container traffic (e.g. 80 or 80:8080)")
 	createContainerCmd.Flags().StringArray("env", []string{}, "Container environment variables")
 	createContainerCmd.Flags().StringArray("secret", []string{}, "Container secrets")
 	createContainerCmd.MarkFlagRequired("namespace")
@@ -279,6 +293,7 @@ func init() {
 	createStarterContainerCmd.Flags().StringP("namespace", "n", "", "Namespace")
 	createStarterContainerCmd.Flags().String("name", "", "Name for the container")
 	createStarterContainerCmd.Flags().String("image", "", "Container image")
+	createStarterContainerCmd.Flags().StringArray("expose-port", []string{}, "Expose container port for container traffic (e.g. 80 or 80:8080)")
 	createStarterContainerCmd.Flags().StringArray("env", []string{}, "Container environment variables")
 	createStarterContainerCmd.Flags().StringArray("secret", []string{}, "Container secrets")
 	createStarterContainerCmd.Flags().StringArray("entrypoint", []string{}, "Entrypoint for the container")
@@ -292,6 +307,8 @@ func init() {
 	modifyContainerCmd.Flags().String("name", "", "Name for the container")
 	modifyContainerCmd.Flags().String("image", "", "Container image")
 	modifyContainerCmd.Flags().String("resources", "", "Container resources")
+	modifyContainerCmd.Flags().StringArray("add-expose-port", []string{}, "Expose container port for container traffic (e.g. 80 or 80:8080)")
+	modifyContainerCmd.Flags().StringArray("remove-expose-port", []string{}, "Remove exposed container port (e.g. 80 or 80:8080)")
 	modifyContainerCmd.Flags().StringArray("command", []string{}, "Command to run in the container")
 	modifyContainerCmd.Flags().Bool("remove-command", false, "Remove the command from the container")
 	modifyContainerCmd.Flags().StringArray("entrypoint", []string{}, "Entrypoint for the container")
